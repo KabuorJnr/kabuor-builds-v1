@@ -11,6 +11,11 @@ The platform's own pages use the Kabuor Builds kit from `Projects/kabuor-builds/
 headlines, Fraunces italic for the "Mlete deals." voice, Onest for text (`client/public/fonts`). Name, tagline,
 phone and email are settings (`PLATFORM_*` in `server/.env`). Every shop's footer links back: "Website by Kabuor Builds".
 
+## What's in this repo
+
+- `client/`, `server/`: the platform (landing page, signup, every shop).
+- `marketing/`: the Kabuor Builds brand kit and the video ad, with its render scripts (see marketing/README.md).
+
 ## How it fits together
 
 - **One server, many shops.** The host name decides what a request is for: `shop.ke` is the platform
