@@ -1,0 +1,57 @@
+/* Kabuor Builds' own type (from the brand kit): Bricolage condensed and heavy for display, Fraunces italic
+   for the "Mlete deals." voice, Onest for reading. Shops never load these. */
+@font-face {
+  font-family: 'KB Bricolage';
+  src: url('/fonts/bricolage.woff2') format('woff2');
+  font-weight: 200 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'KB Fraunces';
+  src: url('/fonts/fraunces-italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'KB Onest';
+  src: url('/fonts/onest.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+.kb-display {
+  font-family: 'KB Bricolage', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  font-variation-settings: 'wdth' 85;
+}
+.kb-serif {
+  font-family: 'KB Fraunces', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 100, 'WONK' 1;
+}
+.kb-kicker {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+/* The ad's backdrop: ink with a warm orange glow and a fine grain. */
+.kb-ink {
+  background:
+    radial-gradient(60rem 60rem at 15% 30%, rgb(255 91 31 / 0.22), transparent 60%),
+    #0f1115;
+  color: #fff7ec;
+}
+.kb-ink::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: radial-gradient(#fff 1px, transparent 1.2px);
+  background-size: 6px 6px;
+}

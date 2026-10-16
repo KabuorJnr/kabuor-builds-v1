@@ -1,0 +1,296 @@
+@import "tailwindcss";
+@import "@fontsource-variable/plus-jakarta-sans";
+
+/* Brand fonts that aren't free web fonts (Amsterdam One, Futura) are used when installed on the
+   device; to serve them to everyone, add their licensed files to public/fonts and a url() here. */
+@font-face {
+  font-family: "Amsterdam One";
+  src: local("Amsterdam One"), local("AmsterdamOne"), local("Amsterdam One Regular");
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Brand lettering, as on the flyers: "Anjugu" in Cherry Bomb, "PEANUT BUTTER" in Futura (Jost where Futura
+     isn't installed), the "Love N-ut Home" tagline hand-lettered as on the flyers, handwritten titles in Amsterdam One. */
+  --font-brand: "Cherry Bomb One", "Cherry Bomb", ui-rounded, system-ui, sans-serif;
+  --font-futura: Futura, "Futura PT", "Jost Variable", "Century Gothic", sans-serif;
+  --font-tagline: "Gochi Hand", "Comic Sans MS", cursive;
+  --font-script: "Amsterdam One", "Sacramento", cursive;
+  /* Small hand-lettered labels (chips, tags) */
+  --font-hand: "Gochi Hand", "Comic Sans MS", cursive;
+
+  --color-cream: #fbf6ee;
+  --color-beige: #f4eada;
+  --color-sand: #e9d9bf;
+  --color-latte: #cbae88;
+  --color-honey: #ec9412;
+  --color-amber: #d27d0c;
+  --color-caramel: #9e5f1c;
+  --color-cocoa: #5a3a22;
+  --color-espresso: #2e1f14;
+  --color-bark: #1e140c;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-marquee-reverse: marquee 44s linear infinite reverse;
+  --animate-spin-slow: spin 18s linear infinite;
+
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+
+  /* Idle motion runs as CSS transform animations, which the GPU handles without per-frame JavaScript. */
+  --animate-float: float var(--float-dur, 6s) ease-in-out var(--float-delay, 0s) infinite;
+  --animate-wobble: wobble 9s ease-in-out infinite;
+  --animate-scroll-dot: scroll-dot 1.8s ease-in-out infinite;
+  --animate-orbit: spin 90s linear infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(var(--float, -10px)); }
+  }
+  @keyframes wobble {
+    0%, 50%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    75% { transform: rotate(-5deg); }
+  }
+  @keyframes scroll-dot {
+    0%, 100% { transform: translateY(6px); opacity: 1; }
+    50% { transform: translateY(20px); opacity: 0.2; }
+  }
+}
+
+@layer base {
+  /* iOS zooms into fields under 16px; keep phones at 16px. */
+  @media (max-width: 639px) {
+    input:not([type=checkbox]):not([type=radio]),
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-cream text-espresso font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-honey);
+    color: var(--color-espresso);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  button { cursor: pointer; }
+  input, select, textarea { font: inherit; }
+}
+
+@utility container-x {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-[var(--r-btn)] px-6 py-3.5 text-sm font-semibold transition-all duration-300 ease-out-expo active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply bg-espresso text-cream shadow-[0_10px_30px_-12px_rgba(46,31,20,0.6)] hover:bg-cocoa hover:shadow-[0_16px_40px_-14px_rgba(46,31,20,0.7)];
+}
+@utility btn-honey {
+  @apply bg-honey text-espresso shadow-[0_10px_30px_-12px_rgba(201,133,34,0.8)] hover:bg-[#f0b052];
+}
+@utility btn-ghost {
+  @apply border border-espresso/15 bg-white/40 text-espresso backdrop-blur hover:border-espresso/30 hover:bg-white/70;
+}
+/* Section labels are hand-lettered, slightly tilted, like the brand's own flyers. */
+@utility eyebrow {
+  @apply inline-flex -rotate-2 items-center gap-2 font-script text-[2.1rem] leading-none text-amber sm:text-[2.4rem];
+}
+/* Kraft-paper label with a stitched edge, matching the hanging price tags. */
+@utility kraft {
+  @apply relative rounded-[var(--r-md)] bg-gradient-to-br from-[#F3E1BE] to-[#DDBF8C] shadow-[0_14px_28px_-16px_rgba(46,31,20,0.55)] ring-1 ring-[#B89466]/60;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 0.8rem;
+    border: 1px dashed rgb(156 122 79 / 0.55);
+    pointer-events: none;
+  }
+}
+@utility field {
+  @apply w-full rounded-[var(--r-lg)] border border-espresso/10 bg-white px-4 py-3 text-[15px] text-espresso outline-none transition placeholder:text-espresso/35 focus:border-amber focus:ring-4 focus:ring-honey/20;
+}
+@utility card {
+  @apply rounded-[var(--r-xl)] border border-espresso/[0.06] bg-white shadow-[0_1px_2px_rgba(46,31,20,0.04),0_8px_24px_-12px_rgba(46,31,20,0.12)];
+}
+
+/* Quiet dot grid used as section texture (dark on light, honey on dark). */
+@utility bg-dots {
+  background-image: radial-gradient(rgb(46 31 20 / 0.11) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+@utility bg-dots-light {
+  background-image: radial-gradient(rgb(232 163 61 / 0.16) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+@utility grain {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .12 0 0 0 0 .08 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+/* Receipt paper: zig-zag torn edges top and bottom, with a shadow that follows the teeth. */
+@utility receipt-paper {
+  --teeth: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 18px 51% repeat-x,
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 18px 51% repeat-x;
+  -webkit-mask: var(--teeth);
+  mask: var(--teeth);
+}
+@utility receipt-shadow {
+  filter: drop-shadow(0 18px 24px rgb(46 31 20 / 0.18)) drop-shadow(0 2px 3px rgb(46 31 20 / 0.12));
+}
+@media print {
+  @page { margin: 6mm; }
+  .no-print { display: none !important; }
+  .receipt-page { background: #fff !important; padding: 0 !important; min-height: 0 !important; }
+  .receipt-shadow { filter: none !important; max-width: 80mm !important; margin: 0 auto !important; }
+  .receipt-paper { padding-left: 0 !important; padding-right: 0 !important; }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Price tag on the generated jars: hangs at a slight angle and swings when the jar is hovered.
+   (No endless idle sway: animating inside the jar drawing made every jar repaint on every frame.) */
+.jar-tag {
+  transform-origin: 0 0;
+  transform: rotate(-3deg);
+}
+@media (hover: hover) {
+  .group:hover .jar-tag {
+    animation: tag-swing 1.4s ease-in-out;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, .animate-wobble, .animate-scroll-dot, .animate-orbit, .animate-spin-slow { animation: none; }
+}
+
+@keyframes tag-swing {
+  0% { transform: rotate(-3deg); }
+  18% { transform: rotate(16deg); }
+  38% { transform: rotate(-11deg); }
+  58% { transform: rotate(7deg); }
+  78% { transform: rotate(-3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Candle flames flicker gently (off when the visitor prefers reduced motion). */
+@keyframes flicker {
+  0%, 100% { transform: scale(1, 1) rotate(0deg); }
+  30% { transform: scale(0.94, 1.06) rotate(-2deg); }
+  60% { transform: scale(1.04, 0.95) rotate(2deg); }
+}
+.candle-flame { animation: flicker 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .candle-flame { animation: none; }
+}
+
+/* ---------------- brand art direction (data-* set from brands/looks.js in main.jsx) ---------------- */
+
+/* One radius scale per brand: round (bubbly), soft, or sharp (editorial). */
+:root {
+  --r-xl: 2rem;
+  --r-lg: 1rem;
+  --r-md: 0.75rem;
+  --r-btn: 9999px;
+}
+[data-radius='soft'] {
+  --r-xl: 1.1rem;
+  --r-lg: 0.75rem;
+  --r-md: 0.5rem;
+  --r-btn: 0.7rem;
+}
+[data-radius='sharp'] {
+  --r-xl: 4px;
+  --r-lg: 3px;
+  --r-md: 2px;
+  --r-btn: 3px;
+}
+
+/* Section textures. Light sites draw in dark ink, dark sites in light ink. */
+[data-texture='speckle'] .bg-dots {
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--color-amber) 45%, transparent) 1.1px, transparent 1.7px),
+    radial-gradient(color-mix(in srgb, var(--color-honey) 55%, transparent) 1.4px, transparent 2px),
+    radial-gradient(color-mix(in srgb, var(--color-caramel) 30%, transparent) 0.9px, transparent 1.4px);
+  background-size: 37px 31px, 53px 47px, 23px 29px;
+  background-position: 0 0, 13px 19px, 7px 3px;
+}
+[data-texture='honeycomb'] .bg-dots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 1 L55 17 L55 49 L28 65 L1 49 L1 17 Z M28 65 L28 97' fill='none' stroke='%23000' stroke-opacity='.09' stroke-width='1.2'/%3E%3C/svg%3E");
+  background-size: 56px 97px;
+}
+[data-mode='dark'][data-texture='honeycomb'] .bg-dots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 1 L55 17 L55 49 L28 65 L1 49 L1 17 Z M28 65 L28 97' fill='none' stroke='%23F2C200' stroke-opacity='.13' stroke-width='1.2'/%3E%3C/svg%3E");
+}
+[data-texture='glow'] .bg-dots {
+  background-image:
+    radial-gradient(circle at 18% 28%, color-mix(in srgb, var(--color-caramel) 22%, transparent), transparent 34%),
+    radial-gradient(circle at 78% 62%, color-mix(in srgb, var(--color-amber) 18%, transparent), transparent 38%),
+    radial-gradient(circle at 48% 90%, color-mix(in srgb, var(--color-honey) 14%, transparent), transparent 30%);
+  background-size: auto;
+}
+[data-texture='grain'] .bg-dots,
+[data-texture='paper'] .bg-dots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .15 0 0 0 0 .1 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+/* Paper: visible fibres, like a kraft soap wrapper. */
+[data-texture='paper'] body {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .35' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .2 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+}
+
+/* Dark sites: the palette is inverted in the brand file. Printed things (kraft tags, receipts) stay
+   paper-coloured, so they keep dark ink. */
+.kraft,
+.receipt-paper,
+.paper-ink {
+  --color-espresso: #2e1f14;
+  --color-cocoa: #5a3a22;
+  --color-cream: #fbf6ee;
+  --color-white: #ffffff;
+}
+[data-mode='dark'] ::selection {
+  color: #111;
+}
+[data-mode='dark'] img.product-photo {
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+
+/* The footer is dark on every site. On dark sites "cream" is the dark page colour, so give the footer light ink back. */
+[data-mode='dark'] footer {
+  --color-cream: var(--color-espresso);
+  border-top: 1px solid color-mix(in srgb, var(--color-espresso) 10%, transparent);
+}
