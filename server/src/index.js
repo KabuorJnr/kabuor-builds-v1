@@ -11,14 +11,14 @@ import { publicPosts } from './routes/posts.js';
 import { publicRouter } from './routes/public.js';
 import { platformRouter } from './platform/routes.js';
 import { clientBrand } from './platform/presets.js';
-import { getShop, resolveHost, shopState } from './platform/shops.js';
+import { getShop, requestHost, resolveHost, shopState } from './platform/shops.js';
 import { PLATFORM_DOMAIN, PLATFORM_NAME, PLATFORM_TAGLINE } from './site.js';
 import { runAs } from './tenant.js';
 
 const app = express();
 app.disable('x-powered-by');
-// Behind a proxy (Railway, a load balancer), take the visitor's IP and https from X-Forwarded-*.
-if (process.env.RAILWAY_ENVIRONMENT_NAME || process.env.TRUST_PROXY) app.set('trust proxy', 1);
+// Behind a proxy (Vercel, Railway, a load balancer), take the visitor's IP, host and https from X-Forwarded-*.
+if (process.env.VERCEL || process.env.RAILWAY_ENVIRONMENT_NAME || process.env.TRUST_PROXY) app.set('trust proxy', 1);
 app.use(express.json({ limit: '100kb' }));
 
 const dist = join(dirname(fileURLToPath(import.meta.url)), '../../client/dist');
@@ -32,17 +32,18 @@ function indexHtml() {
   return shell.html;
 }
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-// The page shell with the right title, description and colour for whoever is being served.
+// The page shell with the right title, description and colour for whoever is being served (for link previews;
+// on Vercel the client service serves the shell and main.jsx sets these after loading).
 const page = ({ title, description, color, icon = 'data:,' }) =>
   indexHtml()
-    .replace('%BRAND_TITLE%', esc(title))
-    .replace('%BRAND_DESCRIPTION%', esc(description))
-    .replace('content="#FBF6EE"', `content="${esc(color)}"`)
-    .replace('href="data:,"', `href="${esc(icon)}"`);
+    .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
+    .replace(/(<meta name="description" content=")[^"]*/, `$1${esc(description)}`)
+    .replace(/(<meta name="theme-color" content=")[^"]*/, `$1${esc(color)}`)
+    .replace(/(<link rel="icon" href=")[^"]*/, `$1${esc(icon)}`);
 
 // ---------- which site is this? ----------
 app.use((req, res, next) => {
-  const where = resolveHost(req.get('host'));
+  const where = resolveHost(requestHost(req));
   req.site = where.platform ? { platform: true } : { slug: where.slug, shop: getShop(where.slug) };
   if (req.site.shop) return runAs(req.site.shop, next);
   next();
@@ -63,11 +64,14 @@ app.get('/api/site', (req, res) => {
 const shopOnly = (fn) => (req, res, next) => (req.site.shop ? fn(req, res, next) : next());
 
 // Pictures uploaded by the shop. nosniff stops browsers treating them as anything but images.
-app.use(
-  '/uploads',
-  shopOnly((req, res, next) =>
-    express.static(req.site.shop.uploadDir, { maxAge: '30d', setHeaders: (r) => r.setHeader('X-Content-Type-Options', 'nosniff') })(req, res, next),
-  ),
+// Sent by hand rather than express.static, which Vercel's Express support ignores.
+app.get(
+  '/uploads/:file',
+  shopOnly((req, res, next) => {
+    if (!/^[\w.-]+$/.test(req.params.file)) return next();
+    res.set({ 'X-Content-Type-Options': 'nosniff', 'Cache-Control': 'public, max-age=2592000' });
+    res.sendFile(join(req.site.shop.uploadDir, req.params.file), (err) => err && !res.headersSent && res.status(404).end());
+  }),
 );
 
 app.use('/api/admin', shopOnly(adminRouter));
@@ -124,6 +128,7 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: message, ...(err.code && typeof err.code === 'string' && status < 500 ? { code: err.code } : {}) });
 });
 
-app.listen(PORT, () => console.log(`${PLATFORM_NAME} ready on http://localhost:${PORT} (shops at http://<link>.localhost:${PORT})`));
+// On Vercel the exported app runs as a function; everywhere else it is a normal server.
+if (!process.env.VERCEL) app.listen(PORT, () => console.log(`${PLATFORM_NAME} ready on http://localhost:${PORT} (shops at http://<link>.localhost:${PORT})`));
 
 export default app;

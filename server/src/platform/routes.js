@@ -15,7 +15,7 @@ import { billingSummary, paymentStatus, PLAN_LABELS, PRICES, settle, startPaymen
 import { callbackSecret, resultOf, toMsisdn } from './daraja.js';
 import { accentsFrom, paletteOptions } from './palette.js';
 import { clientBrand, KINDS, makeBrand, slugify, STYLES } from './presets.js';
-import { getShop, LINK_RULE, RESERVED, shopDir, shopState } from './shops.js';
+import { getShop, LINK_RULE, requestHost, RESERVED, shopDir, shopState } from './shops.js';
 import { getShopRecord, now, pdb, shopByToken, updateShop } from './store.js';
 
 export const platformRouter = Router();
@@ -229,8 +229,8 @@ export function applyBrand(slug, b = {}) {
 
 // ---------- step 4: go live ----------
 const shopUrl = (slug, req) => {
-  const local = req && /localhost/.test(req.get('host') ?? '');
-  return local ? `${req.protocol}://${slug}.localhost:${(req.get('host') ?? '').split(':')[1] ?? ''}`.replace(/:$/, '') : `https://${slug}.${PLATFORM_DOMAIN}`;
+  const host = req ? requestHost(req) ?? '' : '';
+  return /localhost/.test(host) ? `${req.protocol}://${slug}.localhost:${host.split(':')[1] ?? ''}`.replace(/:$/, '') : `https://${slug}.${PLATFORM_DOMAIN}`;
 };
 
 platformRouter.post('/launch', (req, res) => {

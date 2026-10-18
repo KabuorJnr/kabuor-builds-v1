@@ -62,6 +62,27 @@ for the real settings.
 5. M-Pesa: apply on https://developer.safaricom.co.ke for the platform's own Paybill or Till, "Go Live",
    then set the `PLATFORM_MPESA_*` keys. Callbacks arrive at `https://shop.ke/api/platform/mpesa/callback/…`.
 
+## Deploying on Vercel (services)
+
+`vercel.json` deploys two services as one project:
+
+| Service | Folder | Public paths |
+|---|---|---|
+| `client` | `client/` (Vite, static) | everything else, with deep links falling back to `index.html` |
+| `server` | `server/` (Express, `src/index.js`) | `/api/*`, `/uploads/*`, `/admin.webmanifest` |
+
+The browser calls `/api` on the same domain, so neither service calls the other and there are no bindings.
+Test locally with `vercel dev` (or `vercel dev -L` without signing in).
+
+- **Storage:** Vercel Functions keep nothing on disk, so the server refuses to start on Vercel unless
+  `DATA_DIR` is set. `DATA_DIR=/tmp/kabuor` works for a throwaway preview, but shops, orders and photos
+  disappear whenever the function restarts. Real shops need a hosted database and file storage first.
+- **Shop links:** add the domain and `*.shop.ke` to the project; wildcard domains need Vercel's
+  nameservers. The server reads the shop from `X-Forwarded-Host`. On `*.vercel.app` preview URLs only the
+  platform's own pages show.
+- **Link previews:** the static page shell carries Kabuor Builds' title; a shop's own title is set in the
+  browser, so WhatsApp and social previews show the platform's title rather than the shop's.
+
 ## Before real customers
 
 - Rate-limit signups and uploads, and add email verification.

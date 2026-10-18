@@ -11,12 +11,23 @@ const site = await fetch('/api/site')
   .then((r) => r.json())
   .catch(() => ({ kind: 'error' }));
 
+// The page's title, description and icon for whoever this is (the server fills these in too where it serves
+// the page itself; on Vercel the static shell arrives with the platform's defaults).
+function head({ title, description, icon }) {
+  document.title = title;
+  if (description) document.querySelector('meta[name="description"]')?.setAttribute('content', description);
+  if (icon) document.querySelector('link[rel="icon"]')?.setAttribute('href', icon);
+}
+
 let Root;
 if (site.kind === 'shop') {
   await applyLook({ ...site.brand, platform: site.platform });
+  head({ title: `${site.brand.name} · ${site.brand.tagline}`, icon: site.brand.logo?.image || 'data:,' });
   const { default: App } = await import('./App');
   Root = () => <App site={site} />;
 } else {
+  if (site.kind === 'missing') head({ title: `${site.link}.${site.platform?.domain ?? ''} is available` });
+  else head({ title: `${site.name ?? 'Kabuor Builds'} · Product-first websites that sell` });
   const { default: PlatformApp } = await import('./platform/PlatformApp');
   Root = () => <PlatformApp site={site} />;
 }

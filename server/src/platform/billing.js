@@ -39,8 +39,8 @@ export async function startPayment(slug, { phone, plan }) {
   const { lastInsertRowid } = pdb
     .prepare('INSERT INTO payments (slug, checkout_id, phone, amount, plan, test, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
     .run(slug, checkoutId, msisdn, amount, plan, testMode ? 1 : 0, at, at);
-  // Test mode: "the customer enters their PIN" five seconds later.
-  if (testMode) setTimeout(() => settle(checkoutId, resultOf(0, 'Test payment'), `TEST${String(lastInsertRowid).padStart(6, '0')}`), 5000).unref();
+  // Test mode: "the owner enters their PIN" five seconds later, settled when the status is next checked
+  // (no background timer, so it also works where the server is frozen between requests, as on Vercel).
   return Number(lastInsertRowid);
 }
 
@@ -68,6 +68,7 @@ export async function paymentStatus(slug, id) {
   if (!p) throw new HttpError(404, 'Payment not found');
   const age = Date.now() - Date.parse(p.created_at);
   const lastCheck = p.checked_at ? Date.now() - Date.parse(p.checked_at) : Infinity;
+  if (p.status === 'pending' && p.test && age >= 5000) p = settle(p.checkout_id, resultOf(0, 'Test payment'), `TEST${String(p.id).padStart(6, '0')}`);
   if (p.status === 'pending' && !p.test && age > 10_000 && lastCheck > 8_000) {
     pdb.prepare('UPDATE payments SET checked_at = ? WHERE id = ?').run(now(), p.id);
     const r = await stkQuery(p.checkout_id).catch(() => ({ status: 'pending' }));

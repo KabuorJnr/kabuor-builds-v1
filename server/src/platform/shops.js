@@ -16,6 +16,12 @@ export const RESERVED = new Set(
 export const LINK_RULE = /^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$/;
 
 /**
+ * The host the visitor typed. Behind Vercel (or another proxy that sets X-Forwarded-Host, with trust proxy
+ * on) that header carries it; otherwise the Host header does.
+ */
+export const requestHost = (req) => (req.app.get('trust proxy') && req.get('x-forwarded-host')?.split(',')[0].trim()) || req.get('host');
+
+/**
  * What a host name points at: { platform: true } for the platform's own site, { slug } for a shop link.
  * Ports are ignored, so anjugu.localhost:4000 works locally.
  */
