@@ -5,9 +5,10 @@ import { currentShop } from '../tenant.js';
 import { billingSummary, paymentStatus, startPayment } from './billing.js';
 import { applyBrand, roleOf, saveUpload, UPLOAD_TYPES } from './routes.js';
 import { paletteOptions } from './palette.js';
-import { KINDS, STYLES } from './presets.js';
+import { KINDS, styleList } from './presets.js';
 import { shopState } from './shops.js';
 import { getShopRecord } from './store.js';
+import { failureMessage, mpesaSettings, saveMpesaSettings, stkQuery, testPrompt } from '../mpesa.js';
 
 export const shopAdmin = Router();
 const slug = () => currentShop().slug;
@@ -16,12 +17,21 @@ shopAdmin.get('/billing', (req, res) => res.json({ ...billingSummary(slug()), st
 shopAdmin.post('/billing/pay', async (req, res) => res.status(201).json({ id: await startPayment(slug(), { phone: req.body?.phone, plan: req.body?.plan || 'monthly' }) }));
 shopAdmin.get('/billing/pay/:id', async (req, res) => res.json(await paymentStatus(slug(), req.params.id)));
 
+// The shop's own M-Pesa prompt (Daraja keys): status, save, and a KSh 1 test prompt to the owner's phone.
+shopAdmin.get('/mpesa-keys', (req, res) => res.json(mpesaSettings()));
+shopAdmin.put('/mpesa-keys', (req, res) => res.json(saveMpesaSettings(req.body ?? {})));
+shopAdmin.post('/mpesa-keys/test', async (req, res) => res.json(await testPrompt(req.body?.phone)));
+shopAdmin.get('/mpesa-keys/test/:checkoutId', async (req, res) => {
+  const r = await stkQuery(String(req.params.checkoutId)).catch((err) => ({ status: 'pending', description: err.message }));
+  res.json({ ...r, message: r.status === 'failed' ? failureMessage(r.code) : r.status === 'paid' ? 'It works: the prompt was paid.' : 'Waiting for the PIN…' });
+});
+
 shopAdmin.get('/look', (req, res) => {
   const record = getShopRecord(slug());
   res.json({
     kind: record.kind,
     brand: JSON.parse(record.brand || '{}'),
-    styles: Object.entries(STYLES).map(([id, s]) => ({ id, label: s.label, mode: s.mode, fonts: s.fonts, body: s.body, radius: s.radius })),
+    styles: styleList(),
     defaultAccent: KINDS[record.kind]?.accent,
   });
 });

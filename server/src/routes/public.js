@@ -21,7 +21,7 @@ publicRouter.get('/config', (req, res) => {
     deliveryNote: store.deliveryNote,
     pickup: store.pickup,
     paybill: store.paybill,
-    mpesaPrompt: mpesaEnabled,
+    mpesaPrompt: mpesaEnabled(),
     paymentMethods: paymentMethods(store),
   });
 });
@@ -65,7 +65,7 @@ publicRouter.post('/orders', async (req, res) => {
   }
   if (branches.length && !branches.includes(customer.branch)) throw new HttpError(400, 'Choose your nearest branch');
   if (!paymentMethods(store).some((m) => m.id === customer.payment)) throw new HttpError(400, 'Choose a payment method');
-  const prompt = mpesaEnabled && customer.payment === 'mpesa';
+  const prompt = mpesaEnabled() && customer.payment === 'mpesa';
   if (prompt && !toMsisdn(customer.phone)) throw new HttpError(400, 'Enter your M-Pesa number, e.g. 0712 345 678, to get the payment prompt');
 
   const requested = new Map();
@@ -226,7 +226,7 @@ publicRouter.post('/orders/:code/paid', (req, res) => {
 
 // Customer asks for the prompt again (cancelled, timed out, or paying from another number).
 publicRouter.post('/orders/:code/pay', async (req, res) => {
-  if (!mpesaEnabled) throw new HttpError(400, 'M-Pesa prompts are not available right now');
+  if (!mpesaEnabled()) throw new HttpError(400, 'M-Pesa prompts are not available right now');
   const order = orderForCustomer(req);
   if (order.status !== 'pending') throw new HttpError(409, order.status === 'paid' ? 'This order is already paid' : 'This order can no longer be paid online');
   const last = latestPayment(order.id);
@@ -261,7 +261,7 @@ publicRouter.get('/orders/:code/payment', async (req, res) => {
 // Safaricom posts the result of every prompt here.
 publicRouter.post('/mpesa/callback/:secret', (req, res) => {
   res.json({ ResultCode: 0, ResultDesc: 'Accepted' });
-  if (req.params.secret !== callbackSecret) return;
+  if (req.params.secret !== callbackSecret()) return;
   const cb = req.body?.Body?.stkCallback;
   if (!cb?.CheckoutRequestID) return;
   const payment = db.prepare('SELECT * FROM payments WHERE checkout_id = ?').get(String(cb.CheckoutRequestID));

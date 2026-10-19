@@ -100,7 +100,7 @@ export default function Look() {
               <PalettePicker options={palettes} value={look.accent} onChange={(accent) => update({ accent })} />
             </Section>
             <Section title="Style" description="Fonts, corners and feel.">
-              <StylePicker styles={data.styles} value={look.style} onChange={(style) => update({ style, mode: data.styles.find((s) => s.id === style)?.mode })} />
+              <StylePicker styles={data.styles} value={look.style} accent={preview?.colors?.honey} onChange={(style) => update({ style, mode: data.styles.find((s) => s.id === style)?.mode })} />
             </Section>
             <Section title="Words">
               <TextInput label="Tagline" value={look.tagline} onChange={(e) => update({ tagline: e.target.value })} maxLength={60} hint="Becomes your homepage headline" />

@@ -7,15 +7,15 @@ import { join } from 'node:path';
 import sharp from 'sharp';
 import { hashPassword, ownerToken, setOwnerHashed } from '../auth.js';
 import { HttpError } from '../db.js';
-import { ensureSeeded } from '../seed.js';
+import { seed } from '../seed.js';
 import { ensureStarterPosts } from '../routes/posts.js';
 import { PLATFORM_DOMAIN, PLATFORM_EMAIL, PLATFORM_NAME, PLATFORM_PHONE, PLATFORM_TAGLINE } from '../site.js';
 import { runAs } from '../tenant.js';
 import { billingSummary, paymentStatus, PLAN_LABELS, PRICES, settle, startPayment, testMode } from './billing.js';
 import { callbackSecret, resultOf, toMsisdn } from './daraja.js';
 import { accentsFrom, paletteOptions } from './palette.js';
-import { clientBrand, KINDS, makeBrand, slugify, STYLES } from './presets.js';
-import { getShop, LINK_RULE, requestHost, RESERVED, shopDir, shopState } from './shops.js';
+import { clientBrand, KINDS, makeBrand, slugify, styleList, STYLES } from './presets.js';
+import { forgetShop, getShop, LINK_RULE, previewToken, requestHost, RESERVED, shopDir, shopState } from './shops.js';
 import { getShopRecord, now, pdb, shopByToken, updateShop } from './store.js';
 
 export const platformRouter = Router();
@@ -36,7 +36,7 @@ platformRouter.get('/info', (req, res) => {
     plans: PLAN_LABELS,
     testMode,
     kinds: Object.entries(KINDS).map(([id, k]) => ({ id, label: k.label, tagline: k.tagline, style: k.style, accent: k.accent })),
-    styles: Object.entries(STYLES).map(([id, s]) => ({ id, label: s.label, mode: s.mode, fonts: s.fonts, body: s.body, radius: s.radius })),
+    styles: styleList(),
     shops: live,
     samples: SAMPLES,
   });
@@ -58,8 +58,8 @@ function linkProblem(link) {
   if (!LINK_RULE.test(link)) return 'Use 3–30 letters, numbers or dashes (no dash at the start or end).';
   if (RESERVED.has(link)) return 'That link is reserved. Try another.';
   const taken = getShopRecord(link);
-  // A link held by a signup that never paid is released after a day.
-  if (taken && !(taken.status === 'pending' && Date.now() - Date.parse(taken.created_at) > 864e5)) return 'That link is taken.';
+  // A link held by a signup that never paid is released after three days.
+  if (taken && !(taken.status === 'pending' && Date.now() - Date.parse(taken.updated_at) > 3 * 864e5)) return 'That link is taken.';
   return null;
 }
 function suggestions(base) {
@@ -95,7 +95,8 @@ platformRouter.post('/signup', (req, res) => {
   const { salt, hash } = hashPassword(password);
   const token = randomBytes(24).toString('hex');
   const at = now();
-  pdb.prepare('DELETE FROM shops WHERE slug = ?').run(link); // an expired, unpaid hold on this link
+  // An expired, unpaid hold on this link: clear it and anything that signup uploaded.
+  if (pdb.prepare('DELETE FROM shops WHERE slug = ?').run(link).changes) forgetShop(link);
   pdb
     .prepare(`INSERT INTO shops (slug, name, kind, city, owner_name, phone, email, password_salt, password_hash, setup_token, brand, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
@@ -233,22 +234,46 @@ const shopUrl = (slug, req) => {
   return /localhost/.test(host) ? `${req.protocol}://${slug}.localhost:${host.split(':')[1] ?? ''}`.replace(/:$/, '') : `https://${slug}.${PLATFORM_DOMAIN}`;
 };
 
+// The shop's contents as the owner set them in the wizard: products (replacing any earlier preview) and the
+// welcome post. Only for shops that aren't live yet: nobody has ordered from them.
+function stockShop(slug) {
+  const record = getShopRecord(slug);
+  if (record.status === 'live') return getShop(slug);
+  const shop = getShop(slug);
+  runAs(shop, () => {
+    seed({ reset: true });
+    ensureStarterPosts();
+  });
+  return shop;
+}
+function readyProblem(spec) {
+  if (!spec.products?.length) return 'Add at least one product so customers have something to buy.';
+  if (!spec.till && !spec.paybill) return 'Add the M-Pesa Till or Paybill your customers pay to.';
+  return null;
+}
+
+/** Builds the real shop from the wizard and returns its private preview address. */
+platformRouter.post('/preview', (req, res) => {
+  const record = signup(req);
+  const problem = readyProblem(JSON.parse(record.brand || '{}'));
+  if (problem) throw new HttpError(400, problem);
+  stockShop(record.slug);
+  res.json({ url: `${shopUrl(record.slug, req)}/?preview=${previewToken(getShopRecord(record.slug))}` });
+});
+
 platformRouter.post('/launch', (req, res) => {
   const record = signup(req);
   if (record.status === 'pending') throw new HttpError(402, 'Pay for your plan first, then you can open your shop.');
-  const spec = JSON.parse(record.brand || '{}');
-  if (!spec.products?.length) throw new HttpError(400, 'Add at least one product so customers have something to buy.');
-  if (!spec.till && !spec.paybill) throw new HttpError(400, 'Add the M-Pesa Till or Paybill your customers pay to.');
-  // The setup token is used up: from now on the owner signs in to their shop's admin.
-  updateShop(record.slug, { status: 'live', setup_token: randomBytes(24).toString('hex') });
-  const shop = getShop(record.slug);
+  const problem = readyProblem(JSON.parse(record.brand || '{}'));
+  if (problem) throw new HttpError(400, problem);
   // Create the shop: catalogue, welcome post, and the owner's account (the password they chose at signup).
+  const shop = stockShop(record.slug);
   const handoff = runAs(shop, () => {
-    ensureSeeded();
-    ensureStarterPosts();
     setOwnerHashed(record.email, { salt: record.password_salt, hash: record.password_hash });
     return ownerToken();
   });
+  // The setup token is used up: from now on the owner signs in to their shop's admin.
+  updateShop(record.slug, { status: 'live', setup_token: randomBytes(24).toString('hex') });
   res.json({ url: shopUrl(record.slug, req), admin: `${shopUrl(record.slug, req)}/admin#handoff=${encodeURIComponent(handoff)}&u=${encodeURIComponent(record.email)}`, state: shopState(getShopRecord(record.slug)) });
 });
 

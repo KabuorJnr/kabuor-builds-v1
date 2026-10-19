@@ -5,14 +5,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Moon, Package, Plus, Sparkles, Sun, Trash2,
+  ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, Smartphone, Sparkles, Sun, Trash2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { EASE, ksh, MpesaPay, PalettePicker, papi, PictureDrop, ShopPreview, StylePicker } from './shared';
 import { Wordmark } from './PlatformApp';
 
 const KIND_ICONS = { sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, other: Package };
-const STEP_LABELS = ['Your business', 'Pay', 'Make it yours', 'Products'];
+const STEP_LABELS = ['Your business', 'Make it yours', 'Products', 'Preview & pay'];
 const TOKEN_KEY = 'shop-signup-token';
 
 const store = {
@@ -175,9 +175,11 @@ function BusinessStep({ info, onDone }) {
       {state.error && <p className="rounded-[var(--r-md)] bg-red-50 px-3 py-2 text-sm font-medium text-red-800">{state.error}</p>}
       <button className="btn btn-primary w-full py-4 sm:w-auto sm:px-8" disabled={state.busy || !f.kind || (check && !check.available)}>
         {state.busy && <Loader2 className="h-4 w-4 animate-spin" />}
-        Continue to payment {info && <>· {ksh(info.prices.monthly)}/month</>} <ArrowRight className="h-4 w-4" />
+        Next: design your shop <ArrowRight className="h-4 w-4" />
       </button>
-      {!f.kind && <p className="text-xs text-espresso/50">Choose what you sell to continue: it sets up your shop’s style.</p>}
+      <p className="text-xs text-espresso/50">
+        {f.kind ? <>Nothing to pay yet: you see your finished shop first{info && <>, then pay {ksh(info.prices.monthly)} a month to go live</>}.</> : 'Choose what you sell to continue: it sets up your shop’s style.'}
+      </p>
     </form>
   );
 }
@@ -288,9 +290,9 @@ function LookStep({ token, signup, info, onSaved, onNext }) {
 
         <section>
           <h3 className="text-lg font-bold">Style</h3>
-          <p className="text-sm text-espresso/55">Fonts and feel. You can change this later.</p>
+          <p className="text-sm text-espresso/55">{info?.styles?.length ?? 10} looks: fonts, layout and feel. You can change it any time, even after you go live.</p>
           <div className="mt-3">
-            <StylePicker styles={info?.styles ?? []} value={look.style ?? kind?.style} onChange={(style) => update({ style, mode: undefined })} />
+            <StylePicker styles={info?.styles ?? []} value={look.style ?? kind?.style} suggested={kind?.style} accent={preview?.colors?.honey ?? kind?.accent} onChange={(style) => update({ style, mode: undefined })} />
           </div>
         </section>
 
@@ -319,7 +321,7 @@ function LookStep({ token, signup, info, onSaved, onNext }) {
 // ---------- 4. products & payment ----------
 const blank = () => ({ name: '', size: '', price: '', photo: '' });
 
-function ProductsStep({ token, signup, onLaunched, onBack }) {
+function ProductsStep({ token, signup, onNext, onBack }) {
   const brand = signup.brand ?? {};
   const [rows, setRows] = useState(brand.products?.length ? brand.products : [blank(), blank()]);
   const [pay, setPay] = useState({ kind: brand.paybill ? 'paybill' : 'till', till: brand.till ?? '', paybill: brand.paybill ?? '', account: brand.account ?? '' });
@@ -328,15 +330,15 @@ function ProductsStep({ token, signup, onLaunched, onBack }) {
   const setRow = (i, patch) => setRows((r) => r.map((x, j) => (j === i ? { ...x, ...patch } : x)));
   const ready = rows.filter((r) => r.name.trim() && Number(r.price) > 0);
 
-  const launch = async () => {
+  const save = async () => {
     setState({ busy: true, error: null });
     try {
-      await papi('/brand', {
+      const res = await papi('/brand', {
         method: 'PUT',
         token,
         body: { products: ready, till: pay.kind === 'till' ? pay.till : '', paybill: pay.kind === 'paybill' ? pay.paybill : '', account: pay.kind === 'paybill' ? pay.account : '' },
       });
-      onLaunched(await papi('/launch', { method: 'POST', token }));
+      onNext(res);
     } catch (err) {
       setState({ busy: false, error: err.message });
     }
@@ -408,11 +410,140 @@ function ProductsStep({ token, signup, onLaunched, onBack }) {
         <button type="button" onClick={onBack} className="btn btn-ghost px-5 py-3.5">
           <ArrowLeft className="h-4 w-4" /> Back to the look
         </button>
-        <button type="button" onClick={launch} disabled={state.busy || !ready.length || !(pay.kind === 'till' ? pay.till : pay.paybill)} className="btn btn-primary py-4 sm:px-8">
+        <button type="button" onClick={save} disabled={state.busy || !ready.length || !(pay.kind === 'till' ? pay.till : pay.paybill)} className="btn btn-primary py-4 sm:px-8">
           {state.busy && <Loader2 className="h-4 w-4 animate-spin" />}
-          Open my shop with {ready.length} {ready.length === 1 ? 'product' : 'products'} <ArrowRight className="h-4 w-4" />
+          Preview my shop with {ready.length} {ready.length === 1 ? 'product' : 'products'} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
+    </div>
+  );
+}
+
+// ---------- 4. preview, then pay ----------
+const DESKTOP_W = 1280;
+
+/** The real shop, in a phone or a scaled-down desktop window. */
+function ShopFrame({ url, device }) {
+  const box = useRef(null);
+  const [scale, setScale] = useState(0.6);
+  useEffect(() => {
+    if (!box.current) return;
+    const ro = new ResizeObserver(([e]) => setScale(Math.min(1, e.contentRect.width / DESKTOP_W)));
+    ro.observe(box.current);
+    return () => ro.disconnect();
+  }, [device]);
+  if (device === 'phone') {
+    return (
+      <div className="mx-auto w-[390px] max-w-full rounded-[2.6rem] bg-[#0F1115] p-3 shadow-[0_40px_80px_-30px_rgba(15,17,21,0.6)]">
+        <iframe title="Your shop on a phone" src={url} className="h-[720px] w-full rounded-[2rem] bg-white" />
+      </div>
+    );
+  }
+  return (
+    <div ref={box} className="overflow-hidden rounded-[var(--r-lg)] bg-white shadow-[0_40px_80px_-40px_rgba(15,17,21,0.6)] ring-1 ring-espresso/10" style={{ height: 820 * scale + 36 }}>
+      <div className="flex h-9 items-center gap-2 bg-[#EDE7DE] px-4">
+        <i className="h-3 w-3 rounded-full bg-[#CFC7BB]" />
+        <i className="h-3 w-3 rounded-full bg-[#CFC7BB]" />
+        <i className="h-3 w-3 rounded-full bg-[#CFC7BB]" />
+        <span className="ml-3 flex-1 truncate rounded-full bg-white px-3 py-0.5 text-xs text-espresso/55">{url.split('/?')[0].replace(/^https?:\/\//, '')}</span>
+      </div>
+      <iframe title="Your shop on a computer" src={url} className="origin-top-left bg-white" style={{ width: DESKTOP_W, height: 820, transform: `scale(${scale})` }} />
+    </div>
+  );
+}
+
+function PreviewPayStep({ token, signup, info, onEditLook, onEditProducts, onLive }) {
+  const [url, setUrl] = useState(null);
+  const [device, setDevice] = useState('phone');
+  const [state, setState] = useState({ error: null, launching: false });
+  const paid = Boolean(signup.paidUntil);
+
+  // Build the shop from everything entered so far and get its private preview address.
+  useEffect(() => {
+    papi('/preview', { method: 'POST', token })
+      .then((r) => setUrl(r.url))
+      .catch((err) => setState((s) => ({ ...s, error: err.message })));
+  }, [token]);
+
+  const goLive = async () => {
+    setState({ error: null, launching: true });
+    try {
+      onLive(await papi('/launch', { method: 'POST', token }));
+    } catch (err) {
+      setState({ error: err.message, launching: false });
+    }
+  };
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[1fr_24rem]">
+      <div className="min-w-0">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="inline-flex rounded-full bg-white p-1 ring-1 ring-espresso/10" role="radiogroup" aria-label="Preview size">
+            {[['phone', Smartphone, 'Phone'], ['desktop', Monitor, 'Computer']].map(([id, Icon, label]) => (
+              <button type="button" key={id} role="radio" aria-checked={device === id} onClick={() => setDevice(id)} className={cn('flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold', device === id ? 'bg-espresso text-cream' : 'text-espresso/60')}>
+                <Icon className="h-3.5 w-3.5" /> {label}
+              </button>
+            ))}
+          </div>
+          {url && (
+            <a href={url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-caramel hover:underline">
+              Open in a new tab <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
+        </div>
+        {url ? (
+          <ShopFrame url={url} device={device} />
+        ) : (
+          <div className="grid h-[600px] place-items-center rounded-[var(--r-xl)] bg-sand/50">
+            {state.error ? <p className="max-w-sm text-center text-sm text-red-800">{state.error}</p> : <Loader2 className="h-6 w-6 animate-spin text-espresso/40" />}
+          </div>
+        )}
+        <p className="mt-3 text-center text-sm text-espresso/55">This is your real shop. Tap around: products, cart and pages all work. Orders open once you’re live.</p>
+      </div>
+
+      <aside className="h-fit space-y-4 lg:sticky lg:top-6">
+        <div className="rounded-[var(--r-xl)] bg-white p-5 ring-1 ring-espresso/10">
+          <p className="text-sm font-semibold text-espresso/55">Not quite right?</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button type="button" onClick={onEditLook} className="btn btn-ghost px-4 py-2 text-sm">
+              <Palette className="h-4 w-4" /> Change the look
+            </button>
+            <button type="button" onClick={onEditProducts} className="btn btn-ghost px-4 py-2 text-sm">
+              <Package className="h-4 w-4" /> Edit products
+            </button>
+          </div>
+        </div>
+        <div className="rounded-[var(--r-xl)] bg-white p-5 ring-1 ring-espresso/10">
+          <p className="text-sm font-semibold text-espresso/55">Happy with it?</p>
+          <p className="mt-1 text-lg font-bold">
+            Go live at {signup.link}.{info?.domain}
+          </p>
+          {state.error && url && <p className="mt-3 rounded-[var(--r-md)] bg-red-50 px-3 py-2 text-sm font-medium text-red-800">{state.error}</p>}
+          <div className="mt-4">
+            {paid ? (
+              <button type="button" onClick={goLive} disabled={state.launching} className="btn btn-primary w-full py-4">
+                {state.launching && <Loader2 className="h-4 w-4 animate-spin" />} Paid · open my shop now <ArrowRight className="h-4 w-4" />
+              </button>
+            ) : (
+              info && (
+                <MpesaPay
+                  prices={info.prices}
+                  plans={info.plans}
+                  testMode={info.testMode}
+                  defaultPhone={signup.phone}
+                  cta="Pay & go live"
+                  start={async (phone, plan) => (await papi('/pay', { method: 'POST', body: { phone, plan }, token })).id}
+                  check={(id) => papi(`/pay/${id}`, { token })}
+                  onPaid={() => setTimeout(goLive, 800)}
+                />
+              )
+            )}
+          </div>
+          <p className="mt-4 border-t border-espresso/10 pt-3 text-xs leading-relaxed text-espresso/55">
+            Your shop opens the moment the payment goes through. Your admin reminds you before the plan ends, and you renew there with the same M-Pesa prompt.
+          </p>
+        </div>
+      </aside>
     </div>
   );
 }
@@ -455,7 +586,8 @@ export default function Wizard({ info }) {
     papi('/signup', { token })
       .then((s) => {
         setSignup(s);
-        setStep((cur) => cur ?? (s.status === 'pending' ? 1 : 2));
+        // Back where they left off: straight to the preview once products and payment details are in.
+        setStep((cur) => cur ?? (s.brand?.products?.length && (s.brand.till || s.brand.paybill) ? 3 : 1));
       })
       .catch(() => {
         store.set(null);
@@ -492,7 +624,7 @@ export default function Wizard({ info }) {
           ) : (
             <>
               <h1 className="kb-display text-4xl sm:text-5xl">
-                {['Start your shop', 'Pay for your plan', 'Make it yours', 'Add your products'][step]}
+                {['Start your shop', 'Make it yours', 'Add your products', 'Preview, then pay'][step]}
               </h1>
               {signup && step > 0 && (
                 <p className="mt-1 text-espresso/60">
@@ -515,42 +647,26 @@ export default function Wizard({ info }) {
                     }}
                   />
                 )}
-                {step === 1 && signup && info && (
-                  <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
-                    <div className="max-w-xl">
-                    <MpesaPay
-                      prices={info.prices}
-                      plans={info.plans}
-                      testMode={info.testMode}
-                      defaultPhone={signup.phone}
-                      start={async (phone, plan) => (await papi('/pay', { method: 'POST', body: { phone, plan }, token })).id}
-                      check={(id) => papi(`/pay/${id}`, { token })}
-                      onPaid={() => setTimeout(() => setStep(2), 1200)}
-                    />
-                    </div>
-                    <aside className="h-fit rounded-[var(--r-xl)] bg-white p-6 ring-1 ring-espresso/10">
-                      <p className="text-sm font-semibold text-espresso/55">You’re paying for</p>
-                      <p className="mt-1 text-lg font-bold">{signup.link}.{info.domain}</p>
-                      <ul className="mt-4 space-y-2 text-sm">
-                        {['Your shop in your own colours', 'Orders sent to your phone', 'Customers pay your Till or Paybill', 'No commission on sales'].map((x) => (
-                          <li key={x} className="flex gap-2">
-                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#1E8E3E]" strokeWidth={3} /> {x}
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="mt-5 border-t border-espresso/10 pt-4 text-xs leading-relaxed text-espresso/55">
-                        Your plan starts today. Your shop’s admin reminds you before it ends, and you renew there with the same M-Pesa prompt.
-                      </p>
-                    </aside>
-                  </div>
-                )}
-                {step === 2 && signup && <LookStep token={token} signup={signup} info={info} onSaved={onSaved} onNext={() => setStep(3)} />}
-                {step === 3 && signup && (
+                {step === 1 && signup && <LookStep token={token} signup={signup} info={info} onSaved={onSaved} onNext={() => setStep(2)} />}
+                {step === 2 && signup && (
                   <ProductsStep
                     token={token}
                     signup={signup}
-                    onBack={() => setStep(2)}
-                    onLaunched={(r) => {
+                    onBack={() => setStep(1)}
+                    onNext={(saved) => {
+                      onSaved(saved);
+                      setStep(3);
+                    }}
+                  />
+                )}
+                {step === 3 && signup && (
+                  <PreviewPayStep
+                    token={token}
+                    signup={signup}
+                    info={info}
+                    onEditLook={() => setStep(1)}
+                    onEditProducts={() => setStep(2)}
+                    onLive={(r) => {
                       store.set(null);
                       setLive(r);
                     }}

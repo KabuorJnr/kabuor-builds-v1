@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Kabuor Builds logo</title>
+<style>
+  @font-face { font-family: 'Bricolage'; src: url(/ad/fonts/bricolage.woff2) format('woff2'); font-weight: 200 800; }
+  @font-face { font-family: 'Fraunces'; src: url(/ad/fonts/fraunces-italic.woff2) format('woff2'); font-style: italic; font-weight: 100 900; }
+  :root { --ink: #0F1115; --orange: #FF5B1F; --cream: #FFF7EC; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: 'Bricolage', system-ui, sans-serif; background: #d9d4cc; padding: 40px; display: grid; gap: 28px; width: 1280px; }
+  .panel { border-radius: 28px; padding: 64px 72px; display: flex; align-items: center; gap: 56px; }
+  .ink { background: var(--ink); color: var(--cream); }
+  .cream { background: var(--cream); color: var(--ink); }
+  .lockup { display: flex; align-items: center; gap: 22px; }
+  .lockup img { width: 150px; }
+  .word { line-height: .86; font-size: 76px; font-weight: 800; letter-spacing: -0.045em; font-variation-settings: "wdth" 85; }
+  .word b { display: block; color: var(--orange); font-weight: 800; }
+  .tag { margin-top: 14px; font-family: 'Fraunces'; font-style: italic; font-weight: 500; font-size: 30px; letter-spacing: -0.01em; font-variation-settings: "SOFT" 100, "WONK" 1; }
+  .ink .tag { color: #FFD9C7; }
+  .cream .tag { color: #6B3A1F; }
+  .icons { display: flex; gap: 28px; }
+  .icon { width: 220px; height: 220px; border-radius: 52px; display: grid; place-items: center; }
+  .icon img { width: 150px; }
+  .icon.o { background: var(--orange); }
+  .label { font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: #6b665e; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="label">Primary lockup · on ink</div>
+  <div class="panel ink" id="dark">
+    <div class="lockup"><img src="mark.svg" alt="" /><div><div class="word">Kabuor<b>Builds</b></div><div class="tag">Mlete deals.</div></div></div>
+  </div>
+  <div class="label">Primary lockup · on cream</div>
+  <div class="panel cream" id="light">
+    <div class="lockup"><img src="mark.svg" alt="" /><div><div class="word">Kabuor<b>Builds</b></div><div class="tag">Mlete deals.</div></div></div>
+  </div>
+  <div class="label">Profile / app icon</div>
+  <div class="icons">
+    <div class="icon ink" id="icon-dark"><img src="mark.svg" alt="" /></div>
+    <div class="icon cream" id="icon-light"><img src="mark.svg" alt="" /></div>
+  </div>
+</body>
+</html>

@@ -1,8 +1,9 @@
 # Kabuor Builds: shop platform
 
-Kabuor Builds' self-service shop builder for Kenyan brands ("Product-first websites that sell. Mlete deals."). An owner signs up, pays the plan by M-Pesa prompt,
-brands the shop from their own logo and product photos, picks a link like `anjugu.shop.ke`, adds products
-and goes live. Customers order and pay the owner's own Till or Paybill. One server runs every shop.
+Kabuor Builds' self-service shop builder for Kenyan brands ("Product-first websites that sell. Mlete deals."). An owner signs up and picks a link like
+`anjugu.shop.ke`, brands the shop from their own logo and product photos, adds products, walks through the
+real shop in a private preview, and only then pays by M-Pesa prompt to go live. Customers order and pay the
+owner's own Till or Paybill. One server runs every shop.
 
 ## Brand
 
@@ -25,16 +26,29 @@ phone and email are settings (`PLATFORM_*` in `server/.env`). Every shop's foote
   phone alerts) is the same one the hand-built brand shops use. Route code still imports `db` and `brand`;
   `server/src/tenant.js` makes them point at the current request's shop.
 - **Signup** (`server/src/platform/routes.js`, `client/src/platform/Wizard.jsx`): business and link →
-  pay (STK push) → look (colours picked from the owner's pictures, a style, tagline) → products and how
-  customers pay → live. The owner lands in their admin already signed in.
+  look (colours picked from the owner's pictures, one of 10 styles, tagline) → products and how customers
+  pay → **preview** → pay (STK push) → live. The owner lands in their admin already signed in. Unpaid
+  signups hold their link for 3 days.
+- **Preview before paying:** `/api/platform/preview` builds the real shop from the wizard and returns a
+  private link (`?preview=<key>`). The key comes from the signup's setup token, so it can view but not edit;
+  the shop shows a "Preview" bar, refuses orders, and stays "opening soon" for everyone else.
 - **Looks** (`server/src/platform/presets.js`, `palette.js`): what they sell sets the decoration (chillies,
-  honeycomb, candle glow…); the style sets fonts, corners, light/dark and the banner layout; the palette is
-  built from the strongest colour in their photo, with text contrast checked.
+  honeycomb, candle glow…); the style (10 to pick from) sets fonts, corners, light/dark, the banner layout
+  and sometimes the texture; the palette is built from the strongest colour in their photo, with text
+  contrast checked.
 - **Billing** (`server/src/platform/billing.js`): each M-Pesa payment adds a month or a year. A shop whose
   plan ended more than 3 days ago is paused: customers see "taking a short break", the admin keeps working
   and shows a renew banner. Owners renew under **Plan & billing** in their admin.
-- **Customers' payments never touch the platform.** Checkout shows the shop's own Till/Paybill
-  instructions (and cash on delivery). Per-shop STK push needs each shop's own Daraja keys (not built yet).
+- **M-Pesa (STK push)** — one Daraja client (`server/src/daraja.js`), two sets of keys:
+  - **The platform's** (`PLATFORM_MPESA_*` in `server/.env`): owners pay their plan to Kabuor Builds. Without
+    keys this runs in test mode (no prompt; payments complete by themselves, marked "test").
+  - **Each shop's own** (admin → **M-Pesa prompt**): the owner pastes their Daraja app's keys, sends
+    themselves a KSh 1 test prompt, and from then on customers get the PIN prompt at checkout and pay
+    straight into the shop's Till/Paybill. Secrets are stored in the shop's database and never sent back to
+    the browser. Without keys, checkout shows the Till/Paybill instructions instead.
+  - Results arrive by Safaricom's callback once `PUBLIC_URL` is https; until then (and as a backup) the app
+    asks Daraja for the status every few seconds, so prompts work locally too.
+- **Customers' payments never touch the platform:** each shop's prompt pays its own Till/Paybill.
 
 ## Run it
 

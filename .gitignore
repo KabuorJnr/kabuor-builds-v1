@@ -4,3 +4,8 @@ dist
 server/data/
 # Ad render frames: rebuilt by `node render.mjs video` in marketing/ad
 marketing/ad/frames/
+
+# Videos and their render frames stay out of the repo (rebuild with `node render.mjs video`)
+*.mp4
+*.mov
+ad/frames/

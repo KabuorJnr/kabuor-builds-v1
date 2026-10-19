@@ -4,10 +4,19 @@ import { BrowserRouter } from 'react-router';
 import { MotionConfig } from 'framer-motion';
 import './index.css';
 import { applyLook } from './lib/theme';
+import { previewKey } from './lib/api';
 
 // One website for the platform and every shop. The server says who we are from the address:
 // the platform itself, a shop (with its look), or a shop link nobody has taken yet.
-const site = await fetch('/api/site')
+// A preview link (?preview=…) from the signup wizard: remember the key for this tab and tidy the address.
+const previewParam = new URLSearchParams(window.location.search).get('preview');
+if (previewParam) {
+  try {
+    sessionStorage.setItem('shop-preview', previewParam);
+  } catch {}
+  window.history.replaceState(null, '', window.location.pathname);
+}
+const site = await fetch('/api/site', { headers: previewKey() ? { 'X-Preview-Token': previewKey() } : {} })
   .then((r) => r.json())
   .catch(() => ({ kind: 'error' }));
 

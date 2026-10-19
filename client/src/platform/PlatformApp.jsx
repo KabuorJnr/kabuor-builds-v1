@@ -3,16 +3,16 @@
 import { useEffect, useState } from 'react';
 import { Link, Route, Routes, useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
-import { ArrowRight, Check, Globe, Mail, MessageCircle, Palette, Phone, Store, Wallet } from 'lucide-react';
+import { ArrowRight, Check, Eye, Mail, MessageCircle, Palette, Phone, Store, Wallet } from 'lucide-react';
 import './platform.css';
 import { EASE, ksh, papi, ShopPreview } from './shared';
 import Wizard from './Wizard';
 
 // Kabuor Builds' palette and type, in the names the shared styles use.
 const PLATFORM_LOOK = {
-  '--color-cream': '#FFF7EC', '--color-beige': '#F7EBDB', '--color-sand': '#EADBC6', '--color-latte': '#B39C83',
-  '--color-honey': '#FF5B1F', '--color-amber': '#FF5B1F', '--color-caramel': '#C2410C', '--color-cocoa': '#6B3A1F',
-  '--color-espresso': '#0F1115', '--color-bark': '#08090B', '--color-white': '#FFFFFF',
+  '--color-cream': '#F8FAFC', '--color-beige': '#F1F5F9', '--color-sand': '#E2E8F0', '--color-latte': '#94A3B8',
+  '--color-honey': '#3B82F6', '--color-amber': '#6366F1', '--color-caramel': '#2563EB', '--color-cocoa': '#475569',
+  '--color-espresso': '#0B0F19', '--color-bark': '#030712', '--color-white': '#FFFFFF',
   '--font-sans': '"KB Onest", ui-sans-serif, system-ui, sans-serif',
   '--font-brand': '"KB Bricolage", ui-sans-serif, system-ui, sans-serif',
   '--font-hand': '"KB Fraunces", Georgia, serif', '--font-tagline': '"KB Fraunces", Georgia, serif', '--font-script': '"KB Fraunces", Georgia, serif',
@@ -22,7 +22,7 @@ const PLATFORM_LOOK = {
 /** The platform's address from a shop link: anjugu.shop.ke → shop.ke (anjugu.localhost:5173 → localhost:5173). */
 export const platformOrigin = () => `${window.location.protocol}//${window.location.host.split('.').slice(1).join('.')}`;
 
-/** The Kabuor Builds lockup: the price-tag K and the name, "Builds" in orange. */
+/** The Kabuor Builds lockup: the price-tag K and the name, "Builds" in sapphire indigo. */
 export function Wordmark({ name = 'Kabuor Builds', light = false, stacked = false, tagline, className = '' }) {
   const [first, ...rest] = name.split(' ');
   return (
@@ -31,9 +31,9 @@ export function Wordmark({ name = 'Kabuor Builds', light = false, stacked = fals
       <span className={stacked ? 'block' : 'inline-flex items-baseline gap-1.5'}>
         <span className={`kb-display ${stacked ? 'block text-5xl' : 'text-[1.45rem]'} ${light ? 'text-cream' : 'text-espresso'}`}>
           {first}
-          {stacked ? <span className="block text-[#FF5B1F]">{rest.join(' ')}</span> : <span className="text-[#FF5B1F]"> {rest.join(' ')}</span>}
+          {stacked ? <span className="block text-[#3B82F6]">{rest.join(' ')}</span> : <span className="text-[#3B82F6]"> {rest.join(' ')}</span>}
         </span>
-        {stacked && tagline && <span className={`kb-serif mt-2 block text-xl ${light ? 'text-[#FFD9C7]' : 'text-cocoa'}`}>{tagline}</span>}
+        {stacked && tagline && <span className={`kb-serif mt-2 block text-xl ${light ? 'text-[#BFDBFE]' : 'text-cocoa'}`}>{tagline}</span>}
       </span>
     </span>
   );
@@ -77,7 +77,7 @@ function ClaimLink({ domain, dark = false }) {
           />
           <span className={dark ? 'text-cream/50' : 'text-espresso/45'}>.{domain}</span>
         </span>
-        <button className="btn shrink-0 bg-[#FF5B1F] px-5 py-3 text-[#0F1115] hover:bg-[#FF7A45]">
+        <button className="btn shrink-0 bg-blue-600 px-5 py-3 text-white shadow-md shadow-blue-500/25 hover:bg-blue-500">
           Claim it <ArrowRight className="h-4 w-4" />
         </button>
       </div>
@@ -90,9 +90,9 @@ function ClaimLink({ domain, dark = false }) {
 
 const STEPS = [
   { icon: Store, title: 'Tell us about your brand', text: 'Your name, what you sell, and the link you want.' },
-  { icon: Wallet, title: 'Pay with M-Pesa', text: 'A prompt comes to your phone. Enter your PIN and you’re in.' },
-  { icon: Palette, title: 'Make it yours', text: 'Upload your logo and a product photo. Your site takes their colours.' },
-  { icon: Globe, title: 'Share your link', text: 'Add your products and go live. Customers pick, pay with M-Pesa, done.' },
+  { icon: Palette, title: 'Make it yours', text: 'Upload your logo and photos, pick from 10 styles. Your site takes their colours.' },
+  { icon: Eye, title: 'See it first', text: 'Add your products and walk through your real shop, on phone and computer.' },
+  { icon: Wallet, title: 'Pay & go live', text: 'Happy with it? Pay by M-Pesa prompt and your link is live straight away.' },
 ];
 const INCLUDED = ['Your colours, fonts & real photos', 'M-Pesa checkout & receipts', 'Admin: orders, stock, SMS alerts', 'Fast on every phone', 'Your own link, like anjugu.shop.ke', 'No commission on your sales'];
 
@@ -121,20 +121,20 @@ function Landing({ info }) {
 
         <section className="container-x relative grid items-center gap-12 pt-10 pb-20 sm:pt-14 lg:grid-cols-[1.15fr_1fr] lg:pb-28">
           <div>
-            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: EASE }} className="kb-kicker text-[#FFB494]">
+            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: EASE }} className="kb-kicker text-blue-400">
               Websites for brands
             </motion.p>
             <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.05, ease: EASE }} className="kb-display mt-4 text-[3.3rem] sm:text-[5.6rem]">
-              Product-first websites <span className="text-[#FF5B1F]">that sell.</span>
+              Product-first websites <span className="text-[#3B82F6]">that sell.</span>
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15, ease: EASE }} className="mt-6 max-w-lg text-lg leading-relaxed text-cream/75">
-              Your product, your colours, your prices. Customers pick, pay with M-Pesa, done. Get a link like <b className="text-cream">anjugu.{domain}</b> today.
+              Your product, your colours, your prices. Customers pick, pay with M-Pesa, done. Get a link like <b className="text-cream">anjugu.{domain}</b> and see your shop before you pay a shilling.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.25, ease: EASE }} className="mt-8">
               <ClaimLink domain={domain} dark />
               {info && (
                 <p className="mt-1 pl-5 text-sm text-cream/55">
-                  From {ksh(info.prices.monthly)} a month · <span className="kb-serif text-base text-[#FFD9C7]">{info.tagline}</span>
+                  From {ksh(info.prices.monthly)} a month · <span className="kb-serif text-base text-blue-200">{info.tagline}</span>
                 </p>
               )}
             </motion.div>
@@ -167,7 +167,7 @@ function Landing({ info }) {
             {STEPS.map((s, i) => (
               <li key={s.title} className="rounded-[var(--r-xl)] bg-cream p-6">
                 <span className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 place-items-center rounded-full bg-espresso text-[#FF5B1F]">
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-blue-50 text-blue-600">
                     <s.icon className="h-5 w-5" />
                   </span>
                   <span className="text-sm font-bold text-espresso/40 tabular-nums">0{i + 1}</span>
@@ -190,7 +190,7 @@ function Landing({ info }) {
             <ul className="mt-6 space-y-2.5">
               {['Real jars, real prices', 'M-Pesa checkout', 'All branches, one shop'].map((x) => (
                 <li key={x} className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#FF5B1F]" strokeWidth={3} /> {x}
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" strokeWidth={3} /> {x}
                 </li>
               ))}
             </ul>
@@ -221,7 +221,7 @@ function Landing({ info }) {
             <ul className="mt-8 grid gap-3 sm:grid-cols-2">
               {INCLUDED.map((x) => (
                 <li key={x} className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#FF5B1F]" strokeWidth={3} />
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" strokeWidth={3} />
                   <span>{x}</span>
                 </li>
               ))}
@@ -236,10 +236,10 @@ function Landing({ info }) {
               </p>
               <p className="relative mt-2 text-sm text-cream/60">or {ksh(info.prices.yearly)} a year: two months free</p>
               <ul className="relative mt-6 space-y-2 text-sm text-cream/80">
-                <li className="flex gap-2"><Check className="h-4 w-4 text-[#FF5B1F]" strokeWidth={3} /> Pay by M-Pesa prompt, no card needed</li>
-                <li className="flex gap-2"><Check className="h-4 w-4 text-[#FF5B1F]" strokeWidth={3} /> Customers pay your own Till or Paybill</li>
+                <li className="flex gap-2"><Check className="h-4 w-4 text-blue-400" strokeWidth={3} /> Pay by M-Pesa prompt, no card needed</li>
+                <li className="flex gap-2"><Check className="h-4 w-4 text-blue-400" strokeWidth={3} /> Customers pay your own Till or Paybill</li>
               </ul>
-              <Link to="/start" className="btn relative mt-7 w-full bg-[#FF5B1F] py-3.5 text-[#0F1115] hover:bg-[#FF7A45]">
+              <Link to="/start" className="btn relative mt-7 w-full bg-blue-600 py-3.5 text-white shadow-lg shadow-blue-500/25 hover:bg-blue-500">
                 Start your shop <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -277,7 +277,7 @@ function Landing({ info }) {
             <Wordmark name={name} light stacked tagline={info?.tagline ?? 'Mlete deals.'} />
             {phone && (
               <p className="mt-6 text-sm text-cream/60">
-                <a href={tel(phone)} className="font-semibold text-[#FF5B1F] hover:underline">{phone}</a> · {info.email}
+                <a href={tel(phone)} className="font-semibold text-blue-400 hover:underline">{phone}</a> · {info.email}
               </p>
             )}
           </div>
@@ -296,10 +296,10 @@ function Unclaimed({ site }) {
       <div className="relative max-w-md">
         <Wordmark name={site.platform?.name} light />
         <h1 className="kb-display mt-10 text-5xl">
-          {site.link}.{domain} <span className="text-[#FF5B1F]">is free</span>
+          {site.link}.{domain} <span className="text-blue-400">is free</span>
         </h1>
         <p className="mt-4 text-cream/65">There’s no shop here yet. If this is your brand’s name, it can be yours in a few minutes.</p>
-        <a href={`${platformOrigin()}/start?link=${encodeURIComponent(site.link ?? '')}`} className="btn mt-8 bg-[#FF5B1F] px-6 py-3.5 text-[#0F1115]">
+        <a href={`${platformOrigin()}/start?link=${encodeURIComponent(site.link ?? '')}`} className="btn mt-8 bg-blue-600 px-6 py-3.5 text-white shadow-lg shadow-blue-500/25 hover:bg-blue-500">
           Open this shop <ArrowRight className="h-4 w-4" />
         </a>
       </div>

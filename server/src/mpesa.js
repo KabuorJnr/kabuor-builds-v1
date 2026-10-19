@@ -1,131 +1,106 @@
-import { createHash } from 'node:crypto';
-import { PUBLIC_URL } from './site.js';
+// A shop's own M-Pesa Express keys (Daraja), so its customers get the PIN prompt at checkout and the money
+// goes straight to the shop's Paybill/Till. The owner enters them in the admin (M-Pesa prompt page); they're
+// kept in the shop's database and the secrets are never sent back to the browser. Without keys, checkout
+// shows the Till/Paybill instructions instead.
+import { randomBytes } from 'node:crypto';
+import { daraja, toMsisdn } from './daraja.js';
+import { db, HttpError } from './db.js';
+import { PLATFORM_DOMAIN, PUBLIC_URL } from './site.js';
+import { currentShop } from './tenant.js';
 
-// M-Pesa Express (STK push) through Safaricom's Daraja API: the customer's phone shows the M-Pesa PIN prompt,
-// they enter their PIN, and Safaricom tells us the result. Set these in server/.env (see .env.example).
-// Each shop will plug in its own Daraja keys (its own Paybill/Till). Until a shop has them, checkout uses
-// the Paybill/Till instructions instead, so customers never pay into the platform's account.
-const env = {};
-const cfg = {
-  live: env.MPESA_ENV === 'production',
-  key: env.MPESA_CONSUMER_KEY ?? '',
-  secret: env.MPESA_CONSUMER_SECRET ?? '',
-  shortcode: env.MPESA_SHORTCODE ?? '', // the Paybill (or Till's store number) the API keys belong to
-  passkey: env.MPESA_PASSKEY ?? '',
-  till: env.MPESA_TILL ?? '', // set for Buy Goods: the till number customers pay
-  publicUrl: PUBLIC_URL,
-};
-// MPESA_API_URL is only for pointing tests at a fake Daraja.
-const BASE = env.MPESA_API_URL || (cfg.live ? 'https://api.safaricom.co.ke' : 'https://sandbox.safaricom.co.ke');
+export { failureMessage, resultOf, toMsisdn } from './daraja.js';
 
-export const mpesaEnabled = Boolean(cfg.key && cfg.secret && cfg.shortcode && cfg.passkey);
-export const mpesaStatus = () => ({
-  enabled: mpesaEnabled,
-  environment: cfg.live ? 'live' : 'sandbox',
-  payTo: cfg.till || cfg.shortcode || null,
-  callbacks: Boolean(callbackUrl()),
-});
+const KEY = 'mpesa_keys';
+const EMPTY = { env: 'sandbox', type: 'till', shortcode: '', till: '', key: '', secret: '', passkey: '', salt: '' };
 
-// Safaricom doesn't sign callbacks, so the URL carries a secret only we know.
-export const callbackSecret = createHash('sha256').update(`mpesa-callback:${process.env.JWT_SECRET ?? ''}:${cfg.passkey}`).digest('hex').slice(0, 32);
-function callbackUrl() {
-  return /^https:\/\//.test(cfg.publicUrl) ? `${cfg.publicUrl}/api/mpesa/callback/${callbackSecret}` : null;
+function stored() {
+  const row = db.prepare('SELECT value FROM settings WHERE key = ?').get(KEY);
+  return row ? { ...EMPTY, ...JSON.parse(row.value) } : { ...EMPTY };
 }
 
-// 0712 345 678 / +254712345678 / 712345678 → 254712345678. Returns null for anything that isn't a Kenyan mobile.
-export function toMsisdn(phone) {
-  const digits = String(phone ?? '').replace(/\D/g, '');
-  const local = digits.replace(/^(254|0)/, '');
-  return /^[17]\d{8}$/.test(local) ? `254${local}` : null;
-}
-
-let cachedToken = null;
-async function accessToken() {
-  if (cachedToken && cachedToken.expires > Date.now()) return cachedToken.value;
-  const res = await fetch(`${BASE}/oauth/v1/generate?grant_type=client_credentials`, {
-    headers: { Authorization: `Basic ${Buffer.from(`${cfg.key}:${cfg.secret}`).toString('base64')}` },
-    signal: AbortSignal.timeout(15000),
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok || !data.access_token) throw new Error('Could not connect to M-Pesa');
-  cachedToken = { value: data.access_token, expires: Date.now() + (Number(data.expires_in) - 60) * 1000 };
-  return cachedToken.value;
-}
-
-function stamp() {
-  // Daraja wants Kenyan time as YYYYMMDDHHmmss.
-  const d = new Date(Date.now() + 3 * 3600 * 1000);
-  return d.toISOString().replace(/\D/g, '').slice(0, 14);
-}
-
-async function call(path, body) {
-  const res = await fetch(`${BASE}${path}`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${await accessToken()}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(20000),
-  });
-  const data = await res.json().catch(() => ({}));
-  return { ok: res.ok, data };
-}
-
-function password(timestamp) {
-  return Buffer.from(`${cfg.shortcode}${cfg.passkey}${timestamp}`).toString('base64');
-}
-
-// Sends the PIN prompt. Resolves to { checkoutId } or throws with a message safe to show the customer.
-export async function stkPush({ msisdn, amount, reference, description }) {
-  const timestamp = stamp();
-  const { ok, data } = await call('/mpesa/stkpush/v1/processrequest', {
-    BusinessShortCode: cfg.shortcode,
-    Password: password(timestamp),
-    Timestamp: timestamp,
-    TransactionType: cfg.till ? 'CustomerBuyGoodsOnline' : 'CustomerPayBillOnline',
-    Amount: amount,
-    PartyA: msisdn,
-    PartyB: cfg.till || cfg.shortcode,
-    PhoneNumber: msisdn,
-    // Safaricom requires a well-formed https URL even when we can't receive callbacks (local testing);
-    // in that case the payment status is fetched with stkQuery instead.
-    CallBackURL: callbackUrl() ?? 'https://example.com/mpesa-callback-disabled',
-    AccountReference: reference.slice(0, 12),
-    TransactionDesc: description.slice(0, 13),
-  });
-  if (!ok || data.ResponseCode !== '0' || !data.CheckoutRequestID) {
-    console.error('STK push rejected:', data.errorMessage ?? data.ResponseDescription ?? data);
-    throw new Error('M-Pesa could not send the prompt right now. Please try again or pay with the Paybill below.');
-  }
-  return { checkoutId: data.CheckoutRequestID };
-}
-
-// Asks Safaricom how a prompt ended. Returns { status: 'pending' | 'paid' | 'failed', code, description }.
-export async function stkQuery(checkoutId) {
-  const timestamp = stamp();
-  const { data } = await call('/mpesa/stkpushquery/v1/query', {
-    BusinessShortCode: cfg.shortcode,
-    Password: password(timestamp),
-    Timestamp: timestamp,
-    CheckoutRequestID: checkoutId,
-  });
-  if (data.ResultCode === undefined) return { status: 'pending' }; // "The transaction is being processed"
-  return resultOf(data.ResultCode, data.ResultDesc);
-}
-
-export function resultOf(code, description) {
-  const c = String(code);
-  return { status: c === '0' ? 'paid' : 'failed', code: c, description: String(description ?? '') };
-}
-
-// Plain-language reasons for the common ways a prompt fails.
-export function failureMessage(code) {
-  return (
+// One client per shop, rebuilt when its keys change.
+const clients = new Map();
+function client() {
+  const { slug } = currentShop();
+  const k = stored();
+  const sig = JSON.stringify(k);
+  const cached = clients.get(slug);
+  if (cached?.sig === sig) return cached.client;
+  const live = /^https:\/\//.test(PUBLIC_URL);
+  const c = daraja(
     {
-      1: 'Not enough balance in M-Pesa to complete this payment.',
-      1032: 'The M-Pesa prompt was cancelled.',
-      1037: 'We couldn’t reach your phone. Make sure it’s on and has signal, then try again.',
-      2001: 'The M-Pesa PIN was incorrect.',
-      1025: 'M-Pesa couldn’t send the prompt. Please try again.',
-      1019: 'The prompt expired before it was completed.',
-    }[code] ?? 'The payment didn’t go through.'
+      env: k.env,
+      key: k.key,
+      secret: k.secret,
+      shortcode: k.shortcode,
+      passkey: k.passkey,
+      till: k.type === 'till' ? k.till : '',
+      // Results come back to the shop's own address once the platform runs on https.
+      callbackBase: live ? `https://${slug}.${PLATFORM_DOMAIN}` : '',
+      apiUrl: process.env.MPESA_API_URL,
+    },
+    { callbackPath: '/api/mpesa/callback', secretSalt: `shop-mpesa:${slug}:${k.salt}` },
   );
+  clients.set(slug, { sig, client: c });
+  return c;
+}
+
+export const mpesaEnabled = () => client().ready;
+export const mpesaStatus = () => client().status();
+export const callbackSecret = () => client().callbackSecret;
+export const stkPush = (args) => client().stkPush(args);
+export const stkQuery = (id) => client().stkQuery(id);
+
+/** The keys for the admin: which are set, never the secrets themselves. */
+export function mpesaSettings() {
+  const k = stored();
+  return {
+    env: k.env,
+    type: k.type,
+    shortcode: k.shortcode,
+    till: k.till,
+    hasKey: Boolean(k.key),
+    hasSecret: Boolean(k.secret),
+    hasPasskey: Boolean(k.passkey),
+    ...mpesaStatus(),
+  };
+}
+
+/** Saves the owner's keys. Blank secret fields keep the saved ones; `clear` removes everything. */
+export function saveMpesaSettings(input = {}) {
+  if (input.clear) {
+    db.prepare('DELETE FROM settings WHERE key = ?').run(KEY);
+    return mpesaSettings();
+  }
+  const prev = stored();
+  const digits = (v, max) => String(v ?? '').replace(/\D/g, '').slice(0, max);
+  const text = (v) => String(v ?? '').trim().slice(0, 200);
+  const next = {
+    env: input.env === 'production' ? 'production' : 'sandbox',
+    type: input.type === 'paybill' ? 'paybill' : 'till',
+    shortcode: digits(input.shortcode, 10),
+    till: input.type === 'paybill' ? '' : digits(input.till, 10),
+    key: text(input.key) || prev.key,
+    secret: text(input.secret) || prev.secret,
+    passkey: text(input.passkey) || prev.passkey,
+    salt: prev.salt || randomBytes(16).toString('hex'),
+  };
+  if (!next.shortcode) throw new HttpError(400, 'Enter the shortcode your Daraja app belongs to (the Paybill, or the Till’s store number).');
+  if (next.type === 'till' && !next.till) throw new HttpError(400, 'Enter the Till number customers pay.');
+  if (!next.key || !next.secret || !next.passkey) throw new HttpError(400, 'Enter the consumer key, consumer secret and passkey from your Daraja app.');
+  db.prepare(`INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)
+    ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`).run(KEY, JSON.stringify(next), new Date().toISOString());
+  return mpesaSettings();
+}
+
+/** Sends a KSh 1 prompt to the owner's phone to prove the keys work. */
+export async function testPrompt(phone) {
+  const msisdn = toMsisdn(phone);
+  if (!msisdn) throw new HttpError(400, 'Enter a Safaricom number, e.g. 0712 345 678');
+  if (!mpesaEnabled()) throw new HttpError(400, 'Save your Daraja keys first.');
+  try {
+    return await stkPush({ msisdn, amount: 1, reference: 'TEST', description: 'Prompt test' });
+  } catch (err) {
+    throw new HttpError(400, err.message); // shown to the owner as is
+  }
 }

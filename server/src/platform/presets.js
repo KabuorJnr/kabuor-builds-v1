@@ -55,14 +55,24 @@ export const KINDS = {
   },
 };
 
-// Looks the owner can choose from. Each pairs a display font and a handwritten accent font with a text font.
+// Looks the owner can choose from. Each pairs a display font and an accent font with a text font, and sets
+// light or dark, the banner layout (photo collage, poster, or magazine spread) and the corners. A style may
+// also bring its own background texture; otherwise the texture comes from what they sell.
 export const STYLES = {
-  warm: { label: 'Warm & friendly', mode: 'light', hero: 'photo', radius: 'round', body: 'bricolage-grotesque', fonts: { brand: 'shrikhand', tagline: 'caveat-brush' } },
-  bold: { label: 'Bold & loud', mode: 'dark', hero: 'poster', radius: 'sharp', body: 'archivo', fonts: { brand: 'rammetto-one', tagline: 'kalam' } },
-  natural: { label: 'Natural & earthy', mode: 'light', hero: 'editorial', radius: 'soft', body: 'familjen-grotesk', fonts: { brand: 'titan-one', tagline: 'patrick-hand' } },
-  elegant: { label: 'Soft & elegant', mode: 'light', hero: 'editorial', radius: 'soft', body: 'instrument-sans', fonts: { brand: 'gilda-display', tagline: 'parisienne' } },
-  luxe: { label: 'Dark & luxurious', mode: 'dark', hero: 'poster', radius: 'sharp', body: 'albert-sans', fonts: { brand: 'marcellus', tagline: 'parisienne' } },
+  warm: { label: 'Warm & friendly', note: 'Rounded and cheerful, photo collage', mode: 'light', hero: 'photo', radius: 'round', body: 'bricolage-grotesque', fonts: { brand: 'shrikhand', tagline: 'caveat-brush' } },
+  bold: { label: 'Bold & loud', note: 'Dark, huge headline, photos fanned out', mode: 'dark', hero: 'poster', radius: 'sharp', body: 'archivo', fonts: { brand: 'rammetto-one', tagline: 'kalam' } },
+  natural: { label: 'Natural & earthy', note: 'Calm, magazine layout, paper feel', mode: 'light', hero: 'editorial', radius: 'soft', body: 'familjen-grotesk', fonts: { brand: 'titan-one', tagline: 'patrick-hand' } },
+  elegant: { label: 'Soft & elegant', note: 'Serif and script, lots of space', mode: 'light', hero: 'editorial', radius: 'soft', body: 'instrument-sans', fonts: { brand: 'gilda-display', tagline: 'parisienne' } },
+  luxe: { label: 'Dark & luxurious', note: 'Night-time glow, premium feel', mode: 'dark', hero: 'poster', radius: 'sharp', body: 'albert-sans', fonts: { brand: 'marcellus', tagline: 'parisienne' } },
+  playful: { label: 'Playful & sweet', note: 'Bubbly letters, bright and fun', mode: 'light', hero: 'photo', radius: 'round', body: 'onest', texture: 'dots', fonts: { brand: 'cherry-bomb-one', tagline: 'gochi-hand' } },
+  classic: { label: 'Classic & trusted', note: 'Old-shop serif, honest and simple', mode: 'light', hero: 'editorial', radius: 'soft', body: 'commissioner', texture: 'paper', fonts: { brand: 'young-serif', tagline: 'caveat' } },
+  market: { label: 'Fresh market', note: 'Chunky letters, sunny photo collage', mode: 'light', hero: 'photo', radius: 'round', body: 'golos-text', fonts: { brand: 'titan-one', tagline: 'caveat-brush' } },
+  street: { label: 'Street & urban', note: 'Dark, sharp corners, loud photos', mode: 'dark', hero: 'photo', radius: 'sharp', body: 'schibsted-grotesk', texture: 'speckle', fonts: { brand: 'shrikhand', tagline: 'kalam' } },
+  boutique: { label: 'Boutique', note: 'Fine script, centred poster, soft grain', mode: 'light', hero: 'poster', radius: 'soft', body: 'jost', texture: 'grain', fonts: { brand: 'gilda-display', tagline: 'sacramento' } },
 };
+
+/** The styles as the website shows them (no private settings). */
+export const styleList = () => Object.entries(STYLES).map(([id, s]) => ({ id, label: s.label, note: s.note, mode: s.mode, hero: s.hero, fonts: s.fonts, body: s.body, radius: s.radius }));
 
 export const slugify = (s) =>
   String(s ?? '')
@@ -146,7 +156,7 @@ export function makeBrand(record) {
     motif: kind.motif,
     colors,
     fonts: style.fonts,
-    theme: { mode, hero: style.hero, texture: kind.texture, radius: style.radius, body: style.body },
+    theme: { mode, hero: style.hero, texture: style.texture ?? kind.texture, radius: style.radius, body: style.body },
     facets: null,
     photos: spec.photos ?? [],
     catalog,

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  ArrowLeft, BellRing, BookOpen, CreditCard, Palette, Eye, EyeOff, LayoutDashboard, LayoutTemplate, Loader2, LogOut, Megaphone, Menu, Package, Plus, ReceiptText,
+  ArrowLeft, BellRing, BookOpen, CreditCard, Palette, Smartphone, Eye, EyeOff, LayoutDashboard, LayoutTemplate, Loader2, LogOut, Megaphone, Menu, Package, Plus, ReceiptText,
   Store as StoreIcon, UserCog, X,
 } from 'lucide-react';
 import { ApbMark, EASE, Logo, useLockBody } from '../components/ui';
@@ -21,6 +21,7 @@ import Updates from './Updates';
 import Website from './Website';
 import Look from './Look';
 import Plan, { PlanBanner } from './Plan';
+import MpesaKeys from './MpesaKeys';
 
 const NAV = [
   { to: '/admin', label: 'Overview', icon: LayoutDashboard, end: true, group: 'Analytics' },
@@ -32,6 +33,7 @@ const NAV = [
   { to: '/admin/look', label: 'Look & colours', icon: Palette, group: 'Website' },
   { to: '/admin/website', label: 'Site content', icon: LayoutTemplate, group: 'Website' },
   { to: '/admin/alerts', label: 'Phone alerts', icon: BellRing, group: 'Settings' },
+  { to: '/admin/mpesa', label: 'M-Pesa prompt', icon: Smartphone, group: 'Settings' },
   { to: '/admin/plan', label: 'Plan & billing', icon: CreditCard, group: 'Settings' },
   { to: '/admin/account', label: 'Account', icon: UserCog, group: 'Settings' },
 ];
@@ -395,6 +397,7 @@ export default function AdminApp() {
             <Route path="account" element={<Account />} />
             <Route path="look" element={<Look />} />
             <Route path="plan" element={<Plan />} />
+            <Route path="mpesa" element={<MpesaKeys />} />
             <Route path="*" element={<Navigate to="/admin" replace />} />
           </Routes>
         </motion.div>

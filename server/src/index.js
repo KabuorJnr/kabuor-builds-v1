@@ -11,7 +11,7 @@ import { publicPosts } from './routes/posts.js';
 import { publicRouter } from './routes/public.js';
 import { platformRouter } from './platform/routes.js';
 import { clientBrand } from './platform/presets.js';
-import { getShop, requestHost, resolveHost, shopState } from './platform/shops.js';
+import { getShop, isPreview, requestHost, resolveHost, shopState } from './platform/shops.js';
 import { PLATFORM_DOMAIN, PLATFORM_NAME, PLATFORM_TAGLINE } from './site.js';
 import { runAs } from './tenant.js';
 
@@ -57,7 +57,8 @@ app.get('/api/site', (req, res) => {
   if (req.site.platform) return res.json({ kind: 'platform', name: PLATFORM_NAME, tagline: PLATFORM_TAGLINE, domain: PLATFORM_DOMAIN });
   const { shop, slug } = req.site;
   if (!shop) return res.status(404).json({ kind: 'missing', link: slug, platform: { name: PLATFORM_NAME, domain: PLATFORM_DOMAIN } });
-  res.json({ kind: 'shop', state: shopState(shop.record), brand: clientBrand(shop.brand), platform: { name: PLATFORM_NAME, domain: PLATFORM_DOMAIN } });
+  const state = shopState(shop.record) !== 'live' && isPreview(req, shop.record) ? 'preview' : shopState(shop.record);
+  res.json({ kind: 'shop', state, brand: clientBrand(shop.brand), platform: { name: PLATFORM_NAME, domain: PLATFORM_DOMAIN } });
 });
 
 // ---------- a shop ----------
@@ -79,8 +80,13 @@ app.use('/api/admin', shopOnly(adminRouter));
 app.use(
   '/api',
   shopOnly((req, res, next) => {
-    if (shopState(req.site.shop.record) !== 'live') return res.status(503).json({ error: 'This shop is not taking orders right now.', code: 'SHOP_CLOSED' });
-    next();
+    if (shopState(req.site.shop.record) === 'live') return next();
+    // The owner's preview: they can look around, but nothing can be ordered until they've paid and gone live.
+    if (isPreview(req, req.site.shop.record)) {
+      if (req.method === 'GET') return next();
+      return res.status(403).json({ error: 'This is a preview. Orders open once the shop is live.', code: 'PREVIEW' });
+    }
+    return res.status(503).json({ error: 'This shop is not taking orders right now.', code: 'SHOP_CLOSED' });
   }),
 );
 app.use('/api', shopOnly(publicRouter));

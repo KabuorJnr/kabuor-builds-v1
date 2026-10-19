@@ -99,7 +99,7 @@ export function MpesaPay({ prices, plans, defaultPhone = '', testMode, start, ch
               {plans[id]}
               {plan === id && <Check className="h-4 w-4 text-espresso" strokeWidth={3} />}
             </span>
-            <span className="mt-1 block text-2xl font-extrabold tracking-tight tabular-nums">{ksh(prices[id])}</span>
+            <span className="mt-1 block text-xl font-extrabold tracking-tight whitespace-nowrap tabular-nums sm:text-2xl">{ksh(prices[id])}</span>
             <span className="text-xs text-espresso/55">
               {id === 'yearly' ? `${ksh(prices.yearly / 12)} a month · ` : ''}
               {PLAN_NOTES[id]}
@@ -188,40 +188,94 @@ export function PictureDrop({ label, hint, value, onUpload, onClear, upload, src
 }
 
 // ---------- the look ----------
-const SPECIMEN = 'Aa';
+// A tiny drawing of the style's banner layout, in the shop's own accent colour and the style's corners.
+function LayoutSketch({ hero, radius, accent, dark }) {
+  const r = { round: 5, soft: 3, sharp: 0.5 }[radius] ?? 3;
+  const ink = dark ? 'rgba(255,247,236,.85)' : 'rgba(15,17,21,.8)';
+  const soft = dark ? 'rgba(255,247,236,.18)' : 'rgba(15,17,21,.12)';
+  return (
+    <svg viewBox="0 0 120 64" className="h-full w-full" aria-hidden>
+      {hero === 'poster' ? (
+        <>
+          <rect x="30" y="8" width="60" height="7" rx="1.5" fill={ink} />
+          <rect x="40" y="18" width="40" height="7" rx="1.5" fill={accent} />
+          <rect x="33" y="36" width="18" height="24" rx={r} fill={soft} transform="rotate(-8 42 48)" />
+          <rect x="51" y="32" width="18" height="28" rx={r} fill={accent} />
+          <rect x="69" y="36" width="18" height="24" rx={r} fill={soft} transform="rotate(8 78 48)" />
+        </>
+      ) : hero === 'editorial' ? (
+        <>
+          <rect x="8" y="14" width="44" height="7" rx="1.5" fill={ink} />
+          <rect x="8" y="24" width="34" height="7" rx="1.5" fill={accent} />
+          <rect x="8" y="38" width="38" height="2.5" rx="1" fill={soft} />
+          <rect x="8" y="43" width="30" height="2.5" rx="1" fill={soft} />
+          <rect x="70" y="6" width="42" height="52" rx={r} fill={accent} opacity=".9" />
+          <rect x="70" y="60" width="42" height="1" fill={soft} />
+        </>
+      ) : (
+        <>
+          <rect x="8" y="14" width="40" height="7" rx="1.5" fill={ink} />
+          <rect x="8" y="24" width="30" height="7" rx="1.5" fill={accent} />
+          <rect x="8" y="38" width="22" height="7" rx={r} fill={ink} />
+          <rect x="68" y="6" width="40" height="44" rx={r} fill={accent} opacity=".9" transform="rotate(3 88 28)" />
+          <rect x="60" y="34" width="24" height="26" rx={r} fill={soft} stroke={dark ? '#0F1115' : '#fff'} strokeWidth="2" transform="rotate(-5 72 47)" />
+        </>
+      )}
+    </svg>
+  );
+}
 
-/** Style cards: each shows its fonts and whether it is light or dark. */
-export function StylePicker({ styles, value, onChange }) {
+/**
+ * Style cards: a sketch of the banner layout in the shop's colour, the style's fonts, and what it feels like.
+ * `suggested` marks the one that suits what they sell.
+ */
+export function StylePicker({ styles, value, onChange, suggested, accent = '#3B82F6' }) {
   useEffect(() => {
     styles.forEach((s) => loadFonts({ ...s.fonts, body: s.body }));
   }, [styles]);
   return (
     <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3" role="radiogroup" aria-label="Style">
-      {styles.map((s) => (
-        <button
-          type="button"
-          key={s.id}
-          role="radio"
-          aria-checked={value === s.id}
-          onClick={() => onChange(s.id)}
-          className={cn(
-            'relative overflow-hidden rounded-[var(--r-lg)] p-3 text-left ring-1 transition',
-            s.mode === 'dark' ? 'bg-[#16140F] text-[#F6F3EC]' : 'bg-white text-espresso',
-            value === s.id ? 'ring-2 ring-offset-2 ring-offset-cream ring-espresso' : 'ring-espresso/10 hover:ring-espresso/30',
-          )}
-        >
-          <span className="block text-3xl leading-none" style={{ fontFamily: `"${family(s.fonts.brand)}"` }}>
-            {SPECIMEN}
-          </span>
-          <span className="mt-1 block text-lg leading-none opacity-80" style={{ fontFamily: `"${family(s.fonts.tagline)}"` }}>
-            handmade
-          </span>
-          <span className="mt-2 block text-xs font-semibold" style={{ fontFamily: `"${family(s.body)} Variable"` }}>
-            {s.label}
-          </span>
-          {value === s.id && <Check className="absolute top-2.5 right-2.5 h-4 w-4" strokeWidth={3} />}
-        </button>
-      ))}
+      {styles.map((s) => {
+        const dark = s.mode === 'dark';
+        const on = value === s.id;
+        return (
+          <button
+            type="button"
+            key={s.id}
+            role="radio"
+            aria-checked={on}
+            onClick={() => onChange(s.id)}
+            className={cn(
+              'relative flex flex-col overflow-hidden rounded-[var(--r-lg)] bg-white text-left ring-1 transition',
+              on ? 'ring-2 ring-espresso' : 'ring-espresso/10 hover:ring-espresso/30',
+            )}
+          >
+            <span className={cn('relative block h-20 px-2 pt-2', dark ? 'bg-[#16140F]' : 'bg-[#F6F1E8]')}>
+              <LayoutSketch hero={s.hero} radius={s.radius} accent={accent} dark={dark} />
+              {suggested === s.id && <span className="absolute top-1.5 left-1.5 rounded-full bg-[#3B82F6] px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">Suggested</span>}
+              {on && (
+                <span className="absolute top-1.5 right-1.5 grid h-5 w-5 place-items-center rounded-full bg-espresso text-cream">
+                  <Check className="h-3 w-3" strokeWidth={3} />
+                </span>
+              )}
+            </span>
+            <span className="flex flex-1 flex-col p-3">
+              <span className="flex items-baseline gap-2">
+                <span className="text-2xl leading-none" style={{ fontFamily: `"${family(s.fonts.brand)}"` }}>
+                  Aa
+                </span>
+                <span className="truncate text-lg leading-none text-espresso/70" style={{ fontFamily: `"${family(s.fonts.tagline)}"` }}>
+                  handmade
+                </span>
+              </span>
+              <span className="mt-2 text-sm font-semibold" style={{ fontFamily: `"${family(s.body)} Variable"` }}>
+                {s.label}
+              </span>
+              {s.note && <span className="mt-0.5 text-xs leading-snug text-espresso/55">{s.note}</span>}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }

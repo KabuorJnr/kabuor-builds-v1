@@ -31,6 +31,16 @@ function NotFound() {
   );
 }
 
+// Shown on the owner's preview of a shop that isn't live yet, so it's never mistaken for the real thing.
+function PreviewBar() {
+  return (
+    <div className="fixed inset-x-0 top-0 z-[70] flex items-center justify-center gap-2 bg-[#0B0F19] px-4 py-2 text-center text-xs font-semibold text-[#F8FAFC] sm:text-sm">
+      <span className="h-2 w-2 shrink-0 rounded-full bg-[#3B82F6] shadow-[0_0_8px_#3B82F6]" />
+      Preview: only you can see this. Customers can order once you pay and go live.
+    </div>
+  );
+}
+
 // Customers see this while the shop is being set up, or when its plan has lapsed. The admin stays open.
 function Closed({ state }) {
   return (
@@ -50,11 +60,11 @@ function Closed({ state }) {
 }
 
 export default function App({ site }) {
-  const closed = site?.state && site.state !== 'live';
+  const closed = site?.state && site.state !== 'live' && site.state !== 'preview';
   return (
     <Routes>
       {/* The storefront: one page per section, sharing the top bar, footer and cart. */}
-      <Route path="/" element={closed ? <Closed state={site.state} /> : <Store />}>
+      <Route path="/" element={closed ? <Closed state={site.state} /> : site?.state === 'preview' ? <><PreviewBar /><Store /></> : <Store />}>
         <Route index element={<HomePage />} />
         <Route path="shop" element={<ShopPage />} />
         <Route path="updates" element={<UpdatesPage />} />

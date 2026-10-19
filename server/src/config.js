@@ -11,7 +11,7 @@ import { mpesaEnabled } from './mpesa.js';
 // Payment options offered at checkout, derived from the shop settings (see content.js → store).
 export function paymentMethods(store) {
   const methods = [];
-  if (mpesaEnabled) {
+  if (mpesaEnabled()) {
     // M-Pesa Express: the customer gets the PIN prompt on their phone.
     methods.push({ id: 'mpesa', label: 'M-Pesa', hint: 'You’ll get a prompt on your phone to enter your M-Pesa PIN', prompt: true });
   } else if (store.paybill?.business) {

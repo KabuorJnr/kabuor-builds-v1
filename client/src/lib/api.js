@@ -9,6 +9,16 @@ export class ApiError extends Error {
   }
 }
 
+// The owner's private preview key (from ?preview= on the shop link, kept for this tab) goes with every
+// request so the shop shows before it's live.
+export function previewKey() {
+  try {
+    return sessionStorage.getItem('shop-preview') || '';
+  } catch {
+    return '';
+  }
+}
+
 // `file` sends a File/Blob as the raw request body (used for image uploads).
 export async function api(path, { method = 'GET', body, file, token, raw = false } = {}) {
   const res = await fetch(`/api${path}`, {
@@ -17,6 +27,7 @@ export async function api(path, { method = 'GET', body, file, token, raw = false
       ...(body ? { 'Content-Type': 'application/json' } : {}),
       ...(file ? { 'Content-Type': file.type } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(previewKey() ? { 'X-Preview-Token': previewKey() } : {}),
     },
     body: file ?? (body ? JSON.stringify(body) : undefined),
   });

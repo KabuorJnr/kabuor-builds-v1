@@ -1,5 +1,7 @@
 // Finding the shop for a request and opening it. A shop's link is its subdomain (anjugu.shop.ke, or
 // anjugu.localhost while developing); its data lives in DATA_DIR/shops/<slug>/.
+import { createHash } from 'node:crypto';
+import { rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { openShopDb } from '../db.js';
 import { DATA_DIR, PLATFORM_DOMAIN } from '../site.js';
@@ -42,6 +44,23 @@ export function resolveHost(rawHost) {
 
 // Open shops, kept in memory: the brand built from the record, and its database.
 const open = new Map();
+
+/** Removes a shop's files (an unpaid signup whose link hold ran out and is being taken by someone else). */
+export function forgetShop(slug) {
+  open.get(slug)?.db.close();
+  open.delete(slug);
+  rmSync(shopDir(slug), { recursive: true, force: true });
+}
+
+/**
+ * The owner's private preview key for a shop that isn't live yet. Derived from the signup's setup token, so
+ * sharing a preview link lets someone look but never edit or pay. Stops working once the shop is live.
+ */
+export const previewToken = (record) => createHash('sha256').update(`preview:${record.setup_token}`).digest('hex').slice(0, 32);
+export function isPreview(req, record) {
+  const sent = String(req.get('x-preview-token') ?? '');
+  return record.status !== 'live' && sent.length === 32 && sent === previewToken(record);
+}
 
 /** The running shop for a slug, or null when there's no such shop. Rebuilt after the owner rebrands. */
 export function getShop(slug) {

@@ -32,7 +32,7 @@ export async function startPayment(slug, { phone, plan }) {
     checkoutId = `TEST-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   } else {
     ({ checkoutId } = await stkPush({ msisdn, amount, reference: slug, description: 'Shop plan' }).catch((err) => {
-      throw new HttpError(502, err.message);
+      throw new HttpError(400, err.message); // shown to the owner as is
     }));
   }
   const at = now();
