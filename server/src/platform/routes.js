@@ -1,6 +1,7 @@
 // The platform's own API (on shop.ke itself): sign up, pay by M-Pesa prompt, brand the shop, choose the
 // link and go live. The signup wizard keeps a setup token in the owner's browser to continue between steps.
 import express, { Router } from 'express';
+import { ownerAdmin } from './ownerAdmin.js';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -19,6 +20,8 @@ import { forgetShop, getShop, LINK_RULE, previewToken, requestHost, RESERVED, sh
 import { getShopRecord, now, pdb, shopByToken, updateShop } from './store.js';
 
 export const platformRouter = Router();
+// Kabuor Builds' own dashboard (sign-in and numbers).
+platformRouter.use('/admin', ownerAdmin);
 
 const text = (v, max) => String(v ?? '').trim().slice(0, max);
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;

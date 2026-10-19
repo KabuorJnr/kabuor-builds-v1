@@ -58,21 +58,27 @@ export const KINDS = {
 // Looks the owner can choose from. Each pairs a display font and an accent font with a text font, and sets
 // light or dark, the banner layout (photo collage, poster, or magazine spread) and the corners. A style may
 // also bring its own background texture; otherwise the texture comes from what they sell.
+// Ten website designs. Beyond fonts and colours, each sets the page structure:
+//   hero   photo (collage) | poster (centred, photos fanned) | editorial (magazine) | trio (floating packs)
+//          | split (half-screen photo) | cover (full-screen photo) | minimal (big words, then products)
+//   nav    pill (floating rounded) | bar (full-width strip) | centered (logo in the middle) | minimal (menu button)
+//   cards  card | bare | framed | list | overlay      cols  products across on a computer (2, 3 or 4)
+//   home   hub (banner, then links to each page) | shop-first (banner, then the products)
 export const STYLES = {
-  warm: { label: 'Warm & friendly', note: 'Rounded and cheerful, photo collage', mode: 'light', hero: 'photo', radius: 'round', body: 'bricolage-grotesque', fonts: { brand: 'shrikhand', tagline: 'caveat-brush' } },
-  bold: { label: 'Bold & loud', note: 'Dark, huge headline, photos fanned out', mode: 'dark', hero: 'poster', radius: 'sharp', body: 'archivo', fonts: { brand: 'rammetto-one', tagline: 'kalam' } },
-  natural: { label: 'Natural & earthy', note: 'Calm, magazine layout, paper feel', mode: 'light', hero: 'editorial', radius: 'soft', body: 'familjen-grotesk', fonts: { brand: 'titan-one', tagline: 'patrick-hand' } },
-  elegant: { label: 'Soft & elegant', note: 'Serif and script, lots of space', mode: 'light', hero: 'editorial', radius: 'soft', body: 'instrument-sans', fonts: { brand: 'gilda-display', tagline: 'parisienne' } },
-  luxe: { label: 'Dark & luxurious', note: 'Night-time glow, premium feel', mode: 'dark', hero: 'poster', radius: 'sharp', body: 'albert-sans', fonts: { brand: 'marcellus', tagline: 'parisienne' } },
-  playful: { label: 'Playful & sweet', note: 'Bubbly letters, bright and fun', mode: 'light', hero: 'photo', radius: 'round', body: 'onest', texture: 'dots', fonts: { brand: 'cherry-bomb-one', tagline: 'gochi-hand' } },
-  classic: { label: 'Classic & trusted', note: 'Old-shop serif, honest and simple', mode: 'light', hero: 'editorial', radius: 'soft', body: 'commissioner', texture: 'paper', fonts: { brand: 'young-serif', tagline: 'caveat' } },
-  market: { label: 'Fresh market', note: 'Chunky letters, sunny photo collage', mode: 'light', hero: 'photo', radius: 'round', body: 'golos-text', fonts: { brand: 'titan-one', tagline: 'caveat-brush' } },
-  street: { label: 'Street & urban', note: 'Dark, sharp corners, loud photos', mode: 'dark', hero: 'photo', radius: 'sharp', body: 'schibsted-grotesk', texture: 'speckle', fonts: { brand: 'shrikhand', tagline: 'kalam' } },
-  boutique: { label: 'Boutique', note: 'Fine script, centred poster, soft grain', mode: 'light', hero: 'poster', radius: 'soft', body: 'jost', texture: 'grain', fonts: { brand: 'gilda-display', tagline: 'sacramento' } },
+  warm: { label: 'Warm & friendly', note: 'Photo collage, floating menu, rounded cards', mode: 'light', hero: 'photo', nav: 'pill', cards: 'card', cols: 4, home: 'hub', radius: 'round', body: 'bricolage-grotesque', fonts: { brand: 'shrikhand', tagline: 'caveat-brush' } },
+  bold: { label: 'Bold & loud', note: 'Giant headline, prices on the photos, shop first', mode: 'dark', hero: 'poster', nav: 'bar', cards: 'overlay', cols: 3, home: 'shop-first', radius: 'sharp', body: 'archivo', fonts: { brand: 'rammetto-one', tagline: 'kalam' } },
+  natural: { label: 'Natural & earthy', note: 'Magazine layout, airy photos with no boxes', mode: 'light', hero: 'editorial', nav: 'centered', cards: 'bare', cols: 3, home: 'hub', radius: 'soft', body: 'familjen-grotesk', fonts: { brand: 'titan-one', tagline: 'patrick-hand' } },
+  elegant: { label: 'Soft & elegant', note: 'Half-screen photo, centred logo, framed products', mode: 'light', hero: 'split', nav: 'centered', cards: 'framed', cols: 3, home: 'hub', radius: 'soft', body: 'instrument-sans', fonts: { brand: 'gilda-display', tagline: 'parisienne' } },
+  luxe: { label: 'Dark & luxurious', note: 'Full-screen photo, menu tucked away, dark', mode: 'dark', hero: 'cover', nav: 'minimal', cards: 'bare', cols: 3, home: 'hub', radius: 'sharp', body: 'albert-sans', fonts: { brand: 'marcellus', tagline: 'parisienne' } },
+  playful: { label: 'Playful & sweet', note: 'Floating products, bubbly cards, shop first', mode: 'light', hero: 'trio', nav: 'pill', cards: 'card', cols: 4, home: 'shop-first', radius: 'round', body: 'onest', texture: 'dots', fonts: { brand: 'cherry-bomb-one', tagline: 'gochi-hand' } },
+  classic: { label: 'Classic & trusted', note: 'Catalogue list with full details, solid menu bar', mode: 'light', hero: 'editorial', nav: 'bar', cards: 'list', cols: 2, home: 'hub', radius: 'soft', body: 'commissioner', texture: 'paper', fonts: { brand: 'young-serif', tagline: 'caveat' } },
+  market: { label: 'Fresh market', note: 'Half-screen photo, then products, four across', mode: 'light', hero: 'split', nav: 'bar', cards: 'card', cols: 4, home: 'shop-first', radius: 'round', body: 'golos-text', fonts: { brand: 'titan-one', tagline: 'caveat-brush' } },
+  street: { label: 'Street & urban', note: 'Full-screen photo, big products two across', mode: 'dark', hero: 'cover', nav: 'minimal', cards: 'overlay', cols: 2, home: 'shop-first', radius: 'sharp', body: 'schibsted-grotesk', texture: 'speckle', fonts: { brand: 'shrikhand', tagline: 'kalam' } },
+  boutique: { label: 'Boutique', note: 'Words first, a row of products, framed cards', mode: 'light', hero: 'minimal', nav: 'centered', cards: 'framed', cols: 3, home: 'hub', radius: 'soft', texture: 'grain', body: 'jost', fonts: { brand: 'gilda-display', tagline: 'sacramento' } },
 };
 
 /** The styles as the website shows them (no private settings). */
-export const styleList = () => Object.entries(STYLES).map(([id, s]) => ({ id, label: s.label, note: s.note, mode: s.mode, hero: s.hero, fonts: s.fonts, body: s.body, radius: s.radius }));
+export const styleList = () => Object.entries(STYLES).map(([id, s]) => ({ id, label: s.label, note: s.note, mode: s.mode, hero: s.hero, nav: s.nav, cards: s.cards, cols: s.cols, fonts: s.fonts, body: s.body, radius: s.radius }));
 
 export const slugify = (s) =>
   String(s ?? '')
@@ -156,7 +162,7 @@ export function makeBrand(record) {
     motif: kind.motif,
     colors,
     fonts: style.fonts,
-    theme: { mode, hero: style.hero, texture: style.texture ?? kind.texture, radius: style.radius, body: style.body },
+    theme: { mode, hero: style.hero, nav: style.nav, cards: style.cards, cols: style.cols, home: style.home, texture: style.texture ?? kind.texture, radius: style.radius, body: style.body },
     facets: null,
     photos: spec.photos ?? [],
     catalog,

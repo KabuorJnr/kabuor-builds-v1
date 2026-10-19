@@ -188,39 +188,123 @@ export function PictureDrop({ label, hint, value, onUpload, onClear, upload, src
 }
 
 // ---------- the look ----------
-// A tiny drawing of the style's banner layout, in the shop's own accent colour and the style's corners.
-function LayoutSketch({ hero, radius, accent, dark }) {
-  const r = { round: 5, soft: 3, sharp: 0.5 }[radius] ?? 3;
+// A thumbnail of the whole page in this design: its menu, its banner layout and its product grid, in the
+// shop's own accent colour and the design's corners.
+function LayoutSketch({ s, accent, dark }) {
+  const r = { round: 4, soft: 2.5, sharp: 0.5 }[s.radius] ?? 2.5;
   const ink = dark ? 'rgba(255,247,236,.85)' : 'rgba(15,17,21,.8)';
-  const soft = dark ? 'rgba(255,247,236,.18)' : 'rgba(15,17,21,.12)';
+  const soft = dark ? 'rgba(255,247,236,.16)' : 'rgba(15,17,21,.1)';
+  const W = 120;
+
+  // menu (top 10px)
+  const nav = {
+    pill: <rect x="10" y="3" width="100" height="6" rx="3" fill={soft} />,
+    bar: <rect x="0" y="0" width={W} height="9" fill={soft} />,
+    centered: (
+      <>
+        <rect x="52" y="3" width="16" height="5" rx="1" fill={ink} />
+        <rect x="10" y="5" width="22" height="1.5" fill={soft} />
+      </>
+    ),
+    minimal: (
+      <>
+        <rect x="8" y="3" width="16" height="5" rx="1" fill={ink} />
+        <rect x="104" y="4" width="8" height="1.2" fill={ink} />
+        <rect x="104" y="6.5" width="8" height="1.2" fill={ink} />
+      </>
+    ),
+  }[s.nav] ?? null;
+
+  // banner (y 12–46)
+  const words = (x, y, w, center) => (
+    <>
+      <rect x={center ? 60 - w / 2 : x} y={y} width={w} height="5" rx="1" fill={ink} />
+      <rect x={center ? 60 - (w * 0.7) / 2 : x} y={y + 7} width={w * 0.7} height="5" rx="1" fill={accent} />
+    </>
+  );
+  const hero = {
+    photo: (
+      <>
+        {words(8, 18, 40)}
+        <rect x="70" y="12" width="40" height="30" rx={r} fill={accent} opacity=".9" transform="rotate(3 90 27)" />
+        <rect x="62" y="28" width="20" height="17" rx={r} fill={soft} stroke={dark ? '#0A0B1E' : '#fff'} strokeWidth="1.5" />
+      </>
+    ),
+    poster: (
+      <>
+        {words(0, 13, 60, true)}
+        <rect x="38" y="31" width="13" height="15" rx={r} fill={soft} transform="rotate(-8 44 38)" />
+        <rect x="53" y="28" width="14" height="18" rx={r} fill={accent} />
+        <rect x="69" y="31" width="13" height="15" rx={r} fill={soft} transform="rotate(8 75 38)" />
+      </>
+    ),
+    editorial: (
+      <>
+        {words(8, 18, 42)}
+        <rect x="8" y="35" width="34" height="2" fill={soft} />
+        <rect x="74" y="12" width="36" height="34" rx={r} fill={accent} opacity=".9" />
+      </>
+    ),
+    trio: (
+      <>
+        {words(8, 18, 40)}
+        <circle cx="88" cy="29" r="16" fill={soft} />
+        <rect x="76" y="20" width="10" height="16" rx="3" fill={accent} opacity=".7" />
+        <rect x="84" y="24" width="12" height="20" rx="3" fill={accent} />
+        <rect x="94" y="18" width="9" height="14" rx="3" fill={accent} opacity=".7" />
+      </>
+    ),
+    split: (
+      <>
+        {words(8, 20, 40)}
+        <rect x="60" y="10" width="60" height="37" fill={accent} opacity=".9" />
+      </>
+    ),
+    cover: (
+      <>
+        <rect x="0" y="10" width={W} height="37" fill={accent} opacity=".9" />
+        <rect x="0" y="30" width={W} height="17" fill="rgba(0,0,0,.35)" />
+        <rect x="8" y="33" width="44" height="5" rx="1" fill="#fff" />
+        <rect x="8" y="40" width="30" height="4" rx="1" fill="rgba(255,255,255,.7)" />
+      </>
+    ),
+    minimal: (
+      <>
+        <rect x="8" y="16" width="70" height="7" rx="1" fill={ink} />
+        <rect x="8" y="26" width="50" height="7" rx="1" fill={accent} />
+        <rect x="8" y="38" width="36" height="2" fill={soft} />
+      </>
+    ),
+  }[s.hero];
+
+  // products (y 50–62)
+  const n = s.cards === 'list' ? 2 : s.cols ?? 4;
+  const gap = 4;
+  const cw = (W - 16 - gap * (n - 1)) / n;
+  const cards = Array.from({ length: n }, (_, i) => {
+    const x = 8 + i * (cw + gap);
+    if (s.cards === 'list') {
+      return (
+        <g key={i}>
+          <rect x={x} y="50" width="11" height="11" rx={r} fill={accent} opacity=".8" />
+          <rect x={x + 14} y="52" width={cw - 18} height="2.5" fill={ink} />
+          <rect x={x + 14} y="57" width={(cw - 18) * 0.5} height="2" fill={soft} />
+        </g>
+      );
+    }
+    return (
+      <g key={i}>
+        <rect x={x} y="50" width={cw} height="12" rx={s.cards === 'framed' ? 0 : r} fill={s.cards === 'bare' || s.cards === 'overlay' ? accent : soft} opacity={s.cards === 'bare' || s.cards === 'overlay' ? 0.75 : 1} stroke={s.cards === 'framed' ? ink : 'none'} strokeWidth=".6" />
+        {s.cards === 'overlay' && <rect x={x + 2} y="58" width={Math.min(12, cw - 4)} height="3" rx="1.5" fill="#fff" />}
+      </g>
+    );
+  });
+
   return (
-    <svg viewBox="0 0 120 64" className="h-full w-full" aria-hidden>
-      {hero === 'poster' ? (
-        <>
-          <rect x="30" y="8" width="60" height="7" rx="1.5" fill={ink} />
-          <rect x="40" y="18" width="40" height="7" rx="1.5" fill={accent} />
-          <rect x="33" y="36" width="18" height="24" rx={r} fill={soft} transform="rotate(-8 42 48)" />
-          <rect x="51" y="32" width="18" height="28" rx={r} fill={accent} />
-          <rect x="69" y="36" width="18" height="24" rx={r} fill={soft} transform="rotate(8 78 48)" />
-        </>
-      ) : hero === 'editorial' ? (
-        <>
-          <rect x="8" y="14" width="44" height="7" rx="1.5" fill={ink} />
-          <rect x="8" y="24" width="34" height="7" rx="1.5" fill={accent} />
-          <rect x="8" y="38" width="38" height="2.5" rx="1" fill={soft} />
-          <rect x="8" y="43" width="30" height="2.5" rx="1" fill={soft} />
-          <rect x="70" y="6" width="42" height="52" rx={r} fill={accent} opacity=".9" />
-          <rect x="70" y="60" width="42" height="1" fill={soft} />
-        </>
-      ) : (
-        <>
-          <rect x="8" y="14" width="40" height="7" rx="1.5" fill={ink} />
-          <rect x="8" y="24" width="30" height="7" rx="1.5" fill={accent} />
-          <rect x="8" y="38" width="22" height="7" rx={r} fill={ink} />
-          <rect x="68" y="6" width="40" height="44" rx={r} fill={accent} opacity=".9" transform="rotate(3 88 28)" />
-          <rect x="60" y="34" width="24" height="26" rx={r} fill={soft} stroke={dark ? '#0F1115' : '#fff'} strokeWidth="2" transform="rotate(-5 72 47)" />
-        </>
-      )}
+    <svg viewBox={`0 0 ${W} 64`} className="h-full w-full" aria-hidden>
+      {nav}
+      {hero}
+      {cards}
     </svg>
   );
 }
@@ -229,7 +313,7 @@ function LayoutSketch({ hero, radius, accent, dark }) {
  * Style cards: a sketch of the banner layout in the shop's colour, the style's fonts, and what it feels like.
  * `suggested` marks the one that suits what they sell.
  */
-export function StylePicker({ styles, value, onChange, suggested, accent = '#3B82F6' }) {
+export function StylePicker({ styles, value, onChange, suggested, accent = '#2357F5' }) {
   useEffect(() => {
     styles.forEach((s) => loadFonts({ ...s.fonts, body: s.body }));
   }, [styles]);
@@ -250,9 +334,9 @@ export function StylePicker({ styles, value, onChange, suggested, accent = '#3B8
               on ? 'ring-2 ring-espresso' : 'ring-espresso/10 hover:ring-espresso/30',
             )}
           >
-            <span className={cn('relative block h-20 px-2 pt-2', dark ? 'bg-[#16140F]' : 'bg-[#F6F1E8]')}>
-              <LayoutSketch hero={s.hero} radius={s.radius} accent={accent} dark={dark} />
-              {suggested === s.id && <span className="absolute top-1.5 left-1.5 rounded-full bg-[#3B82F6] px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">Suggested</span>}
+            <span className={cn('relative block h-24 px-2 pt-2', dark ? 'bg-[#0A0B1E]' : 'bg-[#F4F4F9]')}>
+              <LayoutSketch s={s} accent={accent} dark={dark} />
+              {suggested === s.id && <span className="absolute top-1.5 left-1.5 rounded-full bg-[#2357F5] px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">Suggested</span>}
               {on && (
                 <span className="absolute top-1.5 right-1.5 grid h-5 w-5 place-items-center rounded-full bg-espresso text-cream">
                   <Check className="h-3 w-3" strokeWidth={3} />

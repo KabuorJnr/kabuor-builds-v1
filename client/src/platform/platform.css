@@ -42,10 +42,10 @@
 /* The backdrop: deep obsidian with a soothing royal sapphire & indigo glow and fine grain. */
 .kb-ink {
   background:
-    radial-gradient(60rem 60rem at 15% 30%, rgb(59 130 246 / 0.18), transparent 60%),
-    radial-gradient(40rem 40rem at 85% 70%, rgb(99 102 241 / 0.15), transparent 50%),
-    #0b0f19;
-  color: #f8fafc;
+    radial-gradient(60rem 60rem at 15% 30%, rgb(35 87 245 / 0.26), transparent 60%),
+    radial-gradient(40rem 40rem at 85% 70%, rgb(58 43 201 / 0.24), transparent 50%),
+    #0a0b1e;
+  color: #f7f7fb;
 }
 .kb-ink::before {
   content: '';
@@ -56,3 +56,6 @@
   background-image: radial-gradient(#fff 1px, transparent 1.2px);
   background-size: 6px 6px;
 }
+
+/* Kabuor gold: used sparingly, for the voice ("Mlete deals.") and the hero highlight. */
+.kb-gold { color: #f2c14e; }

@@ -7,6 +7,7 @@ import { byCountry, telHref } from '../lib/branches';
 import { cn } from '../lib/format';
 import SmartLink from './SmartLink';
 import { EASE, Logo, useLockBody } from './ui';
+import { LOOK } from '../lib/brand';
 
 // One page per section the admin has switched on; labels come from each section's eyebrow.
 export function navLinks(content, hasUpdates = false) {
@@ -44,6 +45,10 @@ export default function Navbar({ content, links }) {
     return () => ro.disconnect();
   }, []);
 
+  // The design's menu: pill (floating rounded bar), bar (full-width strip), centered (logo in the middle),
+  // or minimal (logo and a menu button only, on every screen size).
+  const kind = LOOK.theme?.nav ?? 'pill';
+  const solid = scrolled || menu || pathname !== '/';
   const notice = content.announcement;
   const showNotice = notice.enabled && notice.text && !scrolled && !menu;
 
@@ -78,23 +83,26 @@ export default function Navbar({ content, links }) {
           )}
         </AnimatePresence>
 
-        <div className="px-3 pt-3 sm:px-5">
+        <div className={kind === 'bar' ? '' : 'px-3 pt-3 sm:px-5'}>
           <nav
             className={cn(
-              'mx-auto flex h-14 max-w-7xl items-center justify-between rounded-full pr-2 pl-3 transition-all duration-500 ease-out-expo sm:h-16 sm:pl-5',
-              scrolled || menu || pathname !== '/'
-                ? 'border border-espresso/[0.07] bg-cream/95 shadow-[0_10px_40px_-20px_rgba(46,31,20,0.45)] md:bg-cream/85 md:backdrop-blur-md'
-                : 'border border-transparent',
+              'mx-auto flex h-14 items-center justify-between transition-all duration-500 ease-out-expo sm:h-16',
+              kind === 'bar' ? 'h-16! border-b border-espresso/[0.08] bg-cream px-4 sm:h-[4.5rem]! sm:px-8' : 'max-w-7xl rounded-full pr-2 pl-3 sm:pl-5',
+              kind === 'centered' && 'lg:grid lg:grid-cols-[1fr_auto_1fr]',
+              kind !== 'bar' &&
+                (solid
+                  ? 'border border-espresso/[0.07] bg-cream/95 shadow-[0_10px_40px_-20px_rgba(46,31,20,0.45)] md:bg-cream/85 md:backdrop-blur-md'
+                  : 'border border-transparent'),
             )}
           >
-            <Link to="/" aria-label={`${content.brand.name} home`}>
+            <Link to="/" aria-label={`${content.brand.name} home`} className={cn(kind === 'centered' && 'lg:order-2 lg:justify-self-center')}>
               <Logo />
             </Link>
 
-            <ul className="hidden items-center gap-1 lg:flex">
+            <ul className={cn('hidden items-center gap-1', kind !== 'minimal' && 'lg:flex', kind === 'centered' && 'lg:order-1 lg:justify-self-start')}>
               {links.map(([label, to]) => (
                 <li key={to}>
-                  <NavLink to={to} className="group relative block rounded-full px-4 py-2 text-sm font-medium text-espresso/70 transition hover:text-espresso aria-[current=page]:text-espresso">
+                  <NavLink to={to} className="group relative block rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap xl:px-4 text-espresso/70 transition hover:text-espresso aria-[current=page]:text-espresso">
                     {({ isActive }) => (
                       <>
                         {label}
@@ -106,8 +114,8 @@ export default function Navbar({ content, links }) {
               ))}
             </ul>
 
-            <div className="flex items-center gap-1.5">
-              <span className="hidden md:block">
+            <div className={cn('flex items-center gap-1.5', kind === 'centered' && 'lg:order-3 lg:justify-self-end')}>
+              <span className={cn('hidden', kind !== 'minimal' && kind !== 'centered' && 'md:block')}>
                 <Link to="/shop" className="btn btn-primary py-2.5!">
                   Shop now
                 </Link>
@@ -143,7 +151,7 @@ export default function Navbar({ content, links }) {
               </button>
               <button
                 onClick={() => setMenu((m) => !m)}
-                className="grid h-11 w-11 place-items-center rounded-full lg:hidden"
+                className={cn('grid h-11 w-11 place-items-center rounded-full', kind !== 'minimal' && 'lg:hidden')}
                 aria-label={menu ? 'Close menu' : 'Open menu'}
                 aria-expanded={menu}
               >
@@ -164,7 +172,7 @@ export default function Navbar({ content, links }) {
             animate={{ clipPath: 'circle(150% at calc(100% - 44px) 44px)' }}
             exit={{ clipPath: 'circle(0% at calc(100% - 44px) 44px)' }}
             transition={{ duration: 0.7, ease: EASE }}
-            className="bg-dots fixed inset-0 z-40 flex flex-col overflow-y-auto bg-beige px-6 pt-28 pb-10 lg:hidden"
+            className={cn('bg-dots fixed inset-0 z-40 flex flex-col overflow-y-auto bg-beige px-6 pt-28 pb-10', kind !== 'minimal' && 'lg:hidden')}
           >
             <ul className="space-y-1">
               {[['Home', '/'], ...links].map(([label, to], i) => (

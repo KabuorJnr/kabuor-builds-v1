@@ -82,10 +82,33 @@ export const titleOf = (p, all = []) => {
   return all.some((o) => o.id !== p.id && o.look?.title?.trim().toLowerCase() === t) ? p.name : p.look.title.trim();
 };
 
+// How a product card is drawn, set by the shop's design (LOOK.theme.cards):
+//   card    white card with shadow       bare    photo and words, no box
+//   framed  thin border, square corners  list    one product per row, photo beside the words
+//   overlay price and add button on the photo itself
+const CARD = {
+  card: 'flex flex-col overflow-hidden rounded-[var(--r-xl)] bg-white shadow-[0_1px_2px_rgba(46,31,20,0.05),0_12px_30px_-18px_rgba(46,31,20,0.25)] ring-1 ring-espresso/[0.06] transition-shadow duration-500 hover:shadow-[0_30px_60px_-28px_rgba(46,31,20,0.5)]',
+  bare: 'flex flex-col',
+  framed: 'flex flex-col overflow-hidden border border-espresso/15 bg-white transition-colors duration-300 hover:border-espresso/40',
+  list: 'grid grid-cols-[6.5rem_1fr] gap-4 rounded-[var(--r-lg)] bg-white p-3 ring-1 ring-espresso/[0.07] sm:grid-cols-[8.5rem_1fr]',
+  overlay: 'flex flex-col',
+};
+const PHOTO = {
+  card: 'aspect-[4/5]',
+  bare: 'aspect-[4/5] rounded-[var(--r-lg)]',
+  framed: 'aspect-square',
+  list: 'aspect-square self-start rounded-[var(--r-md)]',
+  overlay: 'aspect-[3/4] rounded-[var(--r-xl)]',
+};
+const BODY = { card: 'p-3.5 sm:p-5', bare: 'px-0.5 pt-3', framed: 'border-t border-espresso/10 p-4', list: 'py-1 pr-1', overlay: 'px-0.5 pt-3' };
+export const cardKind = () => (CARD[LOOK.theme?.cards] ? LOOK.theme.cards : 'card');
+
 function ProductCard({ product, all, index, onSelect }) {
   const { look } = product;
+  const kind = cardKind();
   const per100 = perHundredGrams(product.price, product.size);
   const photo = Boolean(look.photo);
+  const price = product.stock > 0 ? money(product.price) : 'Sold out';
   return (
     <motion.article
       layout
@@ -94,26 +117,38 @@ function ProductCard({ product, all, index, onSelect }) {
       exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.25 } }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.8, delay: (index % 4) * 0.07, ease: EASE }}
-      className="group relative flex flex-col overflow-hidden rounded-[var(--r-xl)] bg-white shadow-[0_1px_2px_rgba(46,31,20,0.05),0_12px_30px_-18px_rgba(46,31,20,0.25)] ring-1 ring-espresso/[0.06] transition-shadow duration-500 hover:shadow-[0_30px_60px_-28px_rgba(46,31,20,0.5)]"
+      className={cn('group relative', CARD[kind])}
     >
-      <button onClick={() => onSelect(product)} className="relative block aspect-[4/5] w-full overflow-hidden" style={photo ? undefined : tintFor(look)} aria-label={`View ${product.name}`}>
-        {photo ? (
-          <img src={look.photo} alt={product.name} loading="lazy" decoding="async" className="product-photo h-full w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.05]" />
-        ) : (
-          <div className="absolute inset-x-[6%] top-[9%] bottom-[1%] transition-transform duration-700 ease-out-expo group-hover:-translate-y-2.5 group-hover:-rotate-2 group-hover:scale-[1.04]">
-            <ProductJar look={look} price={product.price} size={product.size} showTag={false} className="h-full w-full" />
-          </div>
-        )}
-        {product.badge && (
-          <span className="paper-ink absolute top-2.5 left-2.5 z-10 rounded-full bg-white/95 px-2.5 py-1 text-[9px] font-bold tracking-[0.12em] text-espresso uppercase shadow-sm sm:top-3 sm:left-3 sm:text-[10px]">
+      <div className={cn('relative w-full overflow-hidden', PHOTO[kind])}>
+        <button onClick={() => onSelect(product)} className="absolute inset-0 block" style={photo ? undefined : tintFor(look)} aria-label={`View ${product.name}`}>
+          {photo ? (
+            <img src={look.photo} alt={product.name} loading="lazy" decoding="async" className="product-photo h-full w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.05]" />
+          ) : (
+            <div className="absolute inset-x-[6%] top-[9%] bottom-[1%] transition-transform duration-700 ease-out-expo group-hover:-translate-y-2.5 group-hover:-rotate-2 group-hover:scale-[1.04]">
+              <ProductJar look={look} price={product.price} size={product.size} showTag={false} className="h-full w-full" />
+            </div>
+          )}
+        </button>
+        {product.badge && kind !== 'list' && (
+          <span className="paper-ink pointer-events-none absolute top-2.5 left-2.5 z-10 rounded-full bg-white/95 px-2.5 py-1 text-[9px] font-bold tracking-[0.12em] text-espresso uppercase shadow-sm sm:top-3 sm:left-3 sm:text-[10px]">
             {product.badge}
           </span>
         )}
-      </button>
+        {/* overlay: the price on a solid pill and the add button sit on the photo */}
+        {kind === 'overlay' && (
+          <>
+            <span className="paper-ink pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-white px-3 py-1.5 text-sm font-extrabold text-espresso tabular-nums shadow-md">{price}</span>
+            <span className="absolute right-3 bottom-3 z-10 rounded-full shadow-md">
+              <AddButton product={product} />
+            </span>
+          </>
+        )}
+      </div>
 
-      <div className="flex min-w-0 flex-1 flex-col p-3.5 sm:p-5">
+      <div className={cn('flex min-w-0 flex-1 flex-col', BODY[kind])}>
+        {product.badge && kind === 'list' && <span className="mb-1 text-[10px] font-bold tracking-[0.12em] text-caramel uppercase">{product.badge}</span>}
         <h3 className="leading-tight">
-          <button onClick={() => onSelect(product)} className="text-left text-[15px] font-bold tracking-tight hover:text-caramel sm:text-lg">
+          <button onClick={() => onSelect(product)} className={cn('text-left font-bold tracking-tight hover:text-caramel', kind === 'framed' ? 'text-[15px] sm:text-base' : 'text-[15px] sm:text-lg')}>
             {titleOf(product, all)}
           </button>
         </h3>
@@ -121,7 +156,7 @@ function ProductCard({ product, all, index, onSelect }) {
           {product.size} {packLabel(look)}
         </p>
         {look.heat > 0 && <HeatMeter level={look.heat} className="mt-2" />}
-        {look.fact && <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug text-espresso/70 sm:text-[13px]">{look.fact}</p>}
+        {look.fact && kind !== 'overlay' && <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug text-espresso/70 sm:text-[13px]">{look.fact}</p>}
         {product.reviews > 0 && (
           <div className="mt-1.5 flex items-center gap-1 text-[11px] text-espresso/50 sm:text-xs">
             <Star className="h-3 w-3 fill-honey text-honey" />
@@ -129,13 +164,15 @@ function ProductCard({ product, all, index, onSelect }) {
             <span>({product.reviews})</span>
           </div>
         )}
-        <div className="mt-auto flex items-end justify-between gap-2 pt-3 sm:pt-4">
-          <div className="min-w-0">
-            <div className="truncate text-[17px] font-extrabold tracking-tight tabular-nums sm:text-xl">{product.stock > 0 ? money(product.price) : 'Sold out'}</div>
-            <div className="min-h-4 text-[11px] text-espresso/45 tabular-nums">{per100 && product.stock > 0 ? `${money(per100)} per 100g` : ''}</div>
+        {kind !== 'overlay' && (
+          <div className="mt-auto flex items-end justify-between gap-2 pt-3 sm:pt-4">
+            <div className="min-w-0">
+              <div className="truncate text-[17px] font-extrabold tracking-tight tabular-nums sm:text-xl">{price}</div>
+              <div className="min-h-4 text-[11px] text-espresso/45 tabular-nums">{per100 && product.stock > 0 ? `${money(per100)} per 100g` : ''}</div>
+            </div>
+            <AddButton product={product} />
           </div>
-          <AddButton product={product} />
-        </div>
+        )}
       </div>
     </motion.article>
   );
@@ -206,6 +243,15 @@ function FeatureProduct({ product, onSelect }) {
       </article>
     </Reveal>
   );
+}
+
+// Products across: the design sets 2, 3 or 4 on a computer (lists run one or two wide).
+function gridCols(count) {
+  if (cardKind() === 'list') return 'grid-cols-1 md:grid-cols-2';
+  const cols = LOOK.theme?.cols ?? 4;
+  if (cols === 2) return 'grid-cols-2 lg:gap-8';
+  if (cols === 3 || count < 4) return 'grid-cols-2 md:grid-cols-3';
+  return 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
 }
 
 const SORTS = [
@@ -279,7 +325,7 @@ export default function Shop({ products, loading, error, onSelect, shop }) {
         {!loading && products.length === 1 ? (
           <FeatureProduct product={products[0]} onSelect={onSelect} />
         ) : (
-        <motion.div layout className={cn('mt-8 grid grid-cols-2 gap-3 sm:gap-5', list.length >= 4 ? 'md:grid-cols-3 lg:grid-cols-4' : 'md:grid-cols-3')}>
+        <motion.div layout className={cn('mt-8 grid gap-3 sm:gap-5', gridCols(list.length))}>
           {loading
             ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} />)
             : (

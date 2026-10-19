@@ -155,12 +155,15 @@ function Explore({ content, products, posts }) {
 }
 
 export function HomePage() {
-  const { content, products, config, posts } = useOutletContext();
+  const { content, products, config, posts, loading, error, select } = useOutletContext();
   usePageTitle(content);
+  // Some designs lead with the products right after the banner; the rest send people on from a hub.
+  const shopFirst = LOOK.theme?.home === 'shop-first';
   return (
     <>
       <Hero products={products} config={config} content={content} />
       {content.ticker.enabled && <Marquee items={content.ticker.items} />}
+      {shopFirst && <Shop products={products} loading={loading} error={error} onSelect={select} shop={content.shop} />}
       <Explore content={content} products={products} posts={posts} />
     </>
   );

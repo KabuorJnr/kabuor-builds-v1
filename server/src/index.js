@@ -14,12 +14,22 @@ import { clientBrand } from './platform/presets.js';
 import { getShop, isPreview, requestHost, resolveHost, shopState } from './platform/shops.js';
 import { PLATFORM_DOMAIN, PLATFORM_NAME, PLATFORM_TAGLINE } from './site.js';
 import { runAs } from './tenant.js';
+import { limit, securityHeaders } from './guard.js';
 
 const app = express();
 app.disable('x-powered-by');
 // Behind a proxy (Vercel, Railway, a load balancer), take the visitor's IP, host and https from X-Forwarded-*.
 if (process.env.VERCEL || process.env.RAILWAY_ENVIRONMENT_NAME || process.env.TRUST_PROXY) app.set('trust proxy', 1);
+app.use(securityHeaders);
 app.use(express.json({ limit: '100kb' }));
+
+// Limits on the endpoints worth abusing (per visitor IP).
+app.use('/api/platform/signup', limit('signup', 10, 60, 'Too many signups from this connection. Try again in an hour.'));
+app.use('/api/platform/check-link', limit('check', 120, 10));
+app.use(['/api/platform/upload', '/api/admin/look/upload', '/api/admin/uploads'], limit('upload', 80, 60, 'Too many uploads. Try again in a while.'));
+app.use(['/api/platform/pay', '/api/admin/billing/pay', '/api/admin/mpesa-keys/test'], (req, res, next) => (req.method === 'POST' ? limit('prompt', 6, 10, 'Too many M-Pesa prompts. Wait a few minutes before trying again.')(req, res, next) : next()));
+app.use(['/api/platform/admin/login', '/api/admin/login'], limit('login', 20, 15));
+app.use('/api/orders', (req, res, next) => (req.method === 'POST' ? limit('order', 30, 10)(req, res, next) : next()));
 
 const dist = join(dirname(fileURLToPath(import.meta.url)), '../../client/dist');
 // The built page shell, re-read whenever a new build replaces it (its asset names change with each build).

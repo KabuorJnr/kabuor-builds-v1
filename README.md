@@ -97,6 +97,32 @@ Test locally with `vercel dev` (or `vercel dev -L` without signing in).
 - **Link previews:** the static page shell carries Kabuor Builds' title; a shop's own title is set in the
   browser, so WhatsApp and social previews show the platform's title rather than the shop's.
 
+## Traffic, latency and security
+
+**Today:** one Node process; one SQLite file per shop plus `platform.db`. Shops never share a database, so
+one busy shop can't lock another, and a single small server comfortably handles many shops' everyday traffic.
+
+**Already in place** (`server/src/guard.js`): security headers (no sniffing, pages can only be framed by the
+platform, HSTS on https), per-IP limits on signups, uploads, link checks, M-Pesa prompts, sign-ins and orders;
+signed per-shop sessions (one shop's login is useless on another); hashed passwords; M-Pesa secrets kept
+server-side only; uploads re-encoded so only real images are stored.
+
+**As traffic grows, in this order:**
+1. **CDN in front** (Cloudflare or Vercel): the website files and product photos are served from Nairobi /
+   Mombasa edge servers, not your server. Most page weight never reaches you. Biggest win for latency.
+2. **A bigger server + backups:** SQLite on a fast SSD handles thousands of orders a minute. Back up
+   `DATA_DIR` every hour (Litestream streams SQLite to S3/R2 continuously).
+3. **More servers behind a load balancer, split by shop:** route each shop link to one server (consistent
+   hashing on the host name). Each server owns its shops' SQLite files, so there's no shared database to
+   bottleneck. Move the rate-limit counters and sessions to Redis so limits hold across servers.
+4. **Hosted databases when you outgrow that:** Turso/libSQL (SQLite-compatible, replicas near customers) or
+   Postgres with read replicas. The code already talks to the database through one place (`db.js`).
+5. **Photos to object storage** (Cloudflare R2 / S3) behind the CDN, so servers stay stateless.
+
+**Security checklist before launch:** https everywhere (`PUBLIC_URL`), a long `JWT_SECRET`, firewall so only
+the load balancer reaches the server, `server/.env` never committed (it isn't), daily off-site backups,
+Cloudflare/Vercel firewall rules against floods, and ODPC registration.
+
 ## Before real customers
 
 - Rate-limit signups and uploads, and add email verification.

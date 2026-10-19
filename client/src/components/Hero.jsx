@@ -165,8 +165,9 @@ export default function Hero({ products, config, content }) {
   const addPic = (src, alt) => src && !pics.some((p) => p.src === src) && pics.push({ src, alt });
   LOOK.photos?.filter((s) => s.includes('hero-')).forEach((s) => addPic(s, `${LOOK.name}`));
   [front, left, right, ...products].forEach((p) => p && addPic(p.look?.photo, p.name));
-  const photoLed = layout !== 'trio' && pics.length >= 2;
-  const style = photoLed ? layout : 'trio';
+  // split and cover need one photo; minimal needs none; the collage layouts need two. Otherwise: drawn jars.
+  const style =
+    layout === 'minimal' || ((layout === 'split' || layout === 'cover') && pics.length >= 1) ? layout : layout !== 'trio' && pics.length >= 2 ? layout : 'trio';
 
   const lines = hero.lines;
   const highlightLine = lines.findIndex((l) => hero.highlight && l.includes(hero.highlight));
@@ -267,6 +268,80 @@ export default function Hero({ products, config, content }) {
       )}
     </motion.div>
   );
+
+  const padTop = notice ? 'pt-36 sm:pt-44' : 'pt-28 sm:pt-36';
+
+  // Split: words on one half, the photo filling the other half edge to edge.
+  if (style === 'split') {
+    const [main] = pics;
+    return (
+      <section id="top" ref={ref} className="relative grid overflow-hidden lg:min-h-[100svh] lg:grid-cols-2">
+        <div className={cn('container-x relative flex items-center pb-14 lg:pr-12 lg:pb-20', padTop)}>{text}</div>
+        <motion.div initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4, ease: EASE }} className="relative min-h-[60svh] overflow-hidden lg:min-h-0">
+          <img src={main.src} alt={main.alt} className="absolute inset-0 h-full w-full object-cover" />
+          {front && (
+            <Link to={`/shop?item=${front.id}`} className="kraft absolute bottom-6 left-6 flex items-center gap-3 py-2.5 pr-5 pl-3 text-espresso">
+              <span className="leading-tight">
+                <span className="block text-sm font-bold">{front.name}</span>
+                <span className="text-xs text-espresso/60">{money(front.price)}</span>
+              </span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
+        </motion.div>
+      </section>
+    );
+  }
+
+  // Cover: one photo across the whole screen, the words over a dark fade at the bottom.
+  if (style === 'cover') {
+    const [main] = pics;
+    return (
+      <section id="top" ref={ref} className="relative flex min-h-[92svh] items-end overflow-hidden">
+        <motion.img initial={{ scale: 1.08 }} animate={{ scale: 1 }} transition={{ duration: 2, ease: EASE }} src={main.src} alt={main.alt} className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
+        {/* light words on the photo: the theme's ink and page colours swap inside the banner */}
+        <div className="container-x relative pt-40 pb-16 sm:pb-20" style={{ '--color-espresso': '#FFFFFF', '--color-cream': '#121212' }}>
+          {text}
+        </div>
+      </section>
+    );
+  }
+
+  // Minimal: big words and nothing else, then the first products in a row.
+  if (style === 'minimal') {
+    const strip = products.slice(0, 4);
+    return (
+      <section id="top" ref={ref} className={cn('relative overflow-hidden pb-14', padTop)}>
+        <div className="container-x relative">
+          <div className="max-w-4xl">{text}</div>
+          {strip.length > 0 && (
+            <div className="mt-14 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+              {strip.map((p, i) => (
+                <motion.div key={p.id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.5 + i * 0.08, ease: EASE }}>
+                  <Link to={`/shop?item=${p.id}`} className="group block">
+                    <span className="block aspect-[4/5] overflow-hidden rounded-[var(--r-lg)] bg-beige">
+                      {p.look?.photo ? (
+                        <img src={p.look.photo} alt={p.name} className="h-full w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105" />
+                      ) : (
+                        <span className="block h-full w-full p-[12%]">
+                          <ProductJar look={p.look} size={p.size} showTag={false} className="h-full w-full" />
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-3 flex items-baseline justify-between gap-3 text-sm">
+                      <span className="truncate font-semibold">{p.name}</span>
+                      <span className="shrink-0 tabular-nums text-espresso/60">{money(p.price)}</span>
+                    </span>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
 
   let visual;
   if (style === 'photo') {
