@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, Smartphone, Sparkles, Sun, Trash2,
+  AlertCircle, ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { EASE, ksh, MpesaPay, PalettePicker, papi, PictureDrop, ShopPreview, StylePicker } from './shared';
@@ -424,31 +424,68 @@ function ProductsStep({ token, signup, onNext, onBack }) {
 const DESKTOP_W = 1280;
 
 /** The real shop, in a phone or a scaled-down desktop window. */
-function ShopFrame({ url, device }) {
+function ShopFrame({ url, device, onReload }) {
   const box = useRef(null);
   const [scale, setScale] = useState(0.6);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+  }, [url, device]);
+
   useEffect(() => {
     if (!box.current) return;
     const ro = new ResizeObserver(([e]) => setScale(Math.min(1, e.contentRect.width / DESKTOP_W)));
     ro.observe(box.current);
     return () => ro.disconnect();
   }, [device]);
+
   if (device === 'phone') {
     return (
-      <div className="mx-auto w-[390px] max-w-full rounded-[2.6rem] bg-[#0F1115] p-3 shadow-[0_40px_80px_-30px_rgba(15,17,21,0.6)]">
-        <iframe title="Your shop on a phone" src={url} className="h-[720px] w-full rounded-[2rem] bg-white" />
+      <div className="relative mx-auto w-[390px] max-w-full rounded-[2.6rem] bg-[#0F1115] p-3 shadow-[0_40px_80px_-30px_rgba(15,17,21,0.6)]">
+        {loading && (
+          <div className="absolute inset-3 z-10 flex flex-col items-center justify-center rounded-[2rem] bg-slate-900/95 text-white backdrop-blur-md">
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20">
+              <Loader2 className="h-7 w-7 animate-spin" />
+            </div>
+            <p className="mt-4 text-sm font-bold tracking-wide text-slate-100">Loading your storefront...</p>
+            <p className="mt-1 text-xs text-slate-400">Applying live products & theme</p>
+          </div>
+        )}
+        <iframe
+          title="Your shop on a phone"
+          src={url}
+          onLoad={() => setLoading(false)}
+          className="h-[720px] w-full rounded-[2rem] bg-white transition-opacity duration-300"
+          style={{ opacity: loading ? 0 : 1 }}
+        />
       </div>
     );
   }
   return (
-    <div ref={box} className="overflow-hidden rounded-[var(--r-lg)] bg-white shadow-[0_40px_80px_-40px_rgba(15,17,21,0.6)] ring-1 ring-espresso/10" style={{ height: 820 * scale + 36 }}>
+    <div ref={box} className="relative overflow-hidden rounded-[var(--r-lg)] bg-white shadow-[0_40px_80px_-40px_rgba(15,17,21,0.6)] ring-1 ring-espresso/10" style={{ height: 820 * scale + 36 }}>
       <div className="flex h-9 items-center gap-2 bg-[#EDE7DE] px-4">
         <i className="h-3 w-3 rounded-full bg-[#CFC7BB]" />
         <i className="h-3 w-3 rounded-full bg-[#CFC7BB]" />
         <i className="h-3 w-3 rounded-full bg-[#CFC7BB]" />
         <span className="ml-3 flex-1 truncate rounded-full bg-white px-3 py-0.5 text-xs text-espresso/55">{url.split('/?')[0].replace(/^https?:\/\//, '')}</span>
       </div>
-      <iframe title="Your shop on a computer" src={url} className="origin-top-left bg-white" style={{ width: DESKTOP_W, height: 820, transform: `scale(${scale})` }} />
+      {loading && (
+        <div className="absolute inset-x-0 bottom-0 top-9 z-10 flex flex-col items-center justify-center bg-slate-900/95 text-white backdrop-blur-md">
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20">
+            <Loader2 className="h-7 w-7 animate-spin" />
+          </div>
+          <p className="mt-4 text-sm font-bold tracking-wide text-slate-100">Loading your storefront...</p>
+          <p className="mt-1 text-xs text-slate-400">Rendering desktop view & styles</p>
+        </div>
+      )}
+      <iframe
+        title="Your shop on a computer"
+        src={url}
+        onLoad={() => setLoading(false)}
+        className="origin-top-left bg-white transition-opacity duration-300"
+        style={{ width: DESKTOP_W, height: 820, transform: `scale(${scale})`, opacity: loading ? 0 : 1 }}
+      />
     </div>
   );
 }
@@ -459,12 +496,16 @@ function PreviewPayStep({ token, signup, info, onEditLook, onEditProducts, onLiv
   const [state, setState] = useState({ error: null, launching: false });
   const paid = Boolean(signup.paidUntil);
 
-  // Build the shop from everything entered so far and get its private preview address.
-  useEffect(() => {
+  const loadPreview = useCallback(() => {
+    setState((s) => ({ ...s, error: null }));
     papi('/preview', { method: 'POST', token })
       .then((r) => setUrl(r.url))
       .catch((err) => setState((s) => ({ ...s, error: err.message })));
   }, [token]);
+
+  useEffect(() => {
+    loadPreview();
+  }, [loadPreview]);
 
   const goLive = async () => {
     setState({ error: null, launching: true });
@@ -486,17 +527,61 @@ function PreviewPayStep({ token, signup, info, onEditLook, onEditProducts, onLiv
               </button>
             ))}
           </div>
-          {url && (
-            <a href={url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-caramel hover:underline">
-              Open in a new tab <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          )}
+          <div className="flex items-center gap-3">
+            {url && (
+              <>
+                <button
+                  type="button"
+                  onClick={loadPreview}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-espresso/60 hover:text-espresso"
+                  title="Reload preview"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" /> Reload
+                </button>
+                <a href={url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:underline">
+                  Open in a new tab <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              </>
+            )}
+          </div>
         </div>
         {url ? (
-          <ShopFrame url={url} device={device} />
+          <ShopFrame url={url} device={device} onReload={loadPreview} />
         ) : (
-          <div className="grid h-[600px] place-items-center rounded-[var(--r-xl)] bg-sand/50">
-            {state.error ? <p className="max-w-sm text-center text-sm text-red-800">{state.error}</p> : <Loader2 className="h-6 w-6 animate-spin text-espresso/40" />}
+          <div className="flex h-[600px] flex-col items-center justify-center rounded-[var(--r-xl)] bg-slate-900/5 p-8 text-center ring-1 ring-espresso/10">
+            {state.error ? (
+              <div className="max-w-md space-y-4">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+                  <AlertCircle className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-espresso">Couldn't prepare preview</h3>
+                  <p className="mt-1 text-sm text-espresso/70">{state.error}</p>
+                </div>
+                <div className="flex justify-center gap-3">
+                  <button type="button" onClick={loadPreview} className="btn bg-espresso px-5 py-2.5 text-sm text-cream hover:bg-black">
+                    <RefreshCw className="h-4 w-4" /> Try again
+                  </button>
+                  <button type="button" onClick={onEditProducts} className="btn btn-ghost px-4 py-2.5 text-sm">
+                    Check products
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-md ring-1 ring-blue-500/20">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-espresso">Generating your live preview...</h3>
+                  <p className="mt-1 text-sm text-espresso/60">Seeding catalogue, styling theme, and establishing private address</p>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-xs font-medium text-espresso/45">
+                  <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
+                  Connecting to live store instance
+                </div>
+              </div>
+            )}
           </div>
         )}
         <p className="mt-3 text-center text-sm text-espresso/55">This is your real shop. Tap around: products, cart and pages all work. Orders open once you’re live.</p>

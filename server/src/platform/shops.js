@@ -58,7 +58,7 @@ export function forgetShop(slug) {
  */
 export const previewToken = (record) => createHash('sha256').update(`preview:${record.setup_token}`).digest('hex').slice(0, 32);
 export function isPreview(req, record) {
-  const sent = String(req.get('x-preview-token') ?? '');
+  const sent = String(req.get('x-preview-token') ?? req.query?.preview ?? '');
   return record.status !== 'live' && sent.length === 32 && sent === previewToken(record);
 }
 
