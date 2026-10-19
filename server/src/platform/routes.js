@@ -232,9 +232,14 @@ export function applyBrand(slug, b = {}) {
 }
 
 // ---------- step 4: go live ----------
+// A shop's address: <link>.localhost locally, <link>.<domain> once the platform is served on its own domain,
+// and <platform address>/s/<link> before that (e.g. on the host's default address, with no wildcard DNS).
 const shopUrl = (slug, req) => {
-  const host = req ? requestHost(req) ?? '' : '';
-  return /localhost/.test(host) ? `${req.protocol}://${slug}.localhost:${host.split(':')[1] ?? ''}`.replace(/:$/, '') : `https://${slug}.${PLATFORM_DOMAIN}`;
+  const host = (req ? requestHost(req) ?? '' : '').toLowerCase();
+  const bare = host.replace(/:\d+$/, '');
+  if (bare === 'localhost' || bare.endsWith('.localhost')) return `${req.protocol}://${slug}.localhost:${host.split(':')[1] ?? ''}`.replace(/:$/, '');
+  if (!req || bare === PLATFORM_DOMAIN || bare.endsWith(`.${PLATFORM_DOMAIN}`)) return `https://${slug}.${PLATFORM_DOMAIN}`;
+  return `${req.protocol}://${host}/s/${slug}`;
 };
 
 // The shop's contents as the owner set them in the wizard: products (replacing any earlier preview) and the

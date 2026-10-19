@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { api } from '../lib/api';
+import { SHOP_BASE } from '../lib/base';
 
 export const useAdmin = create(
   persist(
@@ -13,7 +14,7 @@ export const useAdmin = create(
       logout: () => set({ token: null, username: null, mustChange: false }),
       requireChange: () => set({ mustChange: true }),
     }),
-    { name: 'shop-admin-session' },
+    { name: `shop-admin-session${SHOP_BASE}` }, // one sign-in per shop when shops share an address
   ),
 );
 

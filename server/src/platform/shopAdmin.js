@@ -8,6 +8,7 @@ import { paletteOptions } from './palette.js';
 import { KINDS, styleList } from './presets.js';
 import { shopState } from './shops.js';
 import { getShopRecord } from './store.js';
+import { latestRequest, requestSetup, withdrawRequest } from './mpesaRequests.js';
 import { failureMessage, mpesaSettings, saveMpesaSettings, stkQuery, testPrompt } from '../mpesa.js';
 
 export const shopAdmin = Router();
@@ -25,6 +26,19 @@ shopAdmin.get('/mpesa-keys/test/:checkoutId', async (req, res) => {
   const r = await stkQuery(String(req.params.checkoutId)).catch((err) => ({ status: 'pending', description: err.message }));
   res.json({ ...r, message: r.status === 'failed' ? failureMessage(r.code) : r.status === 'paid' ? 'It works: the prompt was paid.' : 'Waiting for the PIN…' });
 });
+
+// Or ask Kabuor Builds to connect it: the request shows on the platform dashboard until the keys are in.
+shopAdmin.get('/mpesa-request', (req, res) => {
+  const record = getShopRecord(slug());
+  const spec = JSON.parse(record.brand || '{}');
+  res.json({
+    request: latestRequest(slug()),
+    // To fill the form: what checkout already shows customers, and the owner's signup phone.
+    defaults: { type: spec.paybill && !spec.till ? 'paybill' : 'till', number: spec.till || spec.paybill || '', phone: record.phone },
+  });
+});
+shopAdmin.post('/mpesa-request', (req, res) => res.status(201).json({ request: requestSetup(slug(), req.body ?? {}) }));
+shopAdmin.delete('/mpesa-request', (req, res) => res.json({ request: withdrawRequest(slug()) }));
 
 shopAdmin.get('/look', (req, res) => {
   const record = getShopRecord(slug());

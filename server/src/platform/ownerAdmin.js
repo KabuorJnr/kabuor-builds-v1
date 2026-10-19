@@ -10,6 +10,7 @@ import { HttpError } from '../db.js';
 import { DATA_DIR, PLATFORM_EMAIL } from '../site.js';
 import { PRICES, testMode } from './billing.js';
 import { KINDS } from './presets.js';
+import { connectForShop, declineRequest, listRequests, markWorking, openRequestCount } from './mpesaRequests.js';
 import { getShop, shopState } from './shops.js';
 import { pdb } from './store.js';
 
@@ -165,6 +166,7 @@ ownerAdmin.get('/overview', (req, res) => {
     kinds,
     payments,
     gmv: { amount: gmv, orders },
+    mpesaRequests: openRequestCount(),
   });
 });
 
@@ -193,3 +195,15 @@ ownerAdmin.get('/shops', (req, res) => {
   const list = rows.filter((r) => (!want || r.stage === want) && (!q || `${r.name} ${r.slug} ${r.owner} ${r.phone} ${r.city}`.toLowerCase().includes(q)));
   res.json({ total: rows.length, counts, shops: list });
 });
+
+// ---------- M-Pesa setup requests from shop owners ----------
+ownerAdmin.get('/mpesa-requests', (req, res) => res.json(listRequests(['open', 'live', 'cancelled', 'all'].includes(req.query.status) ? req.query.status : 'open')));
+ownerAdmin.post('/mpesa-requests/:id/working', (req, res) => {
+  markWorking(req.params.id, req.body?.reply);
+  res.json({ ok: true });
+});
+ownerAdmin.post('/mpesa-requests/:id/decline', (req, res) => {
+  declineRequest(req.params.id, req.body?.reply);
+  res.json({ ok: true });
+});
+ownerAdmin.put('/mpesa-requests/:id/keys', async (req, res) => res.json(await connectForShop(req.params.id, req.body ?? {})));

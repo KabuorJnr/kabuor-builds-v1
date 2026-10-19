@@ -55,9 +55,34 @@ const page = ({ title, description, color, icon = 'data:,' }) =>
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 // ---------- which site is this? ----------
+// Until the wildcard domain points here, shops are also reachable on the platform's own address at
+// /s/<link>/ (the prefix is stripped, so every route below works unchanged). Requests the page makes from
+// there (API calls, pictures) say which shop with an X-Shop header, or failing that their Referer.
+const SHOP_PATH = /^\/s\/([a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9]))(?=\/|\?|$)/;
+function pathShop(req) {
+  const m = req.url.match(SHOP_PATH);
+  if (m) {
+    req.url = req.url.slice(m[0].length).replace(/^(?=\?|$)/, '/');
+    return m[1];
+  }
+  if (!/^\/(api\/(?!platform\/|health)|uploads\/|admin\.webmanifest)/.test(req.path)) return null;
+  const sent = String(req.get('x-shop') ?? '');
+  if (SHOP_PATH.test(`/s/${sent}`)) return sent;
+  try {
+    return new URL(req.get('referer') ?? '').pathname.match(SHOP_PATH)?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 app.use((req, res, next) => {
-  const where = resolveHost(requestHost(req));
-  req.site = where.platform ? { platform: true } : { slug: where.slug, shop: getShop(where.slug) };
+  let where = resolveHost(requestHost(req));
+  let base = '';
+  if (where.platform) {
+    const slug = pathShop(req);
+    if (slug) (where = { slug }), (base = `/s/${slug}`);
+  }
+  req.site = where.platform ? { platform: true } : { slug: where.slug, shop: getShop(where.slug), base };
   if (req.site.shop) return runAs(req.site.shop, next);
   next();
 });
@@ -115,9 +140,9 @@ app.get(
       name: `${b.content.brand.name} Admin`,
       short_name: `${b.content.brand.short} Admin`,
       description: `Orders, sales and alerts for ${b.content.brand.name}`,
-      id: '/admin',
-      start_url: '/admin',
-      scope: '/admin',
+      id: `${req.site.base}/admin`,
+      start_url: `${req.site.base}/admin`,
+      scope: `${req.site.base}/admin`,
       display: 'standalone',
       background_color: b.colors.cream,
       theme_color: b.colors.espresso,

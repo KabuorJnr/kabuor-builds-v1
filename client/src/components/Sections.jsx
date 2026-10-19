@@ -13,6 +13,7 @@ import { byCountry, telHref } from '../lib/branches';
 import { cn, money } from '../lib/format';
 import { LOOK } from '../lib/brand';
 
+import { platformOrigin } from '../lib/base';
 
 /* ---------------- ticker ---------------- */
 export function Marquee({ items }) {
@@ -496,7 +497,7 @@ export function Footer({ content, config, products = [], links = [] }) {
           <span className="flex items-center gap-4">
             {/* Every shop on the platform links back to its builder. */}
             {LOOK.platform && (
-              <a href={`${window.location.protocol}//${window.location.host.split('.').slice(1).join('.')}`} className="text-cream/40 transition hover:text-honey">
+              <a href={platformOrigin()} className="text-cream/40 transition hover:text-honey">
                 Website by {LOOK.platform.name}
               </a>
             )}

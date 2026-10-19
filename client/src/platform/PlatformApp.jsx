@@ -9,6 +9,7 @@ import { family, loadFonts } from '../lib/fonts';
 import './platform.css';
 import { EASE, ksh, papi } from './shared';
 import Wizard from './Wizard';
+import { platformOrigin } from '../lib/base';
 
 // Kabuor Builds' own dashboard (only loads for the owner).
 const OwnerDashboard = lazy(() => import('./OwnerDashboard'));
@@ -26,7 +27,7 @@ const PLATFORM_LOOK = {
 };
 
 /** The platform's address from a shop link: anjugu.shop.ke → shop.ke (anjugu.localhost:5173 → localhost:5173). */
-export const platformOrigin = () => `${window.location.protocol}//${window.location.host.split('.').slice(1).join('.')}`;
+export { platformOrigin };
 
 /** The Kabuor Builds lockup: the price-tag K and the name, "Builds" in sapphire indigo. */
 export function Wordmark({ name = 'Kabuor Builds', light = false, stacked = false, tagline, className = '' }) {

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { SHOP_BASE } from '../lib/base';
 
 let flightId = 0;
 
@@ -55,7 +56,7 @@ export const useCart = create(
         set({ toast: null });
       },
     }),
-    { name: 'anjugu-cart', partialize: (s) => ({ items: s.items }) },
+    { name: `anjugu-cart${SHOP_BASE}`, partialize: (s) => ({ items: s.items }) },
   ),
 );
 

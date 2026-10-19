@@ -7,6 +7,8 @@ import { ArrowDownRight, ArrowUpRight, ExternalLink, Loader2, LogOut, MessageCir
 import { cn } from '../lib/format';
 import { ksh } from './shared';
 import { Wordmark } from './PlatformApp';
+import MpesaRequests from './MpesaRequests';
+import { shopAddress } from '../lib/base';
 
 const KEY = 'kb-owner-token';
 const getToken = () => {
@@ -51,7 +53,7 @@ const STAGES = {
 };
 const day = (iso) => (iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—');
 const daysFrom = (iso) => Math.ceil((Date.parse(iso) - Date.now()) / 864e5);
-const shopUrl = (slug) => `${window.location.protocol}//${slug}.${window.location.host}`;
+const shopUrl = shopAddress;
 const wa = (phone, text) => `https://wa.me/254${String(phone).replace(/\D/g, '').replace(/^(254|0)/, '')}?text=${encodeURIComponent(text)}`;
 
 function Login({ onIn }) {
@@ -290,6 +292,10 @@ export default function OwnerDashboard() {
     const t = setTimeout(() => oapi(`/shops?stage=${stage}&q=${encodeURIComponent(q)}`).then(setList).catch(fail), 200);
     return () => clearTimeout(t);
   }, [signedIn, stage, q, fail]);
+  // Shown first when owners were waiting on an M-Pesa setup at load; below the numbers when nobody was.
+  // (It stays put while you work through them, so the "prompt is on" confirmation stays in view.)
+  const waitingNow = o?.mpesaRequests ?? 0;
+  const requests = o && <MpesaRequests oapi={oapi} onError={fail} />;
   const stuck = useMemo(() => (list?.shops ?? []).filter((s) => s.stage === 'paid' || s.stage === 'previewing').slice(0, 8), [list]);
 
   if (!signedIn) return <Login onIn={() => setSignedIn(true)} />;
@@ -330,6 +336,7 @@ export default function OwnerDashboard() {
         </div>
       ) : (
         <>
+          {waitingNow > 0 && <div className="mt-6">{requests}</div>}
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Kpi label={`Money in · last ${rangeLabel}`} value={ksh(o.revenue.amount)}>
               <Delta now={o.revenue.amount} before={o.revenue.previous} />
@@ -396,6 +403,7 @@ export default function OwnerDashboard() {
             </div>
           </div>
 
+          {waitingNow === 0 && <div className="mt-10">{requests}</div>}
           <h2 className="kb-display mt-10 text-3xl">Shops</h2>
           <div className="mt-3">{list && <ShopsTable data={list} stage={stage} setStage={setStage} q={q} setQ={setQ} />}</div>
         </>

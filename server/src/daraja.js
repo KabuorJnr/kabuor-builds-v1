@@ -81,6 +81,8 @@ export function daraja(cfg, { callbackPath, secretSalt }) {
   return {
     ready,
     callbackSecret,
+    /** Signs in to Daraja with the consumer key and secret (sends nothing to anyone's phone). */
+    checkKeys: () => accessToken().then(() => true),
     status: () => ({ enabled: ready, environment: cfg.env === 'production' ? 'live' : 'sandbox', payTo: cfg.till || cfg.shortcode || null, callbacks: Boolean(callbackUrl) }),
 
     /** Sends the PIN prompt. Resolves to { checkoutId } or throws with a message safe to show the payer. */

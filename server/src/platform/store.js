@@ -50,6 +50,24 @@ pdb.exec(`
     updated_at  TEXT NOT NULL
   );
   CREATE INDEX IF NOT EXISTS idx_payments_slug ON payments(slug);
+
+  -- Owners asking Kabuor Builds to connect the M-Pesa prompt for them. The developer enters the shop's
+  -- Daraja keys from the platform dashboard; saving them switches prompts on at once.
+  CREATE TABLE IF NOT EXISTS mpesa_requests (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug       TEXT NOT NULL REFERENCES shops(slug) ON DELETE CASCADE,
+    status     TEXT NOT NULL DEFAULT 'requested', -- requested | working | live | cancelled
+    pay_type   TEXT NOT NULL,                     -- till | paybill
+    pay_number TEXT NOT NULL,                     -- the Till or Paybill customers pay
+    store      TEXT NOT NULL DEFAULT '',          -- a Till's store (HO) number, if they know it
+    phone      TEXT NOT NULL,                     -- who to call about it
+    note       TEXT NOT NULL DEFAULT '',          -- from the owner
+    reply      TEXT NOT NULL DEFAULT '',          -- from Kabuor Builds, shown to the owner
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    live_at    TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_mpesa_requests_slug ON mpesa_requests(slug);
 `);
 
 export const now = () => new Date().toISOString();

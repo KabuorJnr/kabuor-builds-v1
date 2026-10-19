@@ -10,6 +10,7 @@ import {
 import { cn } from '../lib/format';
 import { EASE, ksh, MpesaPay, PalettePicker, papi, PictureDrop, ShopPreview, StylePicker } from './shared';
 import { Wordmark } from './PlatformApp';
+import { linkLabel } from '../lib/base';
 
 const KIND_ICONS = { sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, other: Package };
 const STEP_LABELS = ['Your business', 'Make it yours', 'Products', 'Preview & pay'];
@@ -516,7 +517,7 @@ function PreviewPayStep({ token, signup, info, onEditLook, onEditProducts, onLiv
         <div className="rounded-[var(--r-xl)] bg-white p-5 ring-1 ring-espresso/10">
           <p className="text-sm font-semibold text-espresso/55">Happy with it?</p>
           <p className="mt-1 text-lg font-bold">
-            Go live at {signup.link}.{info?.domain}
+            Go live at {linkLabel(signup.link)}
           </p>
           {state.error && url && <p className="mt-3 rounded-[var(--r-md)] bg-red-50 px-3 py-2 text-sm font-medium text-red-800">{state.error}</p>}
           <div className="mt-4">
@@ -628,7 +629,7 @@ export default function Wizard({ info }) {
               </h1>
               {signup && step > 0 && (
                 <p className="mt-1 text-espresso/60">
-                  {signup.name} · <b className="text-espresso">{signup.link}.{info?.domain}</b>
+                  {signup.name} · <b className="text-espresso">{linkLabel(signup.link)}</b>
                   {step === 1 && (
                     <button onClick={restart} className="ml-2 text-sm font-semibold text-caramel underline-offset-2 hover:underline">
                       Start over

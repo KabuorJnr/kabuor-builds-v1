@@ -1,6 +1,9 @@
 node_modules
 dist
 .env
+*.env
+**/.env
+**/.env.*
 server/data/
 # Ad render frames: rebuilt by `node render.mjs video` in marketing/ad
 marketing/ad/frames/

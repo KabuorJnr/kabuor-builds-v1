@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { create } from 'zustand';
+import { PATH_SHOP, SHOP_BASE } from './base';
 
 export class ApiError extends Error {
   constructor(status, message, code) {
@@ -13,7 +14,7 @@ export class ApiError extends Error {
 // request so the shop shows before it's live.
 export function previewKey() {
   try {
-    return sessionStorage.getItem('shop-preview') || '';
+    return sessionStorage.getItem(`shop-preview${SHOP_BASE}`) || '';
   } catch {
     return '';
   }
@@ -28,6 +29,7 @@ export async function api(path, { method = 'GET', body, file, token, raw = false
       ...(file ? { 'Content-Type': file.type } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(previewKey() ? { 'X-Preview-Token': previewKey() } : {}),
+      ...(PATH_SHOP ? { 'X-Shop': PATH_SHOP } : {}),
     },
     body: file ?? (body ? JSON.stringify(body) : undefined),
   });

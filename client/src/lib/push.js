@@ -1,4 +1,5 @@
 // Browser side of admin phone alerts (Web Push).
+import { SHOP_BASE } from './base';
 
 const ua = () => navigator.userAgent;
 export const isIos = () => /iPhone|iPad|iPod/.test(ua()) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -28,12 +29,12 @@ function keyBytes(base64url) {
 }
 
 async function registration() {
-  return (await navigator.serviceWorker.getRegistration('/')) ?? navigator.serviceWorker.register('/sw.js', { scope: '/' });
+  return (await navigator.serviceWorker.getRegistration(`${SHOP_BASE}/`)) ?? navigator.serviceWorker.register(`${SHOP_BASE}/sw.js`, { scope: `${SHOP_BASE}/` });
 }
 
 export async function currentSubscription() {
   if (pushBlocker()) return null;
-  const reg = await navigator.serviceWorker.getRegistration('/');
+  const reg = await navigator.serviceWorker.getRegistration(`${SHOP_BASE}/`);
   return reg ? reg.pushManager.getSubscription() : null;
 }
 

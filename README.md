@@ -46,6 +46,11 @@ phone and email are settings (`PLATFORM_*` in `server/.env`). Every shop's foote
     themselves a KSh 1 test prompt, and from then on customers get the PIN prompt at checkout and pay
     straight into the shop's Till/Paybill. Secrets are stored in the shop's database and never sent back to
     the browser. Without keys, checkout shows the Till/Paybill instructions instead.
+  - **Or "connect it for me"** (`server/src/platform/mpesaRequests.js`): an owner without a Daraja account
+    sends their Till/Paybill and phone from the same page. The request shows at the top of the platform
+    dashboard (`shop.ke/admin`); the developer drops in the credentials file (or pastes/types the keys),
+    Safaricom checks the consumer key and secret, and the shop's checkout sends PIN prompts from the next
+    order on. Rejected keys change nothing. The owner's page follows the request and flips to "on" by itself.
   - Results arrive by Safaricom's callback once `PUBLIC_URL` is https; until then (and as a backup) the app
     asks Daraja for the status every few seconds, so prompts work locally too.
 - **Customers' payments never touch the platform:** each shop's prompt pays its own Till/Paybill.

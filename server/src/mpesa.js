@@ -50,6 +50,8 @@ export const mpesaStatus = () => client().status();
 export const callbackSecret = () => client().callbackSecret;
 export const stkPush = (args) => client().stkPush(args);
 export const stkQuery = (id) => client().stkQuery(id);
+/** Throws a plain message when Safaricom rejects the saved consumer key or secret. */
+export const checkKeys = () => client().checkKeys();
 
 /** The keys for the admin: which are set, never the secrets themselves. */
 export function mpesaSettings() {
@@ -91,6 +93,23 @@ export function saveMpesaSettings(input = {}) {
   db.prepare(`INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)
     ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`).run(KEY, JSON.stringify(next), new Date().toISOString());
   return mpesaSettings();
+}
+
+/**
+ * Saves keys and proves the consumer key and secret with Safaricom before keeping them. If Safaricom
+ * rejects them, the shop goes back to the keys it had (or none), so a typo never breaks a working checkout.
+ */
+export async function connectMpesa(input = {}) {
+  const before = db.prepare('SELECT value FROM settings WHERE key = ?').get(KEY)?.value ?? null;
+  const saved = saveMpesaSettings(input);
+  try {
+    await checkKeys();
+    return saved;
+  } catch (err) {
+    if (before === null) db.prepare('DELETE FROM settings WHERE key = ?').run(KEY);
+    else db.prepare('UPDATE settings SET value = ? WHERE key = ?').run(before, KEY);
+    throw new HttpError(400, `${err.message} Nothing was changed on the shop.`);
+  }
 }
 
 /** Sends a KSh 1 prompt to the owner's phone to prove the keys work. */

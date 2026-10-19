@@ -22,6 +22,7 @@ import Website from './Website';
 import Look from './Look';
 import Plan, { PlanBanner } from './Plan';
 import MpesaKeys from './MpesaKeys';
+import { SHOP_BASE } from '../lib/base';
 
 const NAV = [
   { to: '/admin', label: 'Overview', icon: LayoutDashboard, end: true, group: 'Analytics' },
@@ -338,7 +339,7 @@ function useInstallableAdmin() {
       return el;
     });
     // Registering early means a tapped alert can open the portal even before alerts are set up on this device.
-    if ('serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
+    if ('serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register(`${SHOP_BASE}/sw.js`, { scope: `${SHOP_BASE}/` }).catch(() => {});
     return () => tags.forEach((el) => el.remove());
   }, []);
 }
