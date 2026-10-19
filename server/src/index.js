@@ -51,6 +51,9 @@ const page = ({ title, description, color, icon = 'data:,' }) =>
     .replace(/(<meta name="theme-color" content=")[^"]*/, `$1${esc(color)}`)
     .replace(/(<link rel="icon" href=")[^"]*/, `$1${esc(icon)}`);
 
+// For the host's health checks: the server is up.
+app.get('/api/health', (req, res) => res.json({ ok: true }));
+
 // ---------- which site is this? ----------
 app.use((req, res, next) => {
   const where = resolveHost(requestHost(req));

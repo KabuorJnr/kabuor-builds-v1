@@ -21,6 +21,12 @@ if (process.env.VERCEL && !process.env.DATA_DIR) {
   throw new Error('No persistent storage on Vercel. Set DATA_DIR=/tmp/kabuor only for a throwaway preview; real shops need a hosted database (see README).');
 }
 
+// Railway: shops live on the attached volume, which survives redeploys and restarts. Without one the disk is
+// wiped on every deploy, so refuse to start rather than lose shops.
+if (process.env.RAILWAY_ENVIRONMENT_NAME && !process.env.RAILWAY_VOLUME_MOUNT_PATH && !process.env.DATA_DIR) {
+  throw new Error('No volume attached. In Railway, add a volume to this service (mount path /data) so shops are kept.');
+}
+
 // Where every database and upload lives: DATA_DIR, the Railway volume, or server/data.
 export const DATA_DIR =
   process.env.DATA_DIR || process.env.RAILWAY_VOLUME_MOUNT_PATH || join(dirname(fileURLToPath(import.meta.url)), '..', 'data');

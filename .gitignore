@@ -9,3 +9,6 @@ marketing/ad/frames/
 *.mp4
 *.mov
 ad/frames/
+
+# Settings ready to paste into Railway (has secrets)
+server/railway.env
