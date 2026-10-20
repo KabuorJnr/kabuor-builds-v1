@@ -11,6 +11,7 @@ import { DATA_DIR, PLATFORM_EMAIL } from '../site.js';
 import { PRICES, testMode } from './billing.js';
 import { KINDS } from './presets.js';
 import { connectForShop, declineRequest, listRequests, markWorking, openRequestCount } from './mpesaRequests.js';
+import { listDemoRequests, newDemoCount, setDemoStatus } from './demoRequests.js';
 import { getShop, shopState } from './shops.js';
 import { pdb } from './store.js';
 
@@ -167,6 +168,7 @@ ownerAdmin.get('/overview', (req, res) => {
     payments,
     gmv: { amount: gmv, orders },
     mpesaRequests: openRequestCount(),
+    demoRequests: newDemoCount(),
   });
 });
 
@@ -195,6 +197,10 @@ ownerAdmin.get('/shops', (req, res) => {
   const list = rows.filter((r) => (!want || r.stage === want) && (!q || `${r.name} ${r.slug} ${r.owner} ${r.phone} ${r.city}`.toLowerCase().includes(q)));
   res.json({ total: rows.length, counts, shops: list });
 });
+
+// ---------- demo requests from the company site ----------
+ownerAdmin.get('/demo-requests', (req, res) => res.json(listDemoRequests(['open', 'closed', 'all'].includes(req.query.status) ? req.query.status : 'open')));
+ownerAdmin.post('/demo-requests/:id/status', (req, res) => res.json(setDemoStatus(req.params.id, req.body?.status)));
 
 // ---------- M-Pesa setup requests from shop owners ----------
 ownerAdmin.get('/mpesa-requests', (req, res) => res.json(listRequests(['open', 'live', 'cancelled', 'all'].includes(req.query.status) ? req.query.status : 'open')));

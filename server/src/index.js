@@ -26,6 +26,18 @@ app.use(express.json({ limit: '100kb' }));
 // Limits on the endpoints worth abusing (per visitor IP).
 app.use('/api/platform/signup', limit('signup', 10, 60, 'Too many signups from this connection. Try again in an hour.'));
 app.use('/api/platform/check-link', limit('check', 120, 10));
+app.use('/api/platform/demo', limit('demo', 6, 60, 'Too many requests from this connection. WhatsApp us instead.'));
+// The standalone company site (e.g. on Vercel) reads the platform's info and sends demo requests from another
+// address. Only those two endpoints answer it; COMPANY_SITE_ORIGINS lists the addresses (comma-separated).
+const COMPANY_ORIGINS = (process.env.COMPANY_SITE_ORIGINS || 'https://kabuor-builds.vercel.app').split(',').map((o) => o.trim().replace(/\/+$/, '')).filter(Boolean);
+app.use(['/api/platform/info', '/api/platform/demo'], (req, res, next) => {
+  const origin = req.get('origin');
+  if (origin && (COMPANY_ORIGINS.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin))) {
+    res.set({ 'Access-Control-Allow-Origin': origin, Vary: 'Origin', 'Access-Control-Allow-Methods': 'GET, POST', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Max-Age': '86400' });
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+  }
+  next();
+});
 app.use(['/api/platform/upload', '/api/admin/look/upload', '/api/admin/uploads'], limit('upload', 80, 60, 'Too many uploads. Try again in a while.'));
 app.use(['/api/platform/pay', '/api/admin/billing/pay', '/api/admin/mpesa-keys/test'], (req, res, next) => (req.method === 'POST' ? limit('prompt', 6, 10, 'Too many M-Pesa prompts. Wait a few minutes before trying again.')(req, res, next) : next()));
 app.use(['/api/platform/admin/login', '/api/admin/login'], limit('login', 20, 15));
@@ -157,7 +169,14 @@ if (existsSync(dist)) {
     if (req.method !== 'GET') return next();
     const { platform, shop, slug } = req.site;
     if (platform) {
-      return res.send(page({ title: `${PLATFORM_NAME} · Product-first websites that sell`, description: `Your product, your colours, your prices. Customers pick, pay with M-Pesa, done. ${PLATFORM_TAGLINE}`, color: '#FFF7EC', icon: '/brand/icon-64.png' }));
+      // Each page of the company site gets its own title and description (link previews on WhatsApp, Google).
+      const pages = {
+        '/shops': [`Kabuor Shops · Product-first websites that sell`, `Your product, your colours, your prices. Customers pick, pay with M-Pesa, done. ${PLATFORM_TAGLINE}`],
+        '/erp': ['Kabuor ERP · Run the whole business from one place', 'Sales, M-Pesa matching, KRA-ready VAT, stock and books, with an assistant you can ask in Kiswahili. Built in Kenya.'],
+        '/start': [`Start your shop · ${PLATFORM_NAME}`, 'Design your shop, see it, then pay by M-Pesa and go live.'],
+      };
+      const [title, description] = pages[req.path.replace(/\/$/, '')] ?? [`${PLATFORM_NAME} · Software for Kenyan businesses`, 'Kabuor Shops for selling online and Kabuor ERP for running the whole business. M-Pesa first, KRA-ready, in English and Kiswahili.'];
+      return res.send(page({ title, description, color: '#0A0B1E', icon: '/brand/icon-64.png' }));
     }
     if (!shop) return res.status(404).send(page({ title: `${slug}.${PLATFORM_DOMAIN} is available`, description: `Open your shop on ${PLATFORM_NAME}.`, color: '#F6F3EC' }));
     const c = shop.brand.content;

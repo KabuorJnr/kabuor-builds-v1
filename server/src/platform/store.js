@@ -68,6 +68,22 @@ pdb.exec(`
     live_at    TEXT
   );
   CREATE INDEX IF NOT EXISTS idx_mpesa_requests_slug ON mpesa_requests(slug);
+
+  -- People asking for a demo from the company site. Kabuor Builds follows up on WhatsApp.
+  CREATE TABLE IF NOT EXISTS demo_requests (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    product    TEXT NOT NULL,                  -- erp | shops | both
+    name       TEXT NOT NULL,
+    business   TEXT NOT NULL,
+    phone      TEXT NOT NULL,                  -- 07xx… or 01xx…
+    email      TEXT NOT NULL DEFAULT '',
+    staff      TEXT NOT NULL DEFAULT '',       -- 1 | 2-10 | 11-50 | 50+
+    note       TEXT NOT NULL DEFAULT '',
+    status     TEXT NOT NULL DEFAULT 'new',    -- new | contacted | booked | closed
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_demo_requests_status ON demo_requests(status, created_at);
 `);
 
 export const now = () => new Date().toISOString();

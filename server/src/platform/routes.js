@@ -18,10 +18,14 @@ import { accentsFrom, paletteOptions } from './palette.js';
 import { clientBrand, KINDS, makeBrand, slugify, styleList, STYLES } from './presets.js';
 import { forgetShop, getShop, LINK_RULE, previewToken, requestHost, RESERVED, shopDir, shopState } from './shops.js';
 import { getShopRecord, now, pdb, shopByToken, updateShop } from './store.js';
+import { createDemoRequest } from './demoRequests.js';
 
 export const platformRouter = Router();
 // Kabuor Builds' own dashboard (sign-in and numbers).
 platformRouter.use('/admin', ownerAdmin);
+
+/** "Request a demo" on the company site (rate-limited in index.js). */
+platformRouter.post('/demo', (req, res) => res.json(createDemoRequest(req.body ?? {})));
 
 const text = (v, max) => String(v ?? '').trim().slice(0, max);
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;

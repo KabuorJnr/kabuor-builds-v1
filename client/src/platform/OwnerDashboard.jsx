@@ -8,6 +8,7 @@ import { cn } from '../lib/format';
 import { ksh } from './shared';
 import { Wordmark } from './PlatformApp';
 import MpesaRequests from './MpesaRequests';
+import DemoRequests from './DemoRequests';
 import { shopAddress } from '../lib/base';
 
 const KEY = 'kb-owner-token';
@@ -336,6 +337,8 @@ export default function OwnerDashboard() {
         </div>
       ) : (
         <>
+          {/* People asking for a demo come first while any are new: they cool off fastest. */}
+          {(o.demoRequests ?? 0) > 0 && <div className="mt-6"><DemoRequests oapi={oapi} onError={fail} /></div>}
           {waitingNow > 0 && <div className="mt-6">{requests}</div>}
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Kpi label={`Money in · last ${rangeLabel}`} value={ksh(o.revenue.amount)}>
@@ -404,6 +407,7 @@ export default function OwnerDashboard() {
           </div>
 
           {waitingNow === 0 && <div className="mt-10">{requests}</div>}
+          {(o.demoRequests ?? 0) === 0 && <div className="mt-10"><DemoRequests oapi={oapi} onError={fail} /></div>}
           <h2 className="kb-display mt-10 text-3xl">Shops</h2>
           <div className="mt-3">{list && <ShopsTable data={list} stage={stage} setStage={setStage} q={q} setQ={setQ} />}</div>
         </>

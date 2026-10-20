@@ -1,5 +1,5 @@
-// Kabuor Builds' own website: the landing page, the signup wizard (/start) and the page a visitor sees on
-// a shop link nobody has taken yet. Brand: ink #0F1115, orange #2357F5, cream #FFF7EC; "Mlete deals."
+// Kabuor Builds' own website: the company page (/), one page per product (/shops, /erp), the signup wizard
+// (/start), the owner's dashboard (/admin) and the page a visitor sees on a shop link nobody has taken yet. Brand: ink #0F1115, orange #2357F5, cream #FFF7EC; "Mlete deals."
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, Route, Routes, useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
@@ -9,42 +9,22 @@ import { family, loadFonts } from '../lib/fonts';
 import './platform.css';
 import { EASE, ksh, papi } from './shared';
 import Wizard from './Wizard';
+import Company from './Company';
+import Erp from './Erp';
+import { SiteFooter, SiteHeader, tel, whatsapp } from './Site';
 import { platformOrigin } from '../lib/base';
 
 // Kabuor Builds' own dashboard (only loads for the owner).
 const OwnerDashboard = lazy(() => import('./OwnerDashboard'));
 
 // Kabuor Builds' palette and type, in the names the shared styles use.
-const PLATFORM_LOOK = {
-  // Kabuor Royal: midnight ink, royal indigo, electric sapphire, and a touch of Kabuor gold.
-  '--color-cream': '#F7F7FB', '--color-beige': '#EEEFF7', '--color-sand': '#DCDDF0', '--color-latte': '#9A9CC0',
-  '--color-honey': '#2357F5', '--color-amber': '#3A2BC9', '--color-caramel': '#3A2BC9', '--color-cocoa': '#585C80',
-  '--color-espresso': '#0A0B1E', '--color-bark': '#05060F', '--color-white': '#FFFFFF',
-  '--font-sans': '"KB Onest", ui-sans-serif, system-ui, sans-serif',
-  '--font-brand': '"KB Bricolage", ui-sans-serif, system-ui, sans-serif',
-  '--font-hand': '"KB Fraunces", Georgia, serif', '--font-tagline': '"KB Fraunces", Georgia, serif', '--font-script': '"KB Fraunces", Georgia, serif',
-  '--r-xl': '1.75rem', '--r-lg': '1.1rem', '--r-md': '0.7rem', '--r-btn': '999px',
-};
+import { PLATFORM_LOOK } from './look';
 
 /** The platform's address from a shop link: anjugu.shop.ke → shop.ke (anjugu.localhost:5173 → localhost:5173). */
 export { platformOrigin };
 
-/** The Kabuor Builds lockup: the price-tag K and the name, "Builds" in sapphire indigo. */
-export function Wordmark({ name = 'Kabuor Builds', light = false, stacked = false, tagline, className = '' }) {
-  const [first, ...rest] = name.split(' ');
-  return (
-    <span className={`inline-flex items-center whitespace-nowrap ${stacked ? 'gap-4' : 'gap-2.5'} ${className}`}>
-      <img src="/brand/mark.svg" alt="" className={stacked ? 'w-20' : 'w-11'} />
-      <span className={stacked ? 'block' : 'inline-flex items-baseline gap-1.5'}>
-        <span className={`kb-display ${stacked ? 'block text-5xl' : 'text-[1.45rem]'} ${light ? 'text-cream' : 'text-espresso'}`}>
-          {first}
-          {stacked ? <span className="block text-[#2357F5]">{rest.join(' ')}</span> : <span className="text-[#2357F5]"> {rest.join(' ')}</span>}
-        </span>
-        {stacked && tagline && <span className={`kb-serif mt-2 block text-xl ${light ? 'text-[#F2C14E]' : 'text-cocoa'}`}>{tagline}</span>}
-      </span>
-    </span>
-  );
-}
+import { Wordmark } from './Site';
+export { Wordmark };
 
 function useInfo() {
   const [info, setInfo] = useState(null);
@@ -54,8 +34,6 @@ function useInfo() {
   return info;
 }
 
-const tel = (phone) => `tel:${phone.replace(/\s/g, '')}`;
-const whatsapp = (phone, text) => `https://wa.me/254${phone.replace(/\D/g, '').replace(/^0/, '')}?text=${encodeURIComponent(text)}`;
 
 /** "[ your-business ].shop.ke" with a live availability check; continues to signup with the link filled in. */
 function ClaimLink({ domain, dark = false }) {
@@ -193,6 +171,9 @@ function StyleStrip({ styles }) {
 }
 
 function Landing({ info }) {
+  useEffect(() => {
+    document.title = 'Kabuor Shops · Product-first websites that sell';
+  }, []);
   const domain = info?.domain ?? 'shop.ke';
   const name = info?.name ?? 'Kabuor Builds';
   const phone = info?.phone;
@@ -206,19 +187,16 @@ function Landing({ info }) {
     <>
       {/* hero, on ink like the ad */}
       <div className="kb-ink relative overflow-hidden">
-        <header className="container-x relative flex items-center justify-between gap-4 py-5">
-          <Wordmark name={name} light />
-          <nav className="flex items-center gap-1 text-sm font-semibold">
-            {nav.map(([href, label]) => (
-              <a key={href} href={href} className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
-                {label}
-              </a>
-            ))}
-            <Link to="/start" className="btn ml-2 bg-cream px-5 py-2.5 whitespace-nowrap text-espresso hover:bg-white">
-              Start<span className="hidden sm:inline"> your shop</span>
-            </Link>
-          </nav>
-        </header>
+        <SiteHeader info={info} cta={{ to: '/start', label: 'Start your shop' }} />
+        {/* this product's own sections */}
+        <nav className="container-x relative -mt-1 hidden gap-1 text-sm font-semibold lg:flex" aria-label="Kabuor Shops">
+          <span className="py-2 pr-2 text-cream/45">Kabuor Shops:</span>
+          {nav.map(([href, label]) => (
+            <a key={href} href={href} className="rounded-full px-3 py-2 text-cream/70 hover:text-cream">
+              {label}
+            </a>
+          ))}
+        </nav>
 
         <section className="container-x relative grid items-center gap-10 pt-8 pb-16 sm:pt-14 lg:grid-cols-[1.1fr_1fr] lg:pb-24">
           <div>
@@ -420,41 +398,10 @@ function Landing({ info }) {
         </section>
       )}
 
-      <footer className="kb-ink relative overflow-hidden pt-14 pb-8">
-        <div className="container-x relative grid gap-10 lg:grid-cols-[1.2fr_0.8fr_1.4fr]">
-          <div>
-            <Wordmark name={name} light stacked tagline={info?.tagline ?? 'Mlete deals.'} />
-            {phone && (
-              <p className="mt-6 text-sm text-cream/60">
-                <a href={tel(phone)} className="font-semibold text-[#9DB6FF] hover:underline">
-                  {phone}
-                </a>
-                <span className="block">{info.email}</span>
-              </p>
-            )}
-          </div>
-          <nav className="grid content-start gap-2 text-sm" aria-label="Footer">
-            {[...nav, ['/start', 'Start your shop']].map(([href, label]) =>
-              href.startsWith('#') ? (
-                <a key={href} href={href} className="text-cream/70 hover:text-cream">
-                  {label}
-                </a>
-              ) : (
-                <Link key={href} to={href} className="font-semibold text-[#9DB6FF] hover:text-cream">
-                  {label}
-                </Link>
-              ),
-            )}
-          </nav>
-          <div>
-            <p className="mb-3 text-sm font-semibold text-cream/70">Claim your link</p>
-            <ClaimLink domain={domain} dark />
-          </div>
-        </div>
-        <p className="container-x relative mt-10 border-t border-white/10 pt-6 text-xs text-cream/45">
-          © {new Date().getFullYear()} {name} · Online shops for Kenyan brands
-        </p>
-      </footer>
+      <SiteFooter info={info}>
+        <p className="mb-3 text-sm font-semibold text-cream/50">Claim your link</p>
+        <ClaimLink domain={domain} dark />
+      </SiteFooter>
     </>
   );
 }
@@ -500,7 +447,9 @@ export default function PlatformApp({ site }) {
             </Suspense>
           }
         />
-        <Route path="*" element={<Landing info={info} />} />
+        <Route path="/shops" element={<Landing info={info} />} />
+        <Route path="/erp" element={<Erp info={info} />} />
+        <Route path="*" element={<Company info={info} />} />
       </Routes>
     </div>
   );

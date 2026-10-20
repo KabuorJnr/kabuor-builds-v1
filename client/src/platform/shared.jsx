@@ -12,7 +12,7 @@ export const EASE = [0.16, 1, 0.3, 1];
 
 /** fetch for /api/platform with the signup's setup token. */
 export async function papi(path, { method = 'GET', body, file, token } = {}) {
-  const res = await fetch(`/api/platform${path}`, {
+  const res = await fetch(`${(import.meta.env.VITE_PRODUCT_ORIGIN ?? '').replace(/\/+$/, '')}/api/platform${path}`, {
     method: file ? 'POST' : method,
     headers: {
       ...(body ? { 'Content-Type': 'application/json' } : {}),
