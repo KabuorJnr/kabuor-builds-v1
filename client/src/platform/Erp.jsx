@@ -3,11 +3,11 @@
 // plainly), who it's for, how it compares, and a person to book a demo with.
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, BarChart3, Boxes, Check, FileText, Minus, Plus, Sparkles, Users, Wallet, X } from 'lucide-react';
+import { ArrowRight, BarChart3, Boxes, Check, ExternalLink, FileText, Minus, Plus, Sparkles, Users, Wallet, X } from 'lucide-react';
 import { cn } from '../lib/format';
 import { EASE } from './shared';
 import DemoRequest from './DemoRequest';
-import { SiteFooter, SiteHeader } from './Site';
+import { ERP_RAILWAY_URL, SiteFooter, SiteHeader } from './Site';
 
 const FIXES = [
   ['Matching the M-Pesa statement to invoices by hand', 'Payments match their invoices by themselves. Anything unclear is one tap: “Looks like INV-0012, paid from Wanjiku Stores’ phone.”'],
@@ -144,10 +144,18 @@ export default function Erp({ info }) {
               Sales, M-Pesa, stock, production, payroll, customers and your books, kept right as you work, with an assistant you can ask in Kiswahili. Built in Kenya, for the way Kenyan businesses get paid.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.25, ease: EASE }} className="mt-8 flex flex-wrap gap-3">
-              <a href="#demo" className="btn bg-[#2357F5] px-6 py-3.5 text-white shadow-lg shadow-[#2357F5]/30 hover:bg-[#3A6BFF]">
-                Request a demo <ArrowRight className="h-4 w-4" />
+              <a
+                href={ERP_RAILWAY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn bg-[#2357F5] px-6 py-3.5 font-semibold text-white shadow-lg shadow-[#2357F5]/30 transition hover:bg-[#3A6BFF] inline-flex items-center gap-2"
+              >
+                Launch Kabuor ERP <ExternalLink className="h-4 w-4" />
               </a>
-              <a href="#features" className="btn bg-white/10 px-6 py-3.5 text-cream hover:bg-white/15">
+              <a href="#demo" className="btn border border-white/20 bg-white/10 px-6 py-3.5 text-cream hover:bg-white/15">
+                Request a demo
+              </a>
+              <a href="#features" className="btn btn-ghost px-5 py-3.5 text-cream/80 hover:text-cream">
                 See what it does
               </a>
             </motion.div>

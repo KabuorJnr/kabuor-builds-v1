@@ -26,6 +26,19 @@ export function Wordmark({ name = 'Kabuor Builds', light = false, stacked = fals
  * site (VITE_PRODUCT_ORIGIN), so "Shops", "ERP" and "Start your shop" open the product pages there. */
 export const PRODUCT_ORIGIN = (import.meta.env.VITE_PRODUCT_ORIGIN ?? '').replace(/\/+$/, '');
 
+/** Live Railway deployment links for the two products */
+export const SHOPS_RAILWAY_URL = (
+  import.meta.env.VITE_SHOPS_URL ??
+  import.meta.env.VITE_SHOPS_RAILWAY_URL ??
+  'https://kabuor-builds-production.up.railway.app'
+).replace(/\/+$/, '');
+
+export const ERP_RAILWAY_URL = (
+  import.meta.env.VITE_ERP_URL ??
+  import.meta.env.VITE_ERP_RAILWAY_URL ??
+  'https://kabuor-erp-production.up.railway.app'
+).replace(/\/+$/, '');
+
 /** A link to a page: inside the app on the platform, or to the platform's product pages from the company site. */
 export function Go({ to, children, ...props }) {
   if (PRODUCT_ORIGIN && to !== '/' && !to.startsWith('/#')) return <a href={PRODUCT_ORIGIN + to} {...props}>{children}</a>;
@@ -36,8 +49,8 @@ export const tel = (phone) => `tel:${phone.replace(/\s/g, '')}`;
 export const whatsapp = (phone, text) => `https://wa.me/254${phone.replace(/\D/g, '').replace(/^0/, '')}?text=${encodeURIComponent(text)}`;
 
 export const PRODUCTS = [
-  { to: '/shops', name: 'Kabuor Shops', short: 'Shops', line: 'Online shops for brands' },
-  { to: '/erp', name: 'Kabuor ERP', short: 'ERP', line: 'Run the whole business' },
+  { to: '/shops', name: 'Kabuor Shops', short: 'Shops', line: 'Online shops for brands', launchUrl: SHOPS_RAILWAY_URL },
+  { to: '/erp', name: 'Kabuor ERP', short: 'ERP', line: 'Run the whole business', launchUrl: ERP_RAILWAY_URL },
 ];
 
 /** On ink (light text) over the dark heroes. `cta` is this page's main action: { to | href, label }. */

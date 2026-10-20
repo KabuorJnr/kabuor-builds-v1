@@ -3,10 +3,10 @@
 // "which one do I need" guide, what both are built on, real work, who we are, and a person to talk to.
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, BarChart3, Check, Languages, MessageCircle, ReceiptText, ShoppingBag, Smartphone, Sparkles, Wallet } from 'lucide-react';
+import { ArrowRight, BarChart3, Check, ExternalLink, Languages, MessageCircle, ReceiptText, ShoppingBag, Smartphone, Sparkles, Wallet } from 'lucide-react';
 import { EASE, ksh } from './shared';
 import DemoRequest from './DemoRequest';
-import { ContactButtons, Go, SiteFooter, SiteHeader } from './Site';
+import { ContactButtons, ERP_RAILWAY_URL, Go, SHOPS_RAILWAY_URL, SiteFooter, SiteHeader } from './Site';
 
 const SHARED = [
   { icon: Wallet, title: 'M-Pesa first', text: 'Prompts, Paybills and Tills built in, not bolted on.' },
@@ -17,7 +17,7 @@ const SHARED = [
   { icon: MessageCircle, title: 'Real people', text: 'Call or WhatsApp us. We’ll set it up with you.' },
 ];
 
-function ProductCard({ tag, name, line, text, points, meta, primary, secondary, visual, delay }) {
+function ProductCard({ tag, name, line, text, points, meta, launch, primary, secondary, visual, delay }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 24 }}
@@ -27,7 +27,12 @@ function ProductCard({ tag, name, line, text, points, meta, primary, secondary, 
     >
       <div className="relative h-44 overflow-hidden bg-[#EEF0FB] sm:h-52">{visual}</div>
       <div className="flex flex-1 flex-col p-6 sm:p-7">
-        <p className="text-xs font-bold tracking-[0.14em] text-[#3A2BC9] uppercase">{tag}</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-bold tracking-[0.14em] text-[#3A2BC9] uppercase">{tag}</p>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-600/20">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live on Railway
+          </span>
+        </div>
         <h3 className="kb-display mt-2 text-3xl sm:text-4xl">{name}</h3>
         <p className="mt-1 text-lg font-semibold">{line}</p>
         <p className="mt-2 text-espresso/65">{text}</p>
@@ -39,7 +44,8 @@ function ProductCard({ tag, name, line, text, points, meta, primary, secondary, 
           ))}
         </ul>
         <p className="mt-5 text-sm font-semibold text-espresso/55">{meta}</p>
-        <div className="mt-5 flex flex-wrap gap-2.5 pt-1">
+        <div className="mt-5 flex flex-wrap items-center gap-2.5 pt-1">
+          {launch}
           {primary}
           {secondary}
         </div>
@@ -114,13 +120,23 @@ export default function Company({ info }) {
               points={['10 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, no commission', 'Your link, like yourbrand.shop.ke']}
               meta={info ? `From ${ksh(info.prices.monthly)} a month · Available now` : 'Available now'}
               visual={<ShopsVisual />}
+              launch={
+                <a
+                  href={SHOPS_RAILWAY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn bg-[#2357F5] px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-[#3A6BFF] inline-flex items-center gap-2"
+                >
+                  Launch Shop <ExternalLink className="h-4 w-4" />
+                </a>
+              }
               primary={
-                <Go to="/start" className="btn bg-[#2357F5] px-5 py-3 text-white hover:bg-[#3A6BFF]">
+                <Go to="/start" className="btn border border-espresso/15 bg-white px-4 py-3 font-medium text-espresso hover:bg-espresso/5">
                   Start your shop <ArrowRight className="h-4 w-4" />
                 </Go>
               }
               secondary={
-                <Go to="/shops" className="btn btn-ghost px-5 py-3">
+                <Go to="/shops" className="btn btn-ghost px-4 py-3">
                   How it works
                 </Go>
               }
@@ -134,13 +150,23 @@ export default function Company({ info }) {
               points={['M-Pesa payments match your invoices by themselves', 'VAT, stock and profit worked out as you go', 'Built for the phone, for your whole team']}
               meta="Early access · Priced in shillings per business"
               visual={<ErpVisual />}
+              launch={
+                <a
+                  href={ERP_RAILWAY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn bg-[#2357F5] px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-[#3A6BFF] inline-flex items-center gap-2"
+                >
+                  Launch ERP <ExternalLink className="h-4 w-4" />
+                </a>
+              }
               primary={
-                <Go to="/erp" className="btn bg-[#2357F5] px-5 py-3 text-white hover:bg-[#3A6BFF]">
+                <Go to="/erp" className="btn border border-espresso/15 bg-white px-4 py-3 font-medium text-espresso hover:bg-espresso/5">
                   See Kabuor ERP <ArrowRight className="h-4 w-4" />
                 </Go>
               }
               secondary={
-                <a href="#demo" className="btn btn-ghost px-5 py-3">
+                <a href="#demo" className="btn btn-ghost px-4 py-3">
                   Request a demo
                 </a>
               }
@@ -156,12 +182,12 @@ export default function Company({ info }) {
           <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Start from what you want to fix.</h2>
           <ul className="mt-10 divide-y divide-espresso/10 border-y border-espresso/10">
             {[
-              ['“I want customers to find my products and order online.”', 'Kabuor Shops', '/shops', ShoppingBag],
-              ['“I invoice other businesses, buy stock, and need my books and KRA in order.”', 'Kabuor ERP', '/erp', BarChart3],
-              ['“Both.”', 'Start with Shops today and join the ERP early access. We’re connecting them so online orders flow straight into your books.', '/erp', Sparkles],
-            ].map(([need, answer, to, Icon]) => (
-              <li key={need}>
-                <Go to={to} className="group grid gap-3 py-6 sm:grid-cols-[1fr_1fr_auto] sm:items-center sm:gap-8">
+              ['“I want customers to find my products and order online.”', 'Kabuor Shops', '/shops', ShoppingBag, SHOPS_RAILWAY_URL, 'Launch Shop'],
+              ['“I invoice other businesses, buy stock, and need my books and KRA in order.”', 'Kabuor ERP', '/erp', BarChart3, ERP_RAILWAY_URL, 'Launch ERP'],
+              ['“Both.”', 'Start with Shops today and join the ERP early access. We’re connecting them so online orders flow straight into your books.', '/erp', Sparkles, null, null],
+            ].map(([need, answer, to, Icon, launchHref, launchText]) => (
+              <li key={need} className="py-6">
+                <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-center sm:gap-8">
                   <span className="text-lg font-semibold">{need}</span>
                   <span className="flex items-start gap-3 text-espresso/70">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#ECEBFF] text-[#3A2BC9]">
@@ -169,8 +195,22 @@ export default function Company({ info }) {
                     </span>
                     <span className="pt-1.5">{answer}</span>
                   </span>
-                  <ArrowRight className="hidden h-5 w-5 text-[#2357F5] transition group-hover:translate-x-1 sm:block" />
-                </Go>
+                  <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+                    {launchHref && (
+                      <a
+                        href={launchHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn bg-[#2357F5] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#3A6BFF] inline-flex items-center gap-1.5"
+                      >
+                        {launchText} <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                    )}
+                    <Go to={to} className="group flex items-center text-sm font-semibold text-[#2357F5] hover:underline">
+                      Details <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5" />
+                    </Go>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>
