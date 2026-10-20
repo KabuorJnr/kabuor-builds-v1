@@ -420,7 +420,7 @@ export function Footer({ content, config, products = [], links = [] }) {
   const { brand, footer } = content;
   const heading = 'text-xs font-semibold tracking-[0.18em] text-cream/40 uppercase';
   return (
-    <footer className="mt-10 bg-bark pt-16 pb-32 text-cream lg:pb-[max(2rem,env(safe-area-inset-bottom))]">
+    <footer className="site-footer mt-10 bg-bark pt-16 pb-32 text-cream lg:pb-[max(2rem,env(safe-area-inset-bottom))]">
       <div className="container-x">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
           <div className="col-span-2 lg:col-span-1">

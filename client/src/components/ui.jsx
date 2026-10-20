@@ -42,7 +42,7 @@ export function Logo({ light = false, className = '' }) {
   const { top, bottom } = LOOK.logo;
   return (
     // The words shrink and trim on narrow phones so the cart and menu buttons always stay on screen.
-    <span className={cn('inline-flex min-w-0 items-center gap-2 sm:gap-2.5', className)} aria-label={name}>
+    <span className={cn('inline-flex max-w-full min-w-0 items-center gap-2 sm:gap-2.5', className)} aria-label={name}>
       <ApbMark className="h-8 w-16 shrink-0 sm:h-10 sm:w-20" />
       <span className={cn('h-8 w-px shrink-0', light ? 'bg-cream/25' : 'bg-espresso/20')} aria-hidden />
       <span className="min-w-0 leading-none whitespace-nowrap" aria-hidden>

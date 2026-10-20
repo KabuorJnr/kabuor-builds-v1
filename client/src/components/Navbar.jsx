@@ -74,7 +74,7 @@ export default function Navbar({ content, links }) {
                 <Megaphone className="hidden h-3.5 w-3.5 shrink-0 text-honey sm:block" />
                 <span>{notice.text}</span>
                 {notice.linkLabel && notice.linkHref && (
-                  <SmartLink href={notice.linkHref} className="shrink-0 font-semibold text-honey underline underline-offset-2 hover:text-cream">
+                  <SmartLink href={notice.linkHref} className="-my-2 shrink-0 py-2 font-semibold text-honey underline underline-offset-2 hover:text-cream">
                     {notice.linkLabel}
                   </SmartLink>
                 )}
@@ -95,7 +95,7 @@ export default function Navbar({ content, links }) {
                   : 'border border-transparent'),
             )}
           >
-            <Link to="/" aria-label={`${content.brand.name} home`} className={cn('min-w-0', kind === 'centered' && 'lg:order-2 lg:justify-self-center')}>
+            <Link to="/" aria-label={`${content.brand.name} home`} className={cn('flex min-w-0', kind === 'centered' && 'lg:order-2 lg:justify-self-center')}>
               <Logo />
             </Link>
 

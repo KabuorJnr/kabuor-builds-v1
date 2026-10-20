@@ -258,11 +258,9 @@ function CartStep({ items, products, subtotal, fee, total, threshold, mode, conf
                 <div className="flex min-w-0 flex-1 flex-col">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <h3 className="truncate font-bold">
-                        {item.size} {packLabel(item.look)}
-                      </h3>
+                      <h3 className="truncate font-bold">{item.name}</h3>
                       <p className="truncate text-xs text-espresso/50">
-                        {item.name} · {money(item.price)}
+                        {item.size} {packLabel(item.look)} · {money(item.price)}
                       </p>
                     </div>
                     <button onClick={() => remove(item.id)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-espresso/40 transition hover:bg-red-50 hover:text-red-700" aria-label={`Remove ${item.name}`}>
@@ -299,7 +297,8 @@ function CartStep({ items, products, subtotal, fee, total, threshold, mode, conf
                   <div className="relative h-24 overflow-hidden rounded-[var(--r-md)]" style={tintFor(p.look)}>
                     <ProductJar look={p.look} size={p.size} showTag={false} className="absolute inset-0 m-auto h-[86%] w-full" />
                   </div>
-                  <div className="mt-2 text-sm font-bold">
+                  <div className="mt-2 truncate text-sm font-bold">{p.name}</div>
+                  <div className="truncate text-xs text-espresso/50">
                     {p.size} {packLabel(p.look)}
                   </div>
                   <div className="mt-1 flex items-center justify-between">
@@ -592,7 +591,7 @@ function CheckoutStep({ items, config, branches, subtotal, fee, total, mode, onP
             {items.map((i) => (
               <li key={i.id} className="flex justify-between gap-3">
                 <span className="truncate text-espresso/70">
-                  {i.qty} × {i.size} {packLabel(i.look)}
+                  {i.qty} × {i.name}
                 </span>
                 <span className="tabular-nums">{money(i.price * i.qty)}</span>
               </li>

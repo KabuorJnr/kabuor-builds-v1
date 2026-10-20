@@ -289,8 +289,9 @@
   box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06);
 }
 
-/* The footer is dark on every site. On dark sites "cream" is the dark page colour, so give the footer light ink back. */
-[data-mode='dark'] footer {
+/* The site footer is dark on every site. On dark sites "cream" is the dark page colour, so give it light ink back.
+   Only the site footer: the cart, payment and admin panels use <footer> too and keep the normal colours. */
+[data-mode='dark'] footer.site-footer {
   --color-cream: var(--color-espresso);
   border-top: 1px solid color-mix(in srgb, var(--color-espresso) 10%, transparent);
 }

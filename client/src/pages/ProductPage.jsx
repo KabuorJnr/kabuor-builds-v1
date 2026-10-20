@@ -200,11 +200,12 @@ export default function ProductPage() {
   useEffect(() => {
     if (product) document.title = `${product.name} · ${content.brand.name}`;
   }, [product, content]);
-  // On phones, a buy bar appears once the main buttons scroll away.
+  // On phones, a buy bar shows whenever the main buttons aren't fully in view above the tab bar: when the
+  // page opens with them low on the screen, and once they scroll away.
   useEffect(() => {
     const el = buyBox.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setBuyBoxGone(!e.isIntersecting && e.boundingClientRect.top < 0));
+    const io = new IntersectionObserver(([e]) => setBuyBoxGone(e.intersectionRatio < 1), { rootMargin: '0px 0px -100px 0px', threshold: [0, 1] });
     io.observe(el);
     return () => io.disconnect();
   }, [product]);
