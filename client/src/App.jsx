@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Link, Route, Routes } from 'react-router';
 import Store from './pages/Store';
+import ProductPage from './pages/ProductPage';
 import { AboutPage, FaqPage, HomePage, HowToOrderPage, ShopPage, UpdatesPage } from './pages/SitePages';
 import { Logo } from './components/ui';
 
@@ -67,6 +68,7 @@ export default function App({ site }) {
       <Route path="/" element={closed ? <Closed state={site.state} /> : site?.state === 'preview' ? <><PreviewBar /><Store /></> : <Store />}>
         <Route index element={<HomePage />} />
         <Route path="shop" element={<ShopPage />} />
+        <Route path="products/:id" element={<ProductPage />} />
         <Route path="updates" element={<UpdatesPage />} />
         <Route path="how-to-order" element={<HowToOrderPage />} />
         <Route path="about" element={<AboutPage />} />

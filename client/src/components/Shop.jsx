@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, Flame, Plus, Star } from 'lucide-react';
 import ProductJar from './ProductJar';
@@ -103,24 +104,24 @@ const PHOTO = {
 const BODY = { card: 'p-3.5 sm:p-5', bare: 'px-0.5 pt-3', framed: 'border-t border-espresso/10 p-4', list: 'py-1 pr-1', overlay: 'px-0.5 pt-3' };
 export const cardKind = () => (CARD[LOOK.theme?.cards] ? LOOK.theme.cards : 'card');
 
-function ProductCard({ product, all, index, onSelect }) {
+function ProductCard({ product, all, index, label }) {
+  const href = `/products/${product.id}`;
   const { look } = product;
   const kind = cardKind();
-  const per100 = perHundredGrams(product.price, product.size);
   const photo = Boolean(look.photo);
   const price = product.stock > 0 ? money(product.price) : 'Sold out';
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.25 } }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.8, delay: (index % 4) * 0.07, ease: EASE }}
+      exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.2 } }}
+      viewport={{ once: true, margin: '0px 0px -20px 0px' }}
+      transition={{ duration: 0.4, delay: (index % 4) * 0.04, ease: EASE }}
       className={cn('group relative', CARD[kind])}
     >
       <div className={cn('relative w-full overflow-hidden', PHOTO[kind])}>
-        <button onClick={() => onSelect(product)} className="absolute inset-0 block" style={photo ? undefined : tintFor(look)} aria-label={`View ${product.name}`}>
+        <Link to={href} className="absolute inset-0 block" style={photo ? undefined : tintFor(look)} aria-label={`View ${product.name}`}>
           {photo ? (
             <img src={look.photo} alt={product.name} loading="lazy" decoding="async" className="product-photo h-full w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.05]" />
           ) : (
@@ -128,7 +129,7 @@ function ProductCard({ product, all, index, onSelect }) {
               <ProductJar look={look} price={product.price} size={product.size} showTag={false} className="h-full w-full" />
             </div>
           )}
-        </button>
+        </Link>
         {product.badge && kind !== 'list' && (
           <span className="paper-ink pointer-events-none absolute top-2.5 left-2.5 z-10 rounded-full bg-white/95 px-2.5 py-1 text-[9px] font-bold tracking-[0.12em] text-espresso uppercase shadow-sm sm:top-3 sm:left-3 sm:text-[10px]">
             {product.badge}
@@ -147,16 +148,17 @@ function ProductCard({ product, all, index, onSelect }) {
 
       <div className={cn('flex min-w-0 flex-1 flex-col', BODY[kind])}>
         {product.badge && kind === 'list' && <span className="mb-1 text-[10px] font-bold tracking-[0.12em] text-caramel uppercase">{product.badge}</span>}
+        {label && <span className="mb-1 text-[10px] font-bold tracking-[0.12em] text-espresso/45 uppercase">{label}</span>}
         <h3 className="leading-tight">
-          <button onClick={() => onSelect(product)} className={cn('text-left font-bold tracking-tight hover:text-caramel', kind === 'framed' ? 'text-[15px] sm:text-base' : 'text-[15px] sm:text-lg')}>
+          <Link to={href} className={cn('text-left font-bold tracking-tight hover:text-caramel', kind === 'framed' ? 'text-[15px] sm:text-base' : 'text-[15px] sm:text-lg')}>
             {titleOf(product, all)}
-          </button>
+          </Link>
         </h3>
-        <p className="mt-0.5 text-[12px] text-espresso/50 sm:text-[13px]">
-          {product.size} {packLabel(look)}
+        {/* Size, then what it's like ("Smoky · Sweet"), so the card helps choose, not just name. */}
+        <p className="mt-0.5 line-clamp-1 text-[12px] text-espresso/50 sm:text-[13px]">
+          {[`${product.size} ${packLabel(look)}`.trim(), ...(product.notes ?? []).slice(0, 2)].filter(Boolean).join(' · ')}
         </p>
         {look.heat > 0 && <HeatMeter level={look.heat} className="mt-2" />}
-        {look.fact && kind !== 'overlay' && <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug text-espresso/70 sm:text-[13px]">{look.fact}</p>}
         {product.reviews > 0 && (
           <div className="mt-1.5 flex items-center gap-1 text-[11px] text-espresso/50 sm:text-xs">
             <Star className="h-3 w-3 fill-honey text-honey" />
@@ -165,11 +167,8 @@ function ProductCard({ product, all, index, onSelect }) {
           </div>
         )}
         {kind !== 'overlay' && (
-          <div className="mt-auto flex items-end justify-between gap-2 pt-3 sm:pt-4">
-            <div className="min-w-0">
-              <div className="truncate text-[17px] font-extrabold tracking-tight tabular-nums sm:text-xl">{price}</div>
-              <div className="min-h-4 text-[11px] text-espresso/45 tabular-nums">{per100 && product.stock > 0 ? `${money(per100)} per 100g` : ''}</div>
-            </div>
+          <div className="mt-auto flex items-center justify-between gap-2 pt-3 sm:pt-4">
+            <div className={cn('min-w-0 truncate text-[17px] font-extrabold tracking-tight tabular-nums sm:text-lg', product.stock <= 0 && 'text-espresso/45')}>{price}</div>
             <AddButton product={product} />
           </div>
         )}
@@ -192,13 +191,14 @@ function Skeleton() {
 }
 
 // A one-product brand gets the product as a spread (photo beside the full story), not a lone card in an empty grid.
-function FeatureProduct({ product, onSelect }) {
+function FeatureProduct({ product }) {
+  const href = `/products/${product.id}`;
   const { look } = product;
-  const per100 = perHundredGrams(product.price, product.size);
+  const per100 = perHundredGrams(product.price, product.size, product.name);
   return (
     <Reveal className="mt-10">
       <article className="grid overflow-hidden rounded-[var(--r-xl)] bg-white shadow-[0_1px_2px_rgba(46,31,20,0.05),0_30px_60px_-30px_rgba(46,31,20,0.35)] ring-1 ring-espresso/[0.06] md:grid-cols-2">
-        <button onClick={() => onSelect(product)} className="group relative block aspect-[4/5] overflow-hidden md:aspect-auto md:min-h-[34rem]" style={look.photo ? undefined : tintFor(look)} aria-label={`View ${product.name}`}>
+        <Link to={href} className="group relative block aspect-[4/5] overflow-hidden md:aspect-auto md:min-h-[34rem]" style={look.photo ? undefined : tintFor(look)} aria-label={`View ${product.name}`}>
           {look.photo ? (
             <img src={look.photo} alt={product.name} decoding="async" className="product-photo absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.04]" />
           ) : (
@@ -209,7 +209,7 @@ function FeatureProduct({ product, onSelect }) {
           {product.badge && (
             <span className="paper-ink absolute top-4 left-4 z-10 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-bold tracking-[0.12em] text-espresso uppercase shadow-sm">{product.badge}</span>
           )}
-        </button>
+        </Link>
         <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-14">
           <h3 className="text-3xl leading-[1.05] font-extrabold tracking-tight sm:text-5xl">{titleOf(product)}</h3>
           <p className="mt-2 text-sm font-semibold text-espresso/55">
@@ -233,9 +233,9 @@ function FeatureProduct({ product, onSelect }) {
               {per100 && product.stock > 0 && <div className="mt-0.5 text-xs text-espresso/45 tabular-nums">{money(per100)} per 100g</div>}
             </div>
             <div className="flex items-center gap-3">
-              <button onClick={() => onSelect(product)} className="btn btn-ghost px-5 py-3 text-sm">
+              <Link to={href} className="btn btn-ghost px-5 py-3 text-sm">
                 Details
-              </button>
+              </Link>
               <AddButton product={product} className="sm:h-12 sm:w-12" />
             </div>
           </div>
@@ -248,6 +248,8 @@ function FeatureProduct({ product, onSelect }) {
 // Products across: the design sets 2, 3 or 4 on a computer (lists run one or two wide).
 function gridCols(count) {
   if (cardKind() === 'list') return 'grid-cols-1 md:grid-cols-2';
+  // A small range sits in one row rather than leaving one product alone on the next.
+  if (count === 4) return 'grid-cols-2 lg:grid-cols-4';
   const cols = LOOK.theme?.cols ?? 4;
   if (cols === 2) return 'grid-cols-2 lg:gap-8';
   if (cols === 3 || count < 4) return 'grid-cols-2 md:grid-cols-3';
@@ -260,7 +262,7 @@ const SORTS = [
   ['price-desc', 'Price: high to low'],
 ];
 
-export default function Shop({ products, loading, error, onSelect, shop }) {
+export default function Shop({ products, loading, error, shop, limit }) {
   const [pick, setPick] = useState('all');
   const [sort, setSort] = useState('popular');
   // Quick filters: the brand's own facets (heat, skin need, mood…), else the shop categories. Each shows its count.
@@ -271,6 +273,9 @@ export default function Shop({ products, loading, error, onSelect, shop }) {
   const filters = counted.length > 1 ? [{ id: 'all', label: shop.allLabel || 'All', count: products.length }, ...counted] : [];
   const picked = pick === 'all' ? products : products.filter((p) => groupOf(p) === pick);
   const list = sort === 'popular' ? picked : [...picked].sort((x, y) => (sort === 'price-asc' ? x.price - y.price : y.price - x.price));
+  // A small category label on each card, only when the range really spans several categories.
+  const used = new Set(products.map((p) => p.category));
+  const labels = !facet && (shop.categories ?? []).filter((c) => used.has(c.id)).length > 1 ? Object.fromEntries(shop.categories.map((c) => [c.id, c.label])) : null;
 
   return (
     <section id="shop" className="relative scroll-mt-16 py-20 sm:py-28">
@@ -323,15 +328,15 @@ export default function Shop({ products, loading, error, onSelect, shop }) {
         {error && <p className="mt-10 rounded-[var(--r-lg)] bg-white p-6 text-center text-espresso/70">We couldn’t load the shop right now. {error}</p>}
 
         {!loading && products.length === 1 ? (
-          <FeatureProduct product={products[0]} onSelect={onSelect} />
+          <FeatureProduct product={products[0]} />
         ) : (
         <motion.div layout className={cn('mt-8 grid gap-3 sm:gap-5', gridCols(list.length))}>
           {loading
             ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} />)
             : (
               <AnimatePresence mode="popLayout">
-                {list.map((p, i) => (
-                  <ProductCard key={p.id} product={p} all={products} index={i} onSelect={onSelect} />
+                {(limit ? list.slice(0, limit) : list).map((p, i) => (
+                  <ProductCard key={p.id} product={p} all={products} index={i} label={labels ? labels[p.category] : null} />
                 ))}
               </AnimatePresence>
             )}

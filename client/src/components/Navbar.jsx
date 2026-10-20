@@ -86,7 +86,7 @@ export default function Navbar({ content, links }) {
         <div className={kind === 'bar' ? '' : 'px-3 pt-3 sm:px-5'}>
           <nav
             className={cn(
-              'mx-auto flex h-14 items-center justify-between transition-all duration-500 ease-out-expo sm:h-16',
+              'mx-auto flex h-14 items-center justify-between gap-2 transition-all duration-500 ease-out-expo sm:h-16',
               kind === 'bar' ? 'h-16! border-b border-espresso/[0.08] bg-cream px-4 sm:h-[4.5rem]! sm:px-8' : 'max-w-7xl rounded-full pr-2 pl-3 sm:pl-5',
               kind === 'centered' && 'lg:grid lg:grid-cols-[1fr_auto_1fr]',
               kind !== 'bar' &&
@@ -95,7 +95,7 @@ export default function Navbar({ content, links }) {
                   : 'border border-transparent'),
             )}
           >
-            <Link to="/" aria-label={`${content.brand.name} home`} className={cn(kind === 'centered' && 'lg:order-2 lg:justify-self-center')}>
+            <Link to="/" aria-label={`${content.brand.name} home`} className={cn('min-w-0', kind === 'centered' && 'lg:order-2 lg:justify-self-center')}>
               <Logo />
             </Link>
 
@@ -114,7 +114,7 @@ export default function Navbar({ content, links }) {
               ))}
             </ul>
 
-            <div className={cn('flex items-center gap-1.5', kind === 'centered' && 'lg:order-3 lg:justify-self-end')}>
+            <div className={cn('flex shrink-0 items-center gap-1.5', kind === 'centered' && 'lg:order-3 lg:justify-self-end')}>
               <span className={cn('hidden', kind !== 'minimal' && kind !== 'centered' && 'md:block')}>
                 <Link to="/shop" className="btn btn-primary py-2.5!">
                   Shop now

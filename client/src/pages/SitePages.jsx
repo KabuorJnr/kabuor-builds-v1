@@ -1,15 +1,13 @@
 import { useEffect } from 'react';
 import { Link, Navigate, useOutletContext, useSearchParams } from 'react-router';
-import { motion } from 'framer-motion';
-import { ArrowRight, BookOpen, HelpCircle, Megaphone, Phone, Sprout } from 'lucide-react';
+import { ArrowRight, BookOpen, HelpCircle, Megaphone, Phone, Smartphone, Sprout, Truck } from 'lucide-react';
 import Hero from '../components/Hero';
-import ProductJar from '../components/ProductJar';
 import { Faq, JoinClub, Marquee, Process, Story, Testimonials } from '../components/Sections';
 import Shop from '../components/Shop';
 import UpdatesSection from '../components/UpdatesSection';
-import { EASE, SectionHeading } from '../components/ui';
+import { SectionHeading } from '../components/ui';
 import { cn, money } from '../lib/format';
-import { LOOK } from '../lib/brand';
+import { telHref } from '../lib/branches';
 
 function usePageTitle(content, title) {
   useEffect(() => {
@@ -23,10 +21,47 @@ function Page({ children }) {
   return <div className="pt-[var(--nav-h,5rem)] [&>section:first-child]:pt-8 sm:[&>section:first-child]:pt-14">{children}</div>;
 }
 
-// Big tappable cards on the home page, one per page, so customers jump straight to what they want.
-function Explore({ content, products, posts }) {
-  const prices = products.filter((p) => p.stock > 0).map((p) => p.price);
-  const from = prices.length ? Math.min(...prices) : null;
+// How buying works, answered up front: how to pay, how it gets to you, and who to talk to.
+function Assurance({ config, content }) {
+  const branches = content.brand.branches ?? [];
+  const contact = branches.find((b) => b.phone);
+  const till = config?.paymentMethods?.[0]?.hint;
+  const items = [
+    { icon: Smartphone, title: 'Pay with M-Pesa', text: config?.mpesaPrompt ? 'The PIN prompt comes straight to your phone at checkout.' : till ? `At checkout. ${till}.` : 'At checkout, with a receipt for every order.' },
+    config?.deliveryEnabled
+      ? { icon: Truck, title: config.freeDeliveryThreshold > 0 ? `Free delivery over ${money(config.freeDeliveryThreshold)}` : 'Delivered to you', text: config.deliveryNote || 'By rider or parcel service.' }
+      : { icon: Truck, title: 'Pick up', text: 'Collect from us. Delivery is coming soon.' },
+    contact
+      ? { icon: Phone, title: 'Talk to a person', text: `${contact.city ? `${contact.city}: ` : ''}${contact.phone}`, href: telHref(contact.phone) }
+      : { icon: Phone, title: 'Real people', text: 'Questions before you order? Ask us.' },
+  ];
+  return (
+    <section className="border-y border-espresso/10 bg-white/50">
+      <ul className="container-x grid gap-6 py-8 sm:grid-cols-3 sm:gap-8 sm:py-10">
+        {items.map(({ icon: Icon, title, text, href }) => (
+          <li key={title} className="flex gap-3.5">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-beige text-caramel">
+              <Icon className="h-[18px] w-[18px]" />
+            </span>
+            <span className="min-w-0">
+              <b className="block text-[15px]">{title}</b>
+              {href ? (
+                <a href={href} className="text-sm text-espresso/60 hover:text-espresso hover:underline">
+                  {text}
+                </a>
+              ) : (
+                <span className="text-sm text-espresso/60">{text}</span>
+              )}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+// The rest of the site, one card per page, after the products.
+function Explore({ content, posts }) {
   const latest = posts[0];
   const branches = content.brand.branches;
   const tiles = [
@@ -60,132 +95,80 @@ function Explore({ content, products, posts }) {
       text: branches.map((b) => b.city).join(' · '),
     },
   ].filter(Boolean);
-  const showcase = products.slice(0, 3);
-  // Real photos on the shop tile: product shots first, topped up with the brand's banner photos.
-  const shots = [
-    ...products.filter((p) => p.look?.photo).map((p) => ({ key: p.id, src: p.look.photo, alt: p.name })),
-    ...(LOOK.photos ?? []).filter((src) => src.includes('hero-')).map((src) => ({ key: src, src, alt: LOOK.name })),
-  ].slice(0, 3);
+  if (!tiles.length) return null;
 
   return (
-    <section id="explore" className="scroll-mt-20 py-12 sm:py-20">
+    <section id="explore" className="scroll-mt-20 py-14 sm:py-20">
       <div className="container-x">
-        <SectionHeading eyebrow="Explore" title="Where would you like to go?" />
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {/* Shop: the main tile */}
-          <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: EASE }} className="col-span-2 lg:row-span-2">
-            <Link to="/shop" className="group relative flex h-full min-h-[15rem] flex-col justify-between overflow-hidden rounded-[var(--r-xl)] bg-espresso p-5 text-cream sm:p-7">
-              <div className="bg-dots-light absolute inset-0 opacity-40" />
-              <div className="relative">
-                <p className="font-script text-3xl leading-none text-honey">Shop</p>
-                <h3 className="mt-2 text-2xl leading-tight font-extrabold tracking-tight sm:text-3xl">
-                  {products.length} {products.length === 1 ? 'product' : 'products'}{from ? `, from ${money(from)}` : ''}
-                </h3>
-                <p className="mt-1 text-sm text-cream/60">Everything we make, in one place.</p>
-              </div>
-              <div className="relative mt-4 flex items-end justify-between gap-3">
-                {shots.length > 0 ? (
-                  <div className="flex -space-x-6 sm:-space-x-8">
-                    {shots.map((s, i) => (
-                      <div
-                        key={s.key}
-                        className={cn(
-                          'paper-ink w-24 overflow-hidden rounded-[var(--r-lg)] bg-white p-1 shadow-[0_18px_30px_-16px_rgba(0,0,0,0.55)] transition-transform duration-500 ease-out-expo sm:w-36 sm:p-1.5',
-                          i === 1 ? 'z-10 group-hover:-translate-y-2' : 'translate-y-3',
-                          i === 0 && '-rotate-6',
-                          i === 2 && 'rotate-6',
-                        )}
-                      >
-                        <img src={s.src} alt={s.alt} loading="lazy" className="aspect-[4/5] w-full rounded-[max(0px,calc(var(--r-lg)-4px))] object-cover" />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                <div className="flex -space-x-5">
-                  {showcase.map((p, i) => (
-                    <div key={p.id} className={cn('w-16 transition-transform duration-500 ease-out-expo sm:w-24', i === 1 && 'z-10 group-hover:-translate-y-2', i !== 1 && 'translate-y-2')}>
-                      <ProductJar look={p.look} size={p.size} showTag={false} className="w-full" />
-                    </div>
-                  ))}
-                </div>
-                )}
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-honey text-espresso transition-transform duration-500 ease-out-expo group-hover:translate-x-1">
-                  <ArrowRight className="h-5 w-5" />
-                </span>
-              </div>
-            </Link>
-          </motion.div>
-
-          {tiles.map((t, i) => {
+        <SectionHeading eyebrow="Get to know us" title={`More from ${content.brand.name}`} />
+        <div className={cn('mt-8 grid grid-cols-2 gap-3 sm:gap-4', tiles.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3')}>
+          {tiles.map((t) => {
             const Icon = t.icon;
             return (
-              <motion.div key={t.to} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.06 * (i + 1), ease: EASE }}>
-                <Link to={t.to} className="group flex h-full min-h-[11rem] flex-col overflow-hidden rounded-[var(--r-xl)] bg-white ring-1 ring-espresso/[0.07] transition-shadow duration-500 hover:shadow-[0_24px_44px_-26px_rgba(46,31,20,0.5)]">
-                  {t.image ? (
-                    <div className="relative h-20 overflow-hidden bg-beige sm:h-24">
-                      <img src={t.image} alt="" className="h-full w-full object-cover object-top transition-transform duration-700 ease-out-expo group-hover:scale-105" loading="lazy" />
-                    </div>
-                  ) : (
-                    <span className="mx-4 mt-4 grid h-10 w-10 place-items-center rounded-[var(--r-lg)] bg-beige text-caramel sm:mx-5 sm:mt-5">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                  )}
-                  <div className="flex flex-1 flex-col p-4 sm:p-5">
-                    <p className="font-script text-2xl leading-none text-amber">{t.eyebrow}</p>
-                    <h3 className="mt-1.5 line-clamp-2 text-[15px] leading-snug font-extrabold tracking-tight sm:text-base">{t.title}</h3>
-                    <p className="mt-1 line-clamp-2 text-xs text-espresso/55">{t.text}</p>
-                    <span className="mt-auto inline-flex items-center gap-1 pt-3 text-xs font-bold text-caramel">
-                      Open <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                    </span>
+              <Link key={t.to} to={t.to} className="group flex h-full min-h-[11rem] flex-col overflow-hidden rounded-[var(--r-xl)] bg-white ring-1 ring-espresso/[0.07] transition-shadow duration-500 hover:shadow-[0_24px_44px_-26px_rgba(46,31,20,0.5)]">
+                {t.image ? (
+                  <div className="relative h-20 overflow-hidden bg-beige sm:h-24">
+                    <img src={t.image} alt="" className="h-full w-full object-cover object-top transition-transform duration-700 ease-out-expo group-hover:scale-105" loading="lazy" />
                   </div>
-                </Link>
-              </motion.div>
+                ) : (
+                  <span className="mx-4 mt-4 grid h-10 w-10 place-items-center rounded-[var(--r-lg)] bg-beige text-caramel sm:mx-5 sm:mt-5">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                )}
+                <div className="flex flex-1 flex-col p-4 sm:p-5">
+                  <p className="text-xs font-bold tracking-wider text-caramel uppercase">{t.eyebrow}</p>
+                  <h3 className="mt-1.5 line-clamp-2 text-[15px] leading-snug font-extrabold tracking-tight sm:text-base">{t.title}</h3>
+                  <p className="mt-1 line-clamp-2 text-xs text-espresso/55">{t.text}</p>
+                  <span className="mt-auto inline-flex items-center gap-1 pt-3 text-xs font-bold text-caramel">
+                    Open <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                </div>
+              </Link>
             );
           })}
         </div>
-
-        {branches[0]?.phone && (
-          <a href={`tel:${branches[0].phone.replace(/[^\d+]/g, '')}`} className="mt-4 flex items-center justify-center gap-2 rounded-[var(--r-lg)] bg-beige px-4 py-3 text-sm font-semibold text-espresso/70 sm:hidden">
-            <Phone className="h-4 w-4 text-amber" /> Prefer to call? {branches[0].city} {branches[0].phone}
-          </a>
-        )}
       </div>
     </section>
   );
 }
 
+const HOME_LIMIT = 8;
+
 export function HomePage() {
-  const { content, products, config, posts, loading, error, select } = useOutletContext();
+  const { content, products, config, posts, loading, error } = useOutletContext();
   usePageTitle(content);
-  // Some designs lead with the products right after the banner; the rest send people on from a hub.
-  const shopFirst = LOOK.theme?.home === 'shop-first';
+  // Every design leads with the products right after the banner: people come to a shop to see what's for sale.
   return (
     <>
       <Hero products={products} config={config} content={content} />
       {content.ticker.enabled && <Marquee items={content.ticker.items} />}
-      {shopFirst && <Shop products={products} loading={loading} error={error} onSelect={select} shop={content.shop} />}
-      <Explore content={content} products={products} posts={posts} />
+      <Shop products={products} loading={loading} error={error} shop={content.shop} limit={HOME_LIMIT} />
+      {products.length > HOME_LIMIT && (
+        <div className="container-x -mt-10 pb-14 text-center sm:-mt-14">
+          <Link to="/shop" className="btn btn-ghost px-6">
+            See all {products.length} products <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      )}
+      {content.reviews?.enabled && content.reviews.items?.length > 0 && <Testimonials data={content.reviews} />}
+      <Assurance config={config} content={content} />
+      <Explore content={content} posts={posts} />
     </>
   );
 }
 
 export function ShopPage() {
-  const { content, products, loading, error, select } = useOutletContext();
-  const [params, setParams] = useSearchParams();
+  const { content, products, loading, error } = useOutletContext();
+  const [params] = useSearchParams();
   usePageTitle(content, 'Shop');
 
-  // /shop?item=<id> opens that product (links from the footer, updates or WhatsApp).
+  // Old /shop?item=<id> links (footer, updates, shared on WhatsApp) go to the product's own page.
   const item = params.get('item');
-  useEffect(() => {
-    if (!item || !products.length) return;
-    const p = products.find((x) => x.id === item);
-    if (p) select(p);
-    setParams({}, { replace: true });
-  }, [item, products, select, setParams]);
+  if (item) return <Navigate to={`/products/${encodeURIComponent(item)}`} replace />;
 
   return (
     <Page>
-      <Shop products={products} loading={loading} error={error} onSelect={select} shop={content.shop} />
+      <Shop products={products} loading={loading} error={error} shop={content.shop} />
     </Page>
   );
 }

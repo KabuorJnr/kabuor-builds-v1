@@ -41,12 +41,13 @@ export function Logo({ light = false, className = '' }) {
   const { name } = useBrand();
   const { top, bottom } = LOOK.logo;
   return (
-    <span className={cn('inline-flex items-center gap-2.5', className)} aria-label={name}>
-      <ApbMark className="h-9 w-[4.5rem] shrink-0 sm:h-10 sm:w-20" />
-      <span className={cn('h-8 w-px', light ? 'bg-cream/25' : 'bg-espresso/20')} aria-hidden />
-      <span className="leading-none whitespace-nowrap" aria-hidden>
-        <span className={cn('block font-brand text-[21px]', light ? 'text-cream' : 'text-cocoa')}>{top}</span>
-        <span className={cn('mt-1 block text-[9.5px] font-semibold tracking-[0.16em] uppercase', light ? 'text-honey' : 'text-amber')}>{bottom}</span>
+    // The words shrink and trim on narrow phones so the cart and menu buttons always stay on screen.
+    <span className={cn('inline-flex min-w-0 items-center gap-2 sm:gap-2.5', className)} aria-label={name}>
+      <ApbMark className="h-8 w-16 shrink-0 sm:h-10 sm:w-20" />
+      <span className={cn('h-8 w-px shrink-0', light ? 'bg-cream/25' : 'bg-espresso/20')} aria-hidden />
+      <span className="min-w-0 leading-none whitespace-nowrap" aria-hidden>
+        <span className={cn('block truncate font-brand text-[18px] sm:text-[21px]', light ? 'text-cream' : 'text-cocoa')}>{top}</span>
+        <span className={cn('mt-1 block truncate text-[9px] font-semibold tracking-[0.14em] uppercase sm:text-[9.5px] sm:tracking-[0.16em]', light ? 'text-honey' : 'text-amber')}>{bottom}</span>
       </span>
     </span>
   );
@@ -131,15 +132,15 @@ export function FloatingPeanut({ className, path, duration = 12, delay = 0, size
   );
 }
 
-export function Reveal({ children, delay = 0, y = 28, className, as = 'div', ...rest }) {
+export function Reveal({ children, delay = 0, y = 14, className, as = 'div', ...rest }) {
   const Comp = motion[as];
   return (
     <Comp
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.9, delay, ease: EASE }}
+      viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+      transition={{ duration: 0.5, delay: Math.min(delay, 0.15), ease: EASE }}
       {...rest}
     >
       {children}

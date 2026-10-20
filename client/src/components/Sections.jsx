@@ -437,7 +437,7 @@ export function Footer({ content, config, products = [], links = [] }) {
             <ul className="mt-4 space-y-2.5 text-sm">
               {products.map((p) => (
                 <li key={p.id}>
-                  <Link to={`/shop?item=${p.id}`} className="flex justify-between gap-3 text-cream/70 transition hover:text-honey sm:max-w-[11rem]">
+                  <Link to={`/products/${p.id}`} className="flex justify-between gap-3 text-cream/70 transition hover:text-honey sm:max-w-[11rem]">
                     <span>{titleOf(p, products)}</span>
                     <span className="text-cream/45">{money(p.price)}</span>
                   </Link>

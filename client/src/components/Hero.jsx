@@ -1,10 +1,10 @@
 import { useRef } from 'react';
 import { Link } from 'react-router';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { ArrowRight, Leaf, Truck } from 'lucide-react';
+import { ArrowRight, Truck } from 'lucide-react';
 import { isBrandTagline, LoveNutHome } from './LoveNutHome';
 import ProductJar from './ProductJar';
-import { Display, EASE, FloatingPeanut, Peanut, Squiggle, Stars } from './ui';
+import { Display, EASE, Stars } from './ui';
 import { cn, money } from '../lib/format';
 import { LOOK } from '../lib/brand';
 
@@ -24,46 +24,6 @@ function FloatingJar({ product, className, depth, mx, my, parallax, float = 6, d
           </div>
         </motion.div>
       </motion.div>
-    </motion.div>
-  );
-}
-
-// Scalloped sticker in the style of the brand's "New Branch" badge. Phrases split on "·".
-const SCALLOP = (() => {
-  const n = 18;
-  let d = '';
-  for (let i = 0; i <= n; i++) {
-    const a = (i / n) * Math.PI * 2;
-    const x = (60 + 50 * Math.cos(a)).toFixed(2);
-    const y = (60 + 50 * Math.sin(a)).toFixed(2);
-    d += i ? ` A9 9 0 0 1 ${x} ${y}` : `M${x} ${y}`;
-  }
-  return `${d} Z`;
-})();
-
-const titleCase = (s) => s.toLowerCase().replace(/(^|\s)\S/g, (m) => m.toUpperCase());
-
-function ScallopBadge({ text }) {
-  const lines = text.split('·').map((s) => s.trim()).filter(Boolean).slice(0, 3);
-  const fontSize = Math.min(17, ...lines.map((l) => 82 / (l.length * 0.47)));
-  return (
-    <motion.div
-      className="absolute top-0 left-[1%] z-30 aspect-square w-[28%] sm:left-[3%] sm:w-[21%]"
-      initial={{ scale: 0, rotate: -40 }}
-      animate={{ scale: 1, rotate: -12 }}
-      transition={{ type: 'spring', stiffness: 160, damping: 12, delay: 0.9 }}
-    >
-      <svg viewBox="-4 -4 128 128" className="animate-wobble h-full w-full drop-shadow-[0_10px_14px_rgba(46,31,20,0.3)]" aria-hidden>
-        <path d={SCALLOP} style={{ fill: 'var(--color-cream)', stroke: 'var(--color-honey)' }} strokeWidth="2.5" strokeLinejoin="round" />
-        <circle cx="60" cy="60" r="41" fill="none" style={{ stroke: 'var(--color-honey)' }} strokeOpacity=".55" strokeDasharray="3 3" />
-        <text textAnchor="middle" style={{ fontFamily: 'var(--font-hand)', fill: 'var(--color-cocoa)' }}>
-          {lines.map((l, i) => (
-            <tspan key={i} x="60" y={64 + (i - (lines.length - 1) / 2) * fontSize * 1.15} fontSize={fontSize}>
-              {titleCase(l)}
-            </tspan>
-          ))}
-        </text>
-      </svg>
     </motion.div>
   );
 }
@@ -114,16 +74,17 @@ function Framed({ src, alt, className, parallax, delay = 0, rotate = 0, frame = 
   );
 }
 
-function Chip({ icon: Icon, title, text, className, delay, rotate = 0, tone = 'espresso' }) {
+// One quiet fact on the banner (delivery), level and still: a label, not a sticker.
+function Chip({ icon: Icon, title, text, className, delay }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay, ease: EASE }} className={cn('absolute z-30', className)}>
-      <div className="kraft animate-float flex items-center gap-2.5 py-2.5 pr-5 pl-2.5" style={{ rotate: `${rotate}deg`, '--float': '-7px', '--float-dur': '6s' }}>
-        <span className={cn('grid h-9 w-9 place-items-center rounded-full', tone === 'honey' ? 'bg-honey text-espresso' : 'bg-espresso text-honey')}>
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay, ease: EASE }} className={cn('absolute z-30', className)}>
+      <div className="flex items-center gap-2.5 rounded-full bg-white/95 py-2 pr-4 pl-2 shadow-[0_12px_30px_-14px_rgba(0,0,0,0.45)] ring-1 ring-espresso/[0.06]">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-beige text-caramel">
           <Icon className="h-4 w-4" />
         </span>
-        <span className="leading-none text-espresso">
-          <span className="block font-hand text-xl">{title}</span>
-          {text && <span className="mt-0.5 block text-[11px] text-espresso/60">{text}</span>}
+        <span className="leading-tight text-espresso">
+          <span className="block text-[13px] font-bold">{title}</span>
+          {text && <span className="block text-[11px] text-espresso/55">{text}</span>}
         </span>
       </div>
     </motion.div>
@@ -196,12 +157,12 @@ export default function Hero({ products, config, content }) {
     <motion.div style={{ y: textY, opacity: textFade }} className={cn('relative z-10', center && 'mx-auto max-w-5xl text-center')}>
       {(hero.eyebrow || hero.showDate) && (
         <motion.p
-          initial={{ opacity: 0, y: 12, rotate: center ? 0 : -7 }}
-          animate={{ opacity: 1, y: 0, rotate: center || style === 'editorial' ? 0 : -3 }}
-          transition={{ duration: 0.9, ease: EASE }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: EASE }}
           className={cn('flex origin-left items-center gap-2.5 font-tagline text-[1.75rem] leading-none text-amber sm:text-[2.1rem]', center && 'justify-center')}
         >
-          {style === 'editorial' ? <span className="h-px w-10 bg-amber/60" /> : <Peanut className="h-8 w-5 -rotate-[28deg]" />}
+          {!center && <span className="h-px w-10 bg-amber/60" />}
           {isBrandTagline(hero.eyebrow) ? (
             <>
               <LoveNutHome className="h-7 sm:h-9" />
@@ -210,7 +171,6 @@ export default function Hero({ products, config, content }) {
           ) : (
             [hero.eyebrow, hero.showDate && date].filter(Boolean).join(' · ')
           )}
-          {style !== 'editorial' && <Squiggle className="h-3.5 w-11 text-honey" />}
         </motion.p>
       )}
 
@@ -280,7 +240,7 @@ export default function Hero({ products, config, content }) {
         <motion.div initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4, ease: EASE }} className="relative min-h-[60svh] overflow-hidden lg:min-h-0">
           <img src={main.src} alt={main.alt} className="absolute inset-0 h-full w-full object-cover" />
           {front && (
-            <Link to={`/shop?item=${front.id}`} className="kraft absolute bottom-6 left-6 flex items-center gap-3 py-2.5 pr-5 pl-3 text-espresso">
+            <Link to={`/products/${front.id}`} className="kraft absolute bottom-6 left-6 flex items-center gap-3 py-2.5 pr-5 pl-3 text-espresso">
               <span className="leading-tight">
                 <span className="block text-sm font-bold">{front.name}</span>
                 <span className="text-xs text-espresso/60">{money(front.price)}</span>
@@ -319,7 +279,7 @@ export default function Hero({ products, config, content }) {
             <div className="mt-14 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
               {strip.map((p, i) => (
                 <motion.div key={p.id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.5 + i * 0.08, ease: EASE }}>
-                  <Link to={`/shop?item=${p.id}`} className="group block">
+                  <Link to={`/products/${p.id}`} className="group block">
                     <span className="block aspect-[4/5] overflow-hidden rounded-[var(--r-lg)] bg-beige">
                       {p.look?.photo ? (
                         <img src={p.look.photo} alt={p.name} className="h-full w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105" />
@@ -353,13 +313,11 @@ export default function Hero({ products, config, content }) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, ease: EASE }}
-          className="absolute top-[8%] right-[4%] bottom-[2%] left-[14%] rotate-[4deg] rounded-[var(--r-xl)] bg-sand"
+          className="absolute top-[6%] right-0 bottom-[2%] left-[18%] rounded-[var(--r-xl)] bg-sand"
         />
-        <Framed src={main.src} alt={main.alt} className="relative ml-auto w-[80%]" parallax={yBack} rotate={2} delay={0.15} />
-        <Framed src={second.src} alt={second.alt} className="absolute bottom-0 left-0 z-20 w-[44%]" parallax={yFront} rotate={-5} delay={0.4} />
-        {hero.badge && <ScallopBadge text={hero.badge} />}
-        {hero.chipTitle && <Chip icon={Leaf} title={hero.chipTitle} text={hero.chipText} className="top-[38%] left-[-2%] hidden sm:block" delay={1.1} rotate={-4} />}
-        {delivery && <Chip icon={Truck} title={delivery.title} text={delivery.text} className="right-[-2%] bottom-[6%]" delay={1.3} rotate={3} tone="honey" />}
+        <Framed src={main.src} alt={main.alt} className="relative ml-auto w-[80%]" parallax={yBack} delay={0.15} />
+        <Framed src={second.src} alt={second.alt} className="absolute bottom-0 left-0 z-20 w-[42%]" parallax={yFront} delay={0.4} />
+        {delivery && <Chip icon={Truck} title={delivery.title} text={delivery.text} className="right-[3%] bottom-[5%]" delay={0.9} />}
       </div>
     );
   } else if (style === 'editorial') {
@@ -385,8 +343,8 @@ export default function Hero({ products, config, content }) {
     const fan = pics.slice(0, 3);
     const spots = [
       { className: 'z-20 w-[38%] sm:w-[30%]', rotate: 0, delay: 0.3, parallax: yFront },
-      { className: 'z-10 -mr-[6%] mt-[8%] w-[30%] sm:w-[24%]', rotate: -7, delay: 0.45, parallax: yBack },
-      { className: 'z-10 -ml-[6%] mt-[8%] w-[30%] sm:w-[24%]', rotate: 7, delay: 0.55, parallax: yBack },
+      { className: 'z-10 -mr-[4%] mt-[8%] w-[30%] sm:w-[24%]', rotate: 0, delay: 0.4, parallax: yBack },
+      { className: 'z-10 -ml-[4%] mt-[8%] w-[30%] sm:w-[24%]', rotate: 0, delay: 0.45, parallax: yBack },
     ];
     const order = fan.length === 3 ? [1, 0, 2] : fan.map((_, i) => i);
     visual = (
@@ -394,7 +352,7 @@ export default function Hero({ products, config, content }) {
         {order.map((i) => (
           <Framed key={fan[i].src} src={fan[i].src} alt={fan[i].alt} className={spots[i].className} rotate={spots[i].rotate} delay={spots[i].delay} parallax={spots[i].parallax} />
         ))}
-        {delivery && <Chip icon={Truck} title={delivery.title} text={delivery.text} className="right-[2%] bottom-[-4%] sm:right-[12%]" delay={1.3} rotate={3} tone="honey" />}
+        {delivery && <Chip icon={Truck} title={delivery.title} text={delivery.text} className="right-[2%] bottom-[-4%] sm:right-[12%]" delay={0.9} />}
       </div>
     );
   } else {
@@ -406,16 +364,11 @@ export default function Hero({ products, config, content }) {
           transition={{ duration: 1.4, ease: EASE }}
           className="absolute inset-[7%] rounded-full bg-gradient-to-br from-sand via-beige to-cream shadow-[inset_0_-30px_60px_rgba(201,133,34,0.15)] ring-1 ring-espresso/5"
         />
-        {hero.badge && <ScallopBadge text={hero.badge} />}
-
         {left && <FloatingJar product={left} className="absolute top-[27%] left-[-1%] z-10 w-[42%]" depth={-14} mx={mx} my={my} parallax={yBack} rotate={-9} delay={0.35} float={7} />}
         {right && <FloatingJar product={right} className="absolute top-[3%] right-0 z-10 w-[36%]" depth={-20} mx={mx} my={my} parallax={yBack} rotate={8} delay={0.5} float={8} />}
         {front && <FloatingJar product={front} className="absolute bottom-[1%] left-[17%] z-20 w-[66%]" depth={26} mx={mx} my={my} parallax={yFront} delay={0.2} float={5} tag />}
 
-        {hero.chipTitle && <Chip icon={Leaf} title={hero.chipTitle} text={hero.chipText} className="bottom-[14%] left-[-6%] hidden sm:block" delay={1.2} rotate={-4} />}
-        {delivery && <Chip icon={Truck} title={delivery.title} text={delivery.text} className="right-[-1%] bottom-[-5%] sm:right-[-3%] sm:bottom-[3%]" delay={1.4} rotate={3} tone="honey" />}
-
-        <FloatingPeanut className="top-[12%] left-[42%]" size="w-5" path={[[0, 0], [24, -14], [40, 6], [12, 18], [0, 0]]} duration={10} />
+        {delivery && <Chip icon={Truck} title={delivery.title} text={delivery.text} className="right-[-1%] bottom-[-5%] sm:right-[-3%] sm:bottom-[3%]" delay={0.9} />}
       </div>
     );
   }
@@ -459,7 +412,7 @@ export default function Hero({ products, config, content }) {
 
       {!center && (
         <motion.a
-          href="#explore"
+          href="#shop"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.6 }}

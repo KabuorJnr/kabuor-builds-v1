@@ -16,9 +16,13 @@ export function gramsOf(size) {
   const m = /^\s*([\d.]+)\s*(kg|g)\s*$/i.exec(size ?? '');
   return m ? parseFloat(m[1]) * (m[2].toLowerCase() === 'kg' ? 1000 : 1) : null;
 }
-export const perHundredGrams = (price, size) => {
+// Price per 100g, for comparing jars of different sizes. Not for bundles ("The Trio", "Gift box"), whose
+// size is usually one item's, so the figure would mislead.
+const BUNDLE = /\b(trio|duo|set|pack|bundle|box|combo|kit|hamper|collection)\b/i;
+export const isBundle = (name = '') => BUNDLE.test(name);
+export const perHundredGrams = (price, size, name = '') => {
   const g = gramsOf(size);
-  return g ? Math.round((price * 100) / g) : null;
+  return g && !isBundle(name) ? Math.round((price * 100) / g) : null;
 };
 
 export const dateTime = (iso) =>
