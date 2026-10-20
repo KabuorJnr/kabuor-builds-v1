@@ -1,22 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "client": {
-      "root": "client",
-      "framework": "vite",
-      "outputDirectory": "dist",
-      "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-    },
-    "server": {
-      "root": "server",
-      "framework": "express",
-      "entrypoint": "src/index.js"
-    }
-  },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": { "service": "server" } },
-    { "source": "/uploads/(.*)", "destination": { "service": "server" } },
-    { "source": "/admin.webmanifest", "destination": { "service": "server" } },
-    { "source": "/(.*)", "destination": { "service": "client" } }
-  ]
+  "framework": null,
+  "installCommand": "cd client && npm ci",
+  "buildCommand": "cd client && npm run build:company",
+  "outputDirectory": "client/dist-company",
+  "rewrites": [{ "source": "/((?!assets/|brand/|fonts/).*)", "destination": "/index.html" }]
 }
