@@ -84,7 +84,7 @@ for the real settings.
 ## The company site on Vercel
 
 The shops platform runs on Railway. Vercel (project `kabuor-builds`, https://kabuor-builds.vercel.app) serves only
-the Kabuor Builds company page: `vercel.json` runs `npm run build:company` (entry `client/company.html` →
+the Kabuor Builds company page: `client/vercel.json` (project root directory `client`) runs `npm run build:company` (entry `client/company.html` →
 `client/dist-company`). `VITE_PRODUCT_ORIGIN` (set in the Vercel project) is the Railway address: the Shops and
 ERP tabs and the "Start your shop" buttons open the product pages there, and the demo form and platform info
 call its API. The server allows that origin on `/api/platform/info` and `/api/platform/demo` only

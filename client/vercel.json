@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd .. && npm ci",
+  "buildCommand": "npm run build:company",
+  "outputDirectory": "dist-company",
+  "rewrites": [{ "source": "/((?!assets/|brand/|fonts/).*)", "destination": "/index.html" }]
+}
