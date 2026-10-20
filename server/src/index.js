@@ -26,7 +26,8 @@ app.use(express.json({ limit: '100kb' }));
 // Limits on the endpoints worth abusing (per visitor IP).
 app.use('/api/platform/signup', limit('signup', 10, 60, 'Too many signups from this connection. Try again in an hour.'));
 app.use('/api/platform/check-link', limit('check', 120, 10));
-app.use('/api/platform/demo', limit('demo', 6, 60, 'Too many requests from this connection. WhatsApp us instead.'));
+// Only real submissions count (a browser's CORS preflight is an OPTIONS request before each one).
+app.use('/api/platform/demo', (req, res, next) => (req.method === 'POST' ? limit('demo', 6, 60, 'Too many requests from this connection. WhatsApp us instead.')(req, res, next) : next()));
 // The standalone company site (e.g. on Vercel) reads the platform's info and sends demo requests from another
 // address. Only those two endpoints answer it; COMPANY_SITE_ORIGINS lists the addresses (comma-separated).
 const COMPANY_ORIGINS = (process.env.COMPANY_SITE_ORIGINS || 'https://kabuor-builds.vercel.app').split(',').map((o) => o.trim().replace(/\/+$/, '')).filter(Boolean);
