@@ -1,0 +1,34 @@
+# Every push and pull request: the server's tests (the real server on throwaway data), both website builds
+# (the platform and the standalone company site), and a check for packages with known vulnerabilities.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Server tests
+        run: npm test
+      - name: Platform website
+        run: npm run build -w client
+      - name: Company site
+        run: npm run build:company -w client
+        env:
+          VITE_PRODUCT_ORIGIN: https://kabuor-builds-production.up.railway.app
+      - name: Vulnerable packages
+        run: npm audit --audit-level=high --omit=dev

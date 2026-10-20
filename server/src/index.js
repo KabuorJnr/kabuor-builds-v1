@@ -15,6 +15,7 @@ import { getShop, isPreview, requestHost, resolveHost, shopState } from './platf
 import { PLATFORM_DOMAIN, PLATFORM_NAME, PLATFORM_TAGLINE } from './site.js';
 import { runAs } from './tenant.js';
 import { limit, securityHeaders } from './guard.js';
+import { scheduleBackups } from './backups.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -193,6 +194,9 @@ app.use((err, req, res, next) => {
 });
 
 // On Vercel the exported app runs as a function; everywhere else it is a normal server.
-if (!process.env.VERCEL) app.listen(PORT, () => console.log(`${PLATFORM_NAME} ready on http://localhost:${PORT} (shops at http://<link>.localhost:${PORT})`));
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => console.log(`${PLATFORM_NAME} ready on http://localhost:${PORT} (shops at http://<link>.localhost:${PORT})`));
+  if (process.env.BACKUPS !== 'off') scheduleBackups();
+}
 
 export default app;

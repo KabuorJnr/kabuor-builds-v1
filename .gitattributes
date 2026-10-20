@@ -1,0 +1,8 @@
+# One line ending in the repository (LF), whatever the editor or OS.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.webp binary
+*.woff2 binary
+*.mp4 binary
+*.ico binary

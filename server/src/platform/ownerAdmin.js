@@ -3,8 +3,8 @@
 // Signs in with PLATFORM_ADMIN_EMAIL / PLATFORM_ADMIN_PASSWORD from server/.env (separate from shop logins).
 import { Router } from 'express';
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { basename, join, relative, resolve, sep } from 'node:path';
 import jwt from 'jsonwebtoken';
 import { HttpError } from '../db.js';
 import { DATA_DIR, PLATFORM_EMAIL } from '../site.js';
@@ -12,6 +12,7 @@ import { PRICES, testMode } from './billing.js';
 import { KINDS } from './presets.js';
 import { connectForShop, declineRequest, listRequests, markWorking, openRequestCount } from './mpesaRequests.js';
 import { listDemoRequests, newDemoCount, setDemoStatus } from './demoRequests.js';
+import { backupNow, latestBackup } from '../backups.js';
 import { getShop, shopState } from './shops.js';
 import { pdb } from './store.js';
 
@@ -196,6 +197,25 @@ ownerAdmin.get('/shops', (req, res) => {
   const counts = rows.reduce((c, r) => ({ ...c, [r.stage]: (c[r.stage] ?? 0) + 1 }), {});
   const list = rows.filter((r) => (!want || r.stage === want) && (!q || `${r.name} ${r.slug} ${r.owner} ${r.phone} ${r.city}`.toLowerCase().includes(q)));
   res.json({ total: rows.length, counts, shops: list });
+});
+
+// ---------- backups (nightly copies on the volume; download them for an off-site copy) ----------
+const backupFiles = (dir) => {
+  const out = [];
+  const walk = (d) => readdirSync(d, { withFileTypes: true }).forEach((e) => (e.isDirectory() ? walk(join(d, e.name)) : out.push(relative(dir, join(d, e.name)).split(sep).join('/'))));
+  walk(dir);
+  return out;
+};
+ownerAdmin.get('/backups/latest', (req, res) => {
+  const dir = latestBackup();
+  res.json(dir ? { day: basename(dir), files: backupFiles(dir) } : { day: null, files: [] });
+});
+ownerAdmin.post('/backups', (req, res) => res.json(backupNow()));
+ownerAdmin.get('/backups/latest/file', (req, res) => {
+  const dir = latestBackup();
+  const file = dir && resolve(dir, String(req.query.path ?? ''));
+  if (!file || !file.startsWith(resolve(dir) + sep) || !existsSync(file)) throw new HttpError(404, 'No such backup file.');
+  res.download(file, String(req.query.path).split(/[/\\]/).join('__'));
 });
 
 // ---------- demo requests from the company site ----------
