@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { Router } from 'express';
 import { db, tx, HttpError, toProduct } from '../db.js';
 import { orderCode } from '../seed.js';
-import { syncOrder } from '../erpSync.js';
+import { syncOrder, getErp } from '../erpSync.js';
 import { currency, paymentMethods } from '../config.js';
 import { getContent, getStore } from '../content.js';
 import { callbackSecret, failureMessage, mpesaEnabled, resultOf, stkPush, stkQuery, toMsisdn } from '../mpesa.js';
@@ -291,4 +291,36 @@ publicRouter.post('/subscribe', (req, res) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError(400, 'Please enter a valid email');
   db.prepare('INSERT OR IGNORE INTO subscribers (email, created_at) VALUES (?, ?)').run(email, new Date().toISOString());
   res.status(201).json({ ok: true });
+});
+
+publicRouter.post('/inquiries', async (req, res) => {
+  const { name, phone, email, message, itemId, ref } = req.body ?? {};
+  if (!message || String(message).trim().length < 2) throw new HttpError(400, 'Please enter your question or request');
+  if (!phone || String(phone).trim().length < 8) throw new HttpError(400, 'Please enter a valid phone number');
+
+  const erp = getErp();
+  const erpUrl = erp?.url || process.env.ERP_URL || 'https://kabuor-erp.onrender.com';
+  try {
+    const erpRes = await fetch(`${erpUrl}/api/public/amani/inquiries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name || 'Website Visitor',
+        phone,
+        email,
+        message,
+        itemId: itemId || null,
+        ref: ref || null,
+        broughtBy: 'Kabuor Builds Website',
+      }),
+    });
+    const data = await erpRes.json().catch(() => ({}));
+    if (erpRes.ok) {
+      return res.status(201).json({ ok: true, inquiry: data });
+    }
+  } catch (err) {
+    console.warn('Could not forward inquiry to ERP directly:', err.message);
+  }
+
+  res.status(201).json({ ok: true, message: 'Inquiry received. Our team will contact you shortly.' });
 });

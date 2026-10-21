@@ -194,7 +194,47 @@ export default function ProductPage() {
   const [added, setAdded] = useState(false);
   const buyBox = useRef(null);
   const [buyBoxGone, setBuyBoxGone] = useState(false);
+  const [inquiryOpen, setInquiryOpen] = useState(false);
+  const [inquiryData, setInquiryData] = useState({ name: '', phone: '', email: '', message: '' });
+  const [inquirySending, setInquirySending] = useState(false);
+  const [inquiryDone, setInquiryDone] = useState(false);
+  const [inquiryError, setInquiryError] = useState('');
   const product = products.find((p) => p.id === id);
+
+  const sendInquiry = async (e) => {
+    e.preventDefault();
+    if (!inquiryData.phone || inquiryData.phone.trim().length < 8) {
+      setInquiryError('Please enter your phone number.');
+      return;
+    }
+    setInquirySending(true);
+    setInquiryError('');
+    try {
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...inquiryData,
+          itemId: product.id,
+          message: inquiryData.message || `Customer inquiry regarding ${product.name} (Qty: ${qty})`,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || 'Could not send inquiry');
+      }
+      setInquiryDone(true);
+      setTimeout(() => {
+        setInquiryDone(false);
+        setInquiryOpen(false);
+        setInquiryData({ name: '', phone: '', email: '', message: '' });
+      }, 3000);
+    } catch (err) {
+      setInquiryError(err.message || 'Failed to submit inquiry');
+    } finally {
+      setInquirySending(false);
+    }
+  };
 
   useEffect(() => setQty(1), [id]);
   useEffect(() => {
@@ -286,6 +326,17 @@ export default function ProductPage() {
                 Buy now with M-Pesa
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => {
+                setInquiryData((d) => ({ ...d, message: `Hello, I'd like a quote or more information on ${product.name}.` }));
+                setInquiryOpen(true);
+              }}
+              className="mt-2.5 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-espresso/20 bg-white/70 px-4 text-[14px] font-semibold text-espresso/80 transition hover:bg-white hover:text-espresso"
+            >
+              <MessageCircle className="h-4 w-4 text-emerald-700" />
+              Ask a Question / Request Quote
+            </button>
 
             <SetBox product={product} others={related} all={products} />
 
@@ -404,6 +455,86 @@ export default function ProductPage() {
           </button>
         </div>
       </div>
+
+      {inquiryOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-espresso/60 p-4 backdrop-blur-xs" onClick={() => setInquiryOpen(false)}>
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-espresso/10 pb-3">
+              <h3 className="font-bold text-espresso text-lg">Inquire About {product.name}</h3>
+              <button type="button" onClick={() => setInquiryOpen(false)} className="text-espresso/50 hover:text-espresso font-bold text-lg p-1">✕</button>
+            </div>
+            {inquiryDone ? (
+              <div className="py-8 text-center">
+                <Check className="mx-auto h-12 w-12 text-emerald-600 mb-2" />
+                <h4 className="font-bold text-espresso text-lg">Inquiry Sent!</h4>
+                <p className="text-sm text-espresso/70 mt-1">Our sales team will contact you shortly via phone or WhatsApp.</p>
+              </div>
+            ) : (
+              <form onSubmit={sendInquiry} className="mt-4 space-y-3.5">
+                <div>
+                  <label className="block text-xs font-semibold text-espresso/70 mb-1">Your Name</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Kelvin Mutua"
+                    value={inquiryData.name}
+                    onChange={(e) => setInquiryData({ ...inquiryData, name: e.target.value })}
+                    className="w-full rounded-xl border border-espresso/20 px-3 py-2 text-sm focus:border-caramel focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-espresso/70 mb-1">Phone Number (Required)</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="e.g. 0712 345 678"
+                    value={inquiryData.phone}
+                    onChange={(e) => setInquiryData({ ...inquiryData, phone: e.target.value })}
+                    className="w-full rounded-xl border border-espresso/20 px-3 py-2 text-sm focus:border-caramel focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-espresso/70 mb-1">Email (Optional)</label>
+                  <input
+                    type="email"
+                    placeholder="e.g. mutua@example.com"
+                    value={inquiryData.email}
+                    onChange={(e) => setInquiryData({ ...inquiryData, email: e.target.value })}
+                    className="w-full rounded-xl border border-espresso/20 px-3 py-2 text-sm focus:border-caramel focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-espresso/70 mb-1">Question / Quote Request</label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={inquiryData.message}
+                    onChange={(e) => setInquiryData({ ...inquiryData, message: e.target.value })}
+                    className="w-full rounded-xl border border-espresso/20 px-3 py-2 text-sm focus:border-caramel focus:outline-none"
+                  />
+                </div>
+                {inquiryError && <p className="text-xs text-red-600">{inquiryError}</p>}
+                <div className="mt-4 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setInquiryOpen(false)}
+                    className="btn btn-ghost flex-1 text-sm h-11"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={inquirySending}
+                    className="btn btn-primary flex-1 text-sm h-11"
+                  >
+                    {inquirySending ? 'Sending…' : 'Send Inquiry'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
