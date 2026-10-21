@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { Router } from 'express';
 import { db, tx, HttpError, toProduct } from '../db.js';
 import { orderCode } from '../seed.js';
+import { syncOrder } from '../erpSync.js';
 import { currency, paymentMethods } from '../config.js';
 import { getContent, getStore } from '../content.js';
 import { callbackSecret, failureMessage, mpesaEnabled, resultOf, stkPush, stkQuery, toMsisdn } from '../mpesa.js';
@@ -174,6 +175,7 @@ function settlePayment(payment, { status, code, description }, receipt = null) {
   const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(payment.order_id);
   if (order?.status === 'pending') db.prepare("UPDATE orders SET status = 'paid', updated_at = ? WHERE id = ?").run(now, order.id);
   if (order) textOrderConfirmed(order.id, receipt);
+  if (order) syncOrder(order.id);
   notifyAdmins({
     title: `Paid ✓ ${order?.code} · ${money(payment.amount * 100)}`,
     body: `M-Pesa${receipt ? ` ${receipt}` : ''} from ${order?.customer_name ?? payment.phone}`,

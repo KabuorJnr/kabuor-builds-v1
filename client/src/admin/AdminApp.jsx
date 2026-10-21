@@ -22,6 +22,7 @@ import Website from './Website';
 import Look from './Look';
 import Plan, { PlanBanner } from './Plan';
 import MpesaKeys from './MpesaKeys';
+import ErpLink from './ErpLink';
 import { SHOP_BASE } from '../lib/base';
 
 const NAV = [
@@ -35,6 +36,7 @@ const NAV = [
   { to: '/admin/website', label: 'Site content', icon: LayoutTemplate, group: 'Website' },
   { to: '/admin/alerts', label: 'Phone alerts', icon: BellRing, group: 'Settings' },
   { to: '/admin/mpesa', label: 'M-Pesa prompt', icon: Smartphone, group: 'Settings' },
+  { to: '/admin/erp', label: 'Kabuor ERP', icon: BookOpen, group: 'Settings' },
   { to: '/admin/plan', label: 'Plan & billing', icon: CreditCard, group: 'Settings' },
   { to: '/admin/account', label: 'Account', icon: UserCog, group: 'Settings' },
 ];
@@ -399,6 +401,7 @@ export default function AdminApp() {
             <Route path="look" element={<Look />} />
             <Route path="plan" element={<Plan />} />
             <Route path="mpesa" element={<MpesaKeys />} />
+            <Route path="erp" element={<ErpLink />} />
             <Route path="*" element={<Navigate to="/admin" replace />} />
           </Routes>
         </motion.div>

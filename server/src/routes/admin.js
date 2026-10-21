@@ -10,6 +10,7 @@ import { adminProducts } from './products.js';
 import { adminSales } from './sales.js';
 import { adminAlerts } from './alerts.js';
 import { smsForOrders } from '../sms.js';
+import { erpStatus, saveErp, syncOrder, syncWaiting } from '../erpSync.js';
 import { textOrderConfirmed, whatsappConfirmation } from '../texts.js';
 import { receiptPath, receiptUrl } from '../receipts.js';
 import { confirmationsFor, confirmationByCode, findMatches, readMessage, saveConfirmation } from '../mpesaBooks.js';
@@ -217,7 +218,16 @@ adminRouter.patch('/orders/:id', (req, res) => {
   db.prepare('UPDATE orders SET status = ?, updated_at = ? WHERE id = ?').run(status, new Date().toISOString(), order.id);
   // The customer's "Order Confirmed" text goes out when payment is confirmed (once per order).
   if (status === 'paid' && order.status !== 'paid') textOrderConfirmed(order.id);
+  if (['paid', 'sent', 'delivered'].includes(status)) syncOrder(order.id);
   res.json({ ...order, status, pay_token: undefined });
+});
+
+// ---------- Kabuor ERP: paid orders become invoices there ----------
+adminRouter.get('/erp', (req, res) => res.json(erpStatus()));
+adminRouter.put('/erp', (req, res) => res.json(saveErp(req.body ?? {})));
+adminRouter.post('/erp/sync', async (req, res) => {
+  await syncWaiting();
+  res.json(erpStatus());
 });
 
 // ---------- handover: clear customer data ----------

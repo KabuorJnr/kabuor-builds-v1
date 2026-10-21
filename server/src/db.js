@@ -189,6 +189,12 @@ export function openShopDb(dir) {
   if (!orderColumns.includes('receipt_token')) {
     db.exec('ALTER TABLE orders ADD COLUMN receipt_token TEXT');
   }
+  // Kabuor ERP: the invoice a paid order became there, when, or why it hasn't gone yet.
+  if (!orderColumns.includes('erp_synced_at')) {
+    db.exec('ALTER TABLE orders ADD COLUMN erp_invoice TEXT');
+    db.exec('ALTER TABLE orders ADD COLUMN erp_synced_at TEXT');
+    db.exec('ALTER TABLE orders ADD COLUMN erp_error TEXT');
+  }
 
 
   return db;

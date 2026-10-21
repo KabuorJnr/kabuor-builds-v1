@@ -40,6 +40,13 @@ const COMPARE = [
   ['Set up without a consultant', 'yes', 'no', 'some'],
 ];
 
+// The same plans the app sells (Settings → Plan & billing); keep the two in step.
+const PLANS = [
+  { name: 'Starter', monthly: 1500, who: 'A shop or a one-person business', includes: ['Invoices, quotes and the till', 'M-Pesa matching and prompts', 'Stock, suppliers and eTIMS', '3 users'] },
+  { name: 'Business', monthly: 4500, who: 'A growing team with staff on payroll', includes: ['Everything in Starter', 'Payroll, PAYE, SHA, NSSF and the staff portal (up to 50 staff)', 'CRM, campaigns, agents and Msaidizi', '15 users'], best: true },
+  { name: 'Growth', monthly: 9500, who: 'Several branches or stores', includes: ['Everything in Business', 'Unlimited users and staff', 'Several branches and stores', 'Priority support on WhatsApp'] },
+];
+
 function Mark({ v }) {
   if (v === 'yes') return <Check className="mx-auto h-5 w-5 text-[#0F7A3D]" strokeWidth={3} aria-label="Yes" />;
   if (v === 'no') return <X className="mx-auto h-5 w-5 text-espresso/30" aria-label="No" />;
@@ -257,6 +264,35 @@ export default function Erp({ info }) {
         </div>
       </section>
 
+      {/* pricing */}
+      <section id="pricing" className="scroll-mt-6 bg-white py-16 sm:py-24">
+        <div className="container-x">
+          <p className="kb-kicker text-caramel">Pricing</p>
+          <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Shillings, per business. Not dollars per seat.</h2>
+          <p className="mt-4 max-w-2xl text-lg text-espresso/70">Every plan starts with 30 days free, with everything switched on and no payment details. Pay monthly or yearly by M-Pesa; a year costs ten months.</p>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {PLANS.map((p) => (
+              <div key={p.name} className={`flex flex-col rounded-[var(--r-xl)] p-6 ring-1 ${p.best ? 'bg-[#ECEBFF]/50 ring-2 ring-[#2357F5]' : 'bg-cream/40 ring-espresso/[0.08]'}`}>
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="text-xl font-bold">{p.name}</h3>
+                  {p.best && <span className="rounded-full bg-[#2357F5] px-2.5 py-0.5 text-xs font-semibold text-white">Most businesses</span>}
+                </div>
+                <p className="mt-1 text-sm text-espresso/60">{p.who}</p>
+                <p className="mt-5"><span className="text-4xl font-bold">KSh {p.monthly.toLocaleString('en-KE')}</span> <span className="text-espresso/60">a month</span></p>
+                <p className="mt-1 text-sm text-espresso/60">or KSh {(p.monthly * 10).toLocaleString('en-KE')} a year</p>
+                <ul className="mt-5 flex-1 space-y-2 text-[15px]">
+                  {p.includes.map((x) => <li key={x} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#1e8e3e]" />{x}</li>)}
+                </ul>
+                <a href={`${ERP_RAILWAY_URL}/signup`} target="_blank" rel="noopener noreferrer" className={`btn mt-6 justify-center py-3 font-semibold ${p.best ? 'bg-[#2357F5] text-white hover:bg-[#3A6BFF]' : 'border border-espresso/15 bg-white hover:bg-cream/60'}`}>
+                  Start 30 days free
+                </a>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-sm text-espresso/60">Bringing your customers, suppliers and stock in from Excel, QuickBooks or Sage is built into every plan.</p>
+        </div>
+      </section>
+
       {/* how it compares */}
       <section className="py-16 sm:py-24">
         <div className="container-x">
@@ -302,7 +338,7 @@ export default function Erp({ info }) {
           </div>
           <div className="divide-y divide-espresso/10 border-y border-espresso/10">
             {[
-              ['How much does it cost?', 'It’s priced per business in shillings, not per seat in dollars. Early-access businesses get launch pricing; tell us about your business and we’ll quote you straight away.'],
+              ['How much does it cost?', 'From KSh 1,500 a month for a shop, KSh 4,500 with payroll and the team tools, KSh 9,500 for several branches. Every business starts with 30 days free.'],
               ['Is my business data safe?', 'Each business’s records are kept completely apart, only people you add can sign in, each with the access their role needs, and every change is recorded with who made it and when.'],
               ['What about KRA eTIMS?', 'Every invoice is prepared with what eTIMS needs. Live signing with KRA switches on once KRA certifies our connection; until then invoices are marked as test signatures.'],
               ['Do I need an accountant to use it?', 'No. Sales staff invoice and record payments; the books keep themselves. Your accountant gets proper reports, VAT figures and a trial balance when they need them.'],
