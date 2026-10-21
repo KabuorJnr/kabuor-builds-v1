@@ -30,7 +30,7 @@ function ProductCard({ tag, name, line, text, points, meta, launch, primary, sec
         <div className="flex items-center justify-between gap-2">
           <p className="text-xs font-bold tracking-[0.14em] text-[#3A2BC9] uppercase">{tag}</p>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-600/20">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live on Railway
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live on Render
           </span>
         </div>
         <h3 className="kb-display mt-2 text-3xl sm:text-4xl">{name}</h3>
