@@ -86,6 +86,9 @@ export function SiteHeader({ info, cta }) {
         <a href="#contact" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
           Contact
         </a>
+        <Link to="/careers" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
+          Careers <span className="rounded bg-[#2357F5]/40 px-1.5 py-0.5 text-[10px] font-bold text-cream">Hiring</span>
+        </Link>
         {cta &&
           (cta.to ? (
             <Go to={cta.to} className="btn ml-1.5 hidden bg-cream px-5 py-2.5 whitespace-nowrap text-espresso hover:bg-white sm:inline-flex">
@@ -150,6 +153,9 @@ export function SiteFooter({ info, children }) {
           <Go to="/start" className="text-cream/80 hover:text-cream">
             Start a shop
           </Go>
+          <Link to="/careers" className="text-cream/80 hover:text-cream flex items-center gap-1.5">
+            Careers <span className="rounded bg-[#2357F5]/30 px-1.5 py-0.5 text-[10px] font-bold text-white">We're hiring</span>
+          </Link>
         </nav>
         <div>
           {children ?? (

@@ -8,6 +8,7 @@ import { MotionConfig } from 'framer-motion';
 import './index.css';
 import './platform/platform.css';
 import Company from './platform/Company';
+import CareersPage from './platform/CareersPage';
 import { applyPlatformLook } from './platform/look';
 import { papi } from './platform/shared';
 
@@ -20,6 +21,7 @@ function CompanySite() {
   return (
     <div className="min-h-svh bg-cream text-espresso">
       <Routes>
+        <Route path="/careers" element={<CareersPage info={info} />} />
         <Route path="*" element={<Company info={info} />} />
       </Routes>
     </div>
