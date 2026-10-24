@@ -391,7 +391,7 @@ export default function Company({ info }) {
               <div>
                 <h4 className="text-sm font-semibold text-white">Direct Executive Vetting & Fast Interviews</h4>
                 <p className="mt-1 text-xs leading-relaxed text-cream/60">
-                  Applications route directly to the executive admin recruitment portal in Kabuor ERP. Shortlisted candidates are contacted within 48 hours to schedule video/in-person interviews.
+                  Applications route directly to the executive talent desk (careers@kabuor.com). Shortlisted candidates are contacted within 48 hours to schedule video/in-person interviews.
                 </p>
               </div>
             </div>
