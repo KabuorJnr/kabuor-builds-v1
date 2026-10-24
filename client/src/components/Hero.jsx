@@ -36,7 +36,7 @@ function HeadlineLine({ text, highlight }) {
     <>
       <Display>{text.slice(0, at)}</Display>
       <span className="relative inline-block">
-        <span className="bg-gradient-to-br from-honey via-amber to-caramel bg-clip-text text-transparent">{highlight}</span>
+        <span className="text-honey">{highlight}</span>
         <svg viewBox="0 0 200 20" preserveAspectRatio="none" className="absolute -bottom-[0.12em] left-0 h-[0.2em] w-full overflow-visible" aria-hidden>
           <motion.path
             d="M3 14 C 40 4, 80 4, 110 10 S 170 18, 197 6"
