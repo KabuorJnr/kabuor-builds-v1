@@ -1,29 +1,9 @@
 import { useState, useId } from 'react';
-import { Link } from 'react-router';
-import { motion } from 'framer-motion';
 import {
-  ArrowRight,
-  Briefcase,
-  Building2,
-  Check,
-  CheckCircle2,
   ChevronDown,
   ChevronUp,
-  Cpu,
-  DollarSign,
-  GraduationCap,
-  HeartHandshake,
-  Laptop,
-  Lock,
-  MapPin,
-  Megaphone,
-  Rocket,
   Search,
-  ShieldCheck,
-  Sparkles,
-  Users,
   X,
-  Zap,
 } from 'lucide-react';
 import { SiteHeader, SiteFooter } from './Site';
 
@@ -347,32 +327,26 @@ export const ALL_ROLES = [
 
 const PERKS = [
   {
-    icon: Rocket,
     title: 'Generous Founding ESOP Ownership',
     description: 'We reward early conviction with meaningful stock option grants with formal 4-year vesting. You own real equity in the company upside from day one.',
   },
   {
-    icon: ShieldCheck,
     title: 'Post-Funding Salary & Medical Guarantee',
     description: 'We are currently pre-funding and bootstrapping. All founding roles have contractual market-competitive salaries and tier-1 health cover locked in upon closing our funding round.',
   },
   {
-    icon: Laptop,
     title: '100% Fully Remote & High Autonomy',
     description: 'Headquartered along Ngong Road, Nairobi, we operate 100% remote. Work on your schedule with zero micromanagement, focused purely on shipped merchant impact.',
   },
   {
-    icon: Zap,
     title: 'Real Production Systems Ownership',
     description: 'No busywork or toy apps. You architect and deploy low-allocation C# .NET 10 microservices and offline React 19 PWAs moving real transactions for Kenyan businesses.',
   },
   {
-    icon: GraduationCap,
     title: 'Founder & Senior Architect Mentorship',
     description: 'Direct pairing with experienced founders and engineers who have built and scaled high-throughput financial infrastructure across East Africa.',
   },
   {
-    icon: HeartHandshake,
     title: 'Flexible Leave & Collaborative Culture',
     description: 'High-trust environment with flexible time off, asynchronous engineering workflows, and deep commitment to work-life sustainability.',
   },
@@ -432,104 +406,91 @@ export default function CareersPage({ info }) {
   const noteId = useId();
 
   return (
-    <div className="min-h-screen bg-[#FDFCF7] text-[#1E1B18] font-sans selection:bg-[#2357F5] selection:text-white">
-      <div className="bg-[#0A0B1E]">
+    <div className="min-h-screen bg-[#FDFCF7] text-espresso selection:bg-[#2357F5] selection:text-white">
+      <div className="kb-ink relative overflow-hidden">
         <SiteHeader info={info} cta={{ to: '/#contact', label: 'Contact Team' }} />
       </div>
 
       {/* Hero Header */}
-      <section className="relative overflow-hidden bg-[#0A0B1E] py-20 text-white lg:py-28">
-        <div className="pointer-events-none absolute -top-40 -right-40 h-[36rem] w-[36rem] rounded-full bg-[#2357F5]/25 blur-[100px]" />
-        <div className="pointer-events-none absolute -bottom-40 -left-40 h-[32rem] w-[32rem] rounded-full bg-[#3A2BC9]/35 blur-[120px]" />
+      <section className="kb-ink relative overflow-hidden py-16 sm:py-24 text-cream">
+        <div className="container-x relative text-center">
+          <p className="kb-kicker text-[#9DB6FF]">
+            Kabuor Technologies · Ngong Road, Nairobi · 100% Fully Remote
+          </p>
 
-        <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1 text-xs font-medium text-white/90 backdrop-blur-sm">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>KABUOR TECHNOLOGIES · NGONG ROAD, NAIROBI · 100% FULLY REMOTE</span>
-          </div>
-
-          <h1 className="mt-8 font-serif text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl leading-[1.08]">
-            Build the Financial Operating System for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F2C14E] via-white to-[#9DB6FF]">African Commerce.</span>
+          <h1 className="kb-display mt-4 max-w-4xl mx-auto text-[2.75rem] sm:text-[4.75rem] leading-[0.95]">
+            Build the Financial Operating System for <span className="text-[#F2C14E]">African Commerce.</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-3xl text-lg text-white/80 leading-relaxed sm:text-xl">
+          <p className="mx-auto mt-6 max-w-3xl text-lg text-cream/75 leading-relaxed sm:text-xl">
             Over 1.5 million Kenyan merchants power East Africa on M-Pesa, paper dockets, and sheer resilience. We are engineering the automated platform that handles instant KRA eTIMS, offline retail point-of-sale, and real-time cashflow reconciliation at a scale of 500,000 transactions a day.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <a href="#open-roles" className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-3.5 px-7 text-base shadow-lg shadow-[#2357F5]/25">
-              Explore Open Roles ({ALL_ROLES.length}) <Briefcase className="h-5 w-5 ml-2" />
+            <a href="#open-roles" className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-3.5 px-7 text-sm font-semibold shadow-lg shadow-[#2357F5]/25">
+              Explore Open Roles ({ALL_ROLES.length})
             </a>
-            <a href="#young-builders" className="btn bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30 hover:bg-emerald-500/30 py-3.5 px-6 text-base">
-              Young Builders & Volunteers <Sparkles className="h-4 w-4 ml-2" />
+            <a href="#young-builders" className="btn bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30 hover:bg-emerald-500/30 py-3.5 px-6 text-sm font-semibold">
+              Young Builders & Volunteers
             </a>
-            <a href="#why-kabuor" className="btn bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/20 py-3.5 px-6 text-base">
-              Why Join Us <ChevronDown className="h-4 w-4 ml-1" />
+            <a href="#why-kabuor" className="btn bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/20 py-3.5 px-6 text-sm font-semibold">
+              Why Join Us
             </a>
           </div>
 
           {/* Scale Proof Metrics */}
           <div className="mt-16 grid grid-cols-2 gap-4 border-t border-white/10 pt-12 sm:grid-cols-4 text-left">
             <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-              <p className="text-3xl font-bold text-[#F2C14E]">500,000+</p>
-              <p className="mt-1 text-xs text-white/60">Load-tested daily transactions</p>
+              <p className="kb-display text-3xl text-[#F2C14E]">500,000+</p>
+              <p className="mt-1 text-xs text-cream/60">Load-tested daily transactions</p>
             </div>
             <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-              <p className="text-3xl font-bold text-emerald-400">100%</p>
-              <p className="mt-1 text-xs text-white/60">Offline-first PWA resilience</p>
+              <p className="kb-display text-3xl text-emerald-400">100%</p>
+              <p className="mt-1 text-xs text-cream/60">Offline-first PWA resilience</p>
             </div>
             <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-              <p className="text-3xl font-bold text-[#9DB6FF]">0 Seconds</p>
-              <p className="mt-1 text-xs text-white/60">eTIMS & M-Pesa auto-reconcile</p>
+              <p className="kb-display text-3xl text-[#9DB6FF]">0 Seconds</p>
+              <p className="mt-1 text-xs text-cream/60">eTIMS & M-Pesa auto-reconcile</p>
             </div>
             <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-              <p className="text-3xl font-bold text-white">100% ESOP</p>
-              <p className="mt-1 text-xs text-white/60">Equity for all full-time hires</p>
+              <p className="kb-display text-3xl text-white">100% ESOP</p>
+              <p className="mt-1 text-xs text-cream/60">Equity for all full-time hires</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Culture Section */}
-      <section id="why-kabuor" className="py-20 border-b border-[#E6E7F0] bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section id="why-kabuor" className="scroll-mt-6 py-16 sm:py-24 border-b border-espresso/10 bg-white">
+        <div className="container-x">
           <div className="max-w-2xl">
-            <h2 className="text-xs font-bold tracking-wider text-[#2357F5] uppercase">Company Culture & Principles</h2>
-            <p className="mt-2 text-3xl sm:text-4xl font-serif font-bold tracking-tight text-[#1E1B18]">
+            <p className="kb-kicker text-caramel">Company Culture & Principles</p>
+            <h2 className="kb-display mt-3 text-3xl sm:text-5xl text-espresso">
               We build for the real trenches of commerce.
-            </p>
-            <p className="mt-3 text-base text-[#585C80] leading-relaxed">
+            </h2>
+            <p className="mt-3 text-base text-espresso/70 leading-relaxed">
               Our software doesn't run in air-conditioned ivory towers. It powers wholesale warehouses in Industrial Area, retail storefronts in Eastleigh and Gikomba, and distributor fleets across Kenya.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-2xl border border-[#E6E7F0] bg-[#FDFCF7] p-6 hover:shadow-md transition">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-[#E8EEFF] text-[#2357F5]">
-                <Zap className="h-6 w-6" />
-              </div>
-              <h3 className="mt-5 text-lg font-bold text-[#1E1B18]">Zero Tolerance for Slowness</h3>
-              <p className="mt-2 text-sm text-[#585C80] leading-relaxed">
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-2xl border border-espresso/10 bg-[#FDFCF7] p-6">
+              <h3 className="kb-display text-xl text-espresso">Zero Tolerance for Slowness</h3>
+              <p className="mt-2 text-sm text-espresso/75 leading-relaxed">
                 When a cashier in a supermarket has 15 customers queuing with groceries, every millisecond matters. We optimize down to zero-allocation memory pools in C# and client-side caching.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#E6E7F0] bg-[#FDFCF7] p-6 hover:shadow-md transition">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
-                <Building2 className="h-6 w-6" />
-              </div>
-              <h3 className="mt-5 text-lg font-bold text-[#1E1B18]">Massive Economic Impact</h3>
-              <p className="mt-2 text-sm text-[#585C80] leading-relaxed">
+            <div className="rounded-2xl border border-espresso/10 bg-[#FDFCF7] p-6">
+              <h3 className="kb-display text-xl text-espresso">Massive Economic Impact</h3>
+              <p className="mt-2 text-sm text-espresso/75 leading-relaxed">
                 MSMEs contribute over 40% of Kenya’s GDP. Giving them automated financial controls and instant tax compliance fundamentally protects their business livelihoods.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#E6E7F0] bg-[#FDFCF7] p-6 hover:shadow-md transition">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-[#FFF4E0] text-[#A15C00]">
-                <Rocket className="h-6 w-6" />
-              </div>
-              <h3 className="mt-5 text-lg font-bold text-[#1E1B18]">Extreme Ownership & Equity</h3>
-              <p className="mt-2 text-sm text-[#585C80] leading-relaxed">
+            <div className="rounded-2xl border border-espresso/10 bg-[#FDFCF7] p-6">
+              <h3 className="kb-display text-xl text-espresso">Extreme Ownership & Equity</h3>
+              <p className="mt-2 text-sm text-espresso/75 leading-relaxed">
                 You won't be a cog in an 8-layer approval chain. You will own complete functional domains, deploy weekly, and share directly in company ownership through our formal ESOP equity program.
               </p>
             </div>
@@ -537,28 +498,25 @@ export default function CareersPage({ info }) {
         </div>
       </section>
 
-      {/* Perks */}
-      <section className="py-20 bg-[#F7F7FB] border-b border-[#E6E7F0]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-xs font-bold tracking-wider text-[#2357F5] uppercase">Pre-Funding Commitment & Rewards</h2>
-            <p className="mt-2 text-3xl sm:text-4xl font-serif font-bold tracking-tight text-[#1E1B18]">
+      {/* Rewards / Perks */}
+      <section className="scroll-mt-6 py-16 sm:py-24 bg-[#F7F7FB] border-b border-espresso/10">
+        <div className="container-x">
+          <div className="max-w-3xl">
+            <p className="kb-kicker text-caramel">Pre-Funding Commitment & Rewards</p>
+            <h2 className="kb-display mt-3 text-3xl sm:text-5xl text-espresso">
               Equity today, market compensation upon funding.
-            </p>
-            <p className="mt-3 text-base text-[#585C80]">
+            </h2>
+            <p className="mt-3 text-base text-espresso/70 leading-relaxed">
               We are transparent with our team: we are currently bootstrapping and pre-funding. We offer generous founding ESOP equity for builders and volunteers joining now, with pre-agreed competitive cash salaries activating immediately upon closing our funding round.
             </p>
           </div>
 
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {PERKS.map((perk) => (
-              <div key={perk.title} className="rounded-xl border border-[#E6E7F0] bg-white p-6 flex flex-col justify-between">
+              <div key={perk.title} className="rounded-2xl border border-espresso/10 bg-white p-6 flex flex-col justify-between">
                 <div>
-                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-[#E8EEFF] text-[#2357F5] mb-4">
-                    <perk.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-base font-bold text-[#1E1B18]">{perk.title}</h3>
-                  <p className="mt-2 text-sm text-[#585C80] leading-relaxed">{perk.description}</p>
+                  <h3 className="kb-display text-lg text-espresso">{perk.title}</h3>
+                  <p className="mt-2 text-sm text-espresso/70 leading-relaxed">{perk.description}</p>
                 </div>
               </div>
             ))}
@@ -567,18 +525,16 @@ export default function CareersPage({ info }) {
       </section>
 
       {/* Young Builders & Volunteers Fellowship Callout */}
-      <section id="young-builders" className="py-16 bg-gradient-to-b from-[#0A0B1E] to-[#121432] text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 sm:p-12 lg:p-16 backdrop-blur-sm">
+      <section id="young-builders" className="scroll-mt-6 kb-ink relative overflow-hidden py-16 sm:py-24 text-cream">
+        <div className="container-x relative">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 sm:p-12 lg:p-16">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/20 px-3.5 py-1 text-xs font-semibold text-emerald-300 ring-1 ring-emerald-500/30">
-                  <Sparkles className="h-3.5 w-3.5" /> For Students, Self-Taught Hackers & Volunteers
-                </div>
-                <h2 className="mt-4 font-serif text-3xl font-extrabold sm:text-4xl lg:text-5xl leading-tight">
-                  You don’t need 10 years of experience to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F2C14E] to-[#9DB6FF]">build Africa’s future.</span>
+                <p className="kb-kicker text-[#F2C14E]">For Students, Self-Taught Hackers & Volunteers</p>
+                <h2 className="kb-display mt-3 text-3xl sm:text-5xl text-white">
+                  You don’t need 10 years of experience to <span className="text-[#F2C14E]">build Africa’s future.</span>
                 </h2>
-                <p className="mt-4 text-base text-white/80 leading-relaxed sm:text-lg">
+                <p className="mt-4 text-base text-cream/75 leading-relaxed sm:text-lg">
                   We are deeply committed to mentoring the next generation of African builders. If you are a young programmer, university student, or volunteer hungry to write real production code that solves real problems for Kenyan merchants, we want to build with you.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
@@ -587,9 +543,9 @@ export default function CareersPage({ info }) {
                       setSelectedDept('Young Builders & Volunteers');
                       document.getElementById('open-roles')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] px-6 py-3.5 text-sm font-semibold shadow-lg shadow-[#2357F5]/30 inline-flex items-center gap-2"
+                    className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] px-6 py-3.5 text-sm font-semibold shadow-lg shadow-[#2357F5]/30"
                   >
-                    View Young Builder & Volunteer Tracks <ArrowRight className="h-4 w-4" />
+                    View Young Builder & Volunteer Tracks
                   </button>
                   <a
                     href="mailto:careers@kabuor.com?subject=Young%20Builder%20%2F%20Volunteer%20Inquiry%20-%20Kabuor%20Technologies"
@@ -602,41 +558,29 @@ export default function CareersPage({ info }) {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#2357F5]/20 text-[#9DB6FF]">
-                    <Laptop className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 text-base font-bold text-white">Real Production Code</h3>
-                  <p className="mt-2 text-xs text-white/70 leading-relaxed">
+                  <h3 className="kb-display text-lg text-white">Real Production Code</h3>
+                  <p className="mt-2 text-xs text-cream/70 leading-relaxed">
                     No coffee runs or toy apps. You will build high-throughput C# backends, offline React PWAs, and local payment rails from day one.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-500/20 text-emerald-400">
-                    <HeartHandshake className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 text-base font-bold text-white">Direct Mentorship</h3>
-                  <p className="mt-2 text-xs text-white/70 leading-relaxed">
+                  <h3 className="kb-display text-lg text-white">Direct Mentorship</h3>
+                  <p className="mt-2 text-xs text-cream/70 leading-relaxed">
                     Pair directly with core architects and founders who have scaled financial systems and high-growth African startups.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#F2C14E]/20 text-[#F2C14E]">
-                    <Users className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 text-base font-bold text-white">No Degree Barrier</h3>
-                  <p className="mt-2 text-xs text-white/70 leading-relaxed">
+                  <h3 className="kb-display text-lg text-white">No Degree Barrier</h3>
+                  <p className="mt-2 text-xs text-cream/70 leading-relaxed">
                     We care about your passion, curiosity, and speed of learning. Self-taught tinkerers and student developers are warmly welcome.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-purple-500/20 text-purple-300">
-                    <Rocket className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 text-base font-bold text-white">Full-Time Pathway</h3>
-                  <p className="mt-2 text-xs text-white/70 leading-relaxed">
+                  <h3 className="kb-display text-lg text-white">Full-Time Pathway</h3>
+                  <p className="mt-2 text-xs text-cream/70 leading-relaxed">
                     Top-performing fellows and open contributors graduate into full-time engineering and product positions with equity ownership.
                   </p>
                 </div>
@@ -647,17 +591,15 @@ export default function CareersPage({ info }) {
       </section>
 
       {/* Open Roles Directory */}
-      <section id="open-roles" className="py-20 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pb-8 border-b border-[#E6E7F0]">
+      <section id="open-roles" className="scroll-mt-6 py-16 sm:py-24 bg-white">
+        <div className="container-x">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pb-8 border-b border-espresso/10">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider text-[#2357F5] uppercase">
-                <Briefcase className="h-4 w-4" /> Open Opportunities Across Company
-              </div>
-              <h2 className="mt-2 text-3xl sm:text-4xl font-serif font-bold tracking-tight text-[#1E1B18]">
+              <p className="kb-kicker text-caramel">Open Opportunities Across Company</p>
+              <h2 className="kb-display mt-3 text-3xl sm:text-5xl text-espresso">
                 Open Positions ({filteredRoles.length})
               </h2>
-              <p className="mt-1 text-sm text-[#585C80]">
+              <p className="mt-1 text-sm text-espresso/70">
                 Explore open roles and volunteer tracks. All founding positions include generous ESOP equity with pre-agreed market salaries upon funding.
               </p>
             </div>
@@ -711,23 +653,22 @@ export default function CareersPage({ info }) {
                           <span className="rounded bg-[#F7F7FB] px-2 py-0.5 text-xs font-medium text-[#3B3F5C] border border-[#E6E7F0]">
                             {role.type}
                           </span>
-                          <span className="flex items-center gap-1 text-xs text-[#585C80]">
-                            <MapPin className="h-3.5 w-3.5 text-[#8A8DB0]" /> {role.location}
+                          <span className="text-xs text-espresso/60">
+                            {role.location}
                           </span>
                         </div>
-                        <h3 className="text-xl font-bold text-[#1E1B18] hover:text-[#2357F5] transition">
+                        <h3 className="kb-display text-xl text-espresso hover:text-[#2357F5] transition">
                           {role.title}
                         </h3>
-                        <p className="mt-2 text-sm text-[#585C80] line-clamp-2 leading-relaxed">
+                        <p className="mt-2 text-sm text-espresso/70 line-clamp-2 leading-relaxed">
                           {role.summary}
                         </p>
                       </div>
 
                       <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between gap-3 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-[#E6E7F0]">
                         <div className="text-left lg:text-right">
-                          <p className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E1B18] bg-[#F7F7FB] px-2.5 py-1 rounded-full border border-[#E6E7F0]">
-                            <Lock className="h-3 w-3 text-[#8A8DB0]" />
-                            <span>Founding Equity (ESOP) · Salaried Post-Funding</span>
+                          <p className="text-xs font-semibold text-espresso/80">
+                            Founding Equity (ESOP) · Salaried Post-Funding
                           </p>
                           <p className="mt-1 text-xs font-semibold text-emerald-600">{role.equity}</p>
                         </div>
@@ -774,15 +715,14 @@ export default function CareersPage({ info }) {
                         <ul className="mt-3 space-y-2">
                           {role.responsibilities.map((resp, i) => (
                             <li key={i} className="flex items-start gap-2.5 text-sm text-[#3B3F5C] leading-relaxed">
-                              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#2357F5]" />
+                              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#2357F5] shrink-0" />
                               <span>{resp}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
 
-                      <div className="rounded-lg bg-[#E8EEFF]/60 p-4 border border-[#2357F5]/20 flex items-start gap-3">
-                        <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-[#2357F5]" />
+                      <div className="rounded-lg bg-[#E8EEFF]/60 p-4 border border-[#2357F5]/20">
                         <div className="text-xs sm:text-sm text-[#1E1B18] leading-relaxed">
                           <span className="font-bold text-[#2357F5]">Pre-Funding Founding Track:</span> All positions operate on generous founding ESOP equity grants until our funding round closes, with pre-agreed market salaries activating upon funding. {role.benefitsNote}
                         </div>
@@ -797,7 +737,7 @@ export default function CareersPage({ info }) {
                           onClick={() => handleApply(role)}
                           className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-2.5 px-6 text-sm font-semibold"
                         >
-                          Apply for {role.title} <ArrowRight className="h-4 w-4 ml-1" />
+                          Apply for {role.title}
                         </button>
                       </div>
                     </div>
@@ -822,10 +762,10 @@ export default function CareersPage({ info }) {
 
             {submittedRef ? (
               <div className="text-center py-6">
-                <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-50 text-emerald-600">
-                  <CheckCircle2 className="h-10 w-10" />
+                <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-emerald-50 text-emerald-600 font-bold text-xl">
+                  ✓
                 </div>
-                <h3 className="mt-5 text-2xl font-bold text-[#1E1B18]">Application Received!</h3>
+                <h3 className="kb-display mt-5 text-2xl text-[#1E1B18]">Application Received!</h3>
                 <p className="mt-2 text-sm text-[#585C80]">
                   Thank you, <b className="text-[#1E1B18]">{applicant.fullName}</b>. Your application for <b className="text-[#1E1B18]">{applyingRole.title}</b> is logged with the Kabuor Technologies talent desk.
                 </p>
@@ -851,7 +791,7 @@ export default function CareersPage({ info }) {
                   <span className="rounded bg-[#E8EEFF] px-2.5 py-1 text-xs font-semibold text-[#2357F5]">
                     {applyingRole.department}
                   </span>
-                  <h3 className="mt-2 text-2xl font-bold text-[#1E1B18]">
+                  <h3 className="kb-display mt-2 text-2xl text-[#1E1B18]">
                     Apply for {applyingRole.title}
                   </h3>
                   <p className="mt-1 text-xs text-[#585C80]">
