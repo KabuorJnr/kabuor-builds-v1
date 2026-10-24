@@ -316,10 +316,10 @@ export default function Company({ info }) {
           </div>
           <div className="space-y-4 text-lg leading-relaxed text-espresso/75">
             <p>
-              <b className="text-espresso">Kabuor Technologies</b> (incorporation in progress as Kabuor Technologies Ltd) is built to power modern African business. Too much enterprise software is designed overseas—priced in dollars, alienated from M-Pesa, and too cumbersome for real counter operations.
+              <b className="text-espresso">Kabuor Technologies</b> (incorporation in progress as Kabuor Technologies Ltd) is built to power modern African business. Headquartered along Ngong Road, Nairobi and operating as a 100% fully remote team, we build enterprise software tailored for the real counter operations of East Africa.
             </p>
             <p>
-              We engineer mission-critical systems ground-up for East Africa: starting from how Kenyan enterprises collect payments, comply with KRA eTIMS, and communicate with customers on WhatsApp and mobile phones.
+              We engineer mission-critical systems ground-up for Kenya: starting from how enterprises collect payments, comply with KRA eTIMS, and communicate with customers on WhatsApp and mobile phones.
             </p>
             <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-espresso/10">
               <h4 className="font-bold text-espresso">Our 3-Tier Brand Architecture:</h4>

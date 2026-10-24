@@ -181,7 +181,7 @@ export function SiteFooter({ info, children }) {
         </div>
       </div>
       <p className="container-x relative mt-10 border-t border-white/10 pt-6 text-xs text-cream/45">
-        © {new Date().getFullYear()} {name} · Made in Kenya
+        © {new Date().getFullYear()} {name} · Ngong Road, Nairobi · Fully Remote · Made in Kenya
       </p>
     </footer>
   );
