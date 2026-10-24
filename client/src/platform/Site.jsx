@@ -5,8 +5,8 @@ import { Link, NavLink } from 'react-router';
 import { Mail, MessageCircle, Phone } from 'lucide-react';
 import { cn } from '../lib/format';
 
-/** The Kabuor Builds lockup: the price-tag K and the name, "Builds" in sapphire indigo. */
-export function Wordmark({ name = 'Kabuor Builds', light = false, stacked = false, tagline, className = '' }) {
+/** The Kabuor Technologies lockup: the price-tag K and the name in sapphire indigo. */
+export function Wordmark({ name = 'Kabuor Technologies', light = false, stacked = false, tagline, className = '' }) {
   const [first, ...rest] = name.split(' ');
   return (
     <span className={`inline-flex items-center whitespace-nowrap ${stacked ? 'gap-4' : 'gap-2.5'} ${className}`}>
@@ -59,7 +59,7 @@ export const PRODUCTS = [
 
 /** On ink (light text) over the dark heroes. `cta` is this page's main action: { to | href, label }. */
 export function SiteHeader({ info, cta }) {
-  const name = info?.name ?? 'Kabuor Builds';
+  const name = info?.name ?? 'Kabuor Technologies';
   const link = ({ isActive }) => cn('rounded-full px-2.5 py-2 transition sm:px-3', isActive ? 'bg-white/10 text-cream' : 'text-cream/70 hover:text-cream');
   return (
     <header className="container-x relative flex items-center justify-between gap-3 py-5">
@@ -83,12 +83,12 @@ export function SiteHeader({ info, cta }) {
         <a href="/#about" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
           About
         </a>
+        <a href="/#careers" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
+          Careers <span className="rounded bg-[#2357F5]/60 px-1.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">Hiring</span>
+        </a>
         <a href="#contact" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
           Contact
         </a>
-        <Link to="/careers" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
-          Careers <span className="rounded bg-[#2357F5]/40 px-1.5 py-0.5 text-[10px] font-bold text-cream">Hiring</span>
-        </Link>
         {cta &&
           (cta.to ? (
             <Go to={cta.to} className="btn ml-1.5 hidden bg-cream px-5 py-2.5 whitespace-nowrap text-espresso hover:bg-white sm:inline-flex">
@@ -125,7 +125,7 @@ export function ContactButtons({ info, message, className }) {
 }
 
 export function SiteFooter({ info, children }) {
-  const name = info?.name ?? 'Kabuor Builds';
+  const name = info?.name ?? 'Kabuor Technologies';
   return (
     <footer id="contact" className="kb-ink relative scroll-mt-6 overflow-hidden pt-14 pb-8">
       <div className="container-x relative grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.2fr]">

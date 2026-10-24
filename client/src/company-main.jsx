@@ -12,11 +12,25 @@ import CareersPage from './platform/CareersPage';
 import { applyPlatformLook } from './platform/look';
 import { papi } from './platform/shared';
 
+const DEFAULT_INFO = {
+  name: 'Kabuor Technologies',
+  tagline: 'Software African businesses actually run on.',
+  phone: '0712 345 678',
+  email: 'hello@kabuor.com',
+  prices: { monthly: 2499, yearly: 24990 },
+};
+
 function CompanySite() {
-  const [info, setInfo] = useState(null);
+  const [info, setInfo] = useState(DEFAULT_INFO);
   useEffect(() => {
     applyPlatformLook();
-    papi('/info').then(setInfo).catch(() => setInfo(null));
+    papi('/info')
+      .then((data) => {
+        if (data) {
+          setInfo({ ...DEFAULT_INFO, ...data, name: 'Kabuor Technologies' });
+        }
+      })
+      .catch(() => setInfo(DEFAULT_INFO));
   }, []);
   return (
     <div className="min-h-svh bg-cream text-espresso">
