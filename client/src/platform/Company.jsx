@@ -293,7 +293,7 @@ export default function Company({ info }) {
                 Build the core infrastructure <span className="text-[#F2C14E]">powering East African commerce.</span>
               </h2>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-cream/70 sm:text-base">
-                We are assembling our core team alongside open fellowships for young builders, student developers, and volunteers passionate about engineering African software. Headquartered along Ngong Road, Nairobi and 100% fully remote.
+                We are assembling our core team alongside open tracks for young builders, student developers, and volunteers passionate about engineering African software. Pre-funding founding equity, 100% fully remote, with our hub along Ngong Road, Nairobi.
               </p>
             </div>
             <Link

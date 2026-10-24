@@ -34,8 +34,8 @@ export const ALL_ROLES = [
     department: 'Leadership',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
-    equity: 'Generous ESOP Equity Grant',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
+    equity: 'Generous Founding ESOP Equity Grant',
     tags: ['Executive', 'Operations', 'Strategy', 'Expansion', 'Fundraising'],
     summary:
       'Partner directly with the Founder & CEO to drive company-wide operational velocity, board reporting, cross-functional OKRs, and strategic market expansion across East Africa.',
@@ -48,7 +48,7 @@ export const ALL_ROLES = [
       '5+ years in high-growth tech startups, top-tier management consulting, or venture capital in Africa.',
       'Uncanny ability to translate ambiguous strategic goals into crisp operational execution.',
     ],
-    benefitsNote: 'Direct founder mentorship + Tier-1 Medical + Executive Equity Stake.',
+    benefitsNote: 'Direct founder mentorship + Founding ESOP Stake + Executive Salaried Package post-funding.',
   },
   {
     id: 'vp-engineering',
@@ -56,7 +56,7 @@ export const ALL_ROLES = [
     department: 'Leadership',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Significant Executive ESOP Stake',
     tags: ['C# .NET 10', 'Distributed Systems', 'Architecture', 'Team Leadership'],
     summary:
@@ -70,7 +70,7 @@ export const ALL_ROLES = [
       '8+ years building enterprise SaaS or high-throughput financial infrastructure.',
       'Proven track record leading engineering teams of 15+ engineers in fast-paced environments.',
     ],
-    benefitsNote: 'Top-tier executive compensation package + Comprehensive Family Medical + Heavy Equity.',
+    benefitsNote: 'Significant Executive ESOP Stake + Core Architecture Ownership + Executive Salaried Package post-funding.',
   },
   {
     id: 'lead-platform-architect',
@@ -78,7 +78,7 @@ export const ALL_ROLES = [
     department: 'Engineering',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: '0.50% – 1.00% ESOP',
     tags: ['.NET 10', 'C#', 'SequenceGate', 'PostgreSQL', 'High-Throughput'],
     summary:
@@ -92,7 +92,7 @@ export const ALL_ROLES = [
       '6+ years architecting high-throughput, low-latency distributed systems (C#/.NET, Go, or Rust).',
       'Deep mastery of relational databases (PostgreSQL/SQL Server), transactional isolation levels, and row locking.',
     ],
-    benefitsNote: 'Tier-1 Health (Aga Khan / Nairobi Hospital) + M3 Max MacBook Pro + 24 Vacation Days.',
+    benefitsNote: 'Core Distributed Systems Leadership + Generous ESOP Stake + Salaried Package post-funding.',
   },
   {
     id: 'senior-edge-frontend-engineer',
@@ -100,7 +100,7 @@ export const ALL_ROLES = [
     department: 'Engineering',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: '0.35% – 0.75% ESOP',
     tags: ['React 19', 'TypeScript', 'Offline PWA', 'IndexedDB', 'Tailwind'],
     summary:
@@ -113,7 +113,7 @@ export const ALL_ROLES = [
       '4+ years building production web applications in modern React, TypeScript, and modern CSS.',
       'Hands-on expertise with Progressive Web Apps (PWA), Service Workers, CacheStorage, and offline sync.',
     ],
-    benefitsNote: '100% Fully Remote Flexibility + Tier-1 Family Medical Cover + Hardware Stipend.',
+    benefitsNote: '100% Fully Remote + Offline PWA Runtime Ownership + ESOP Equity Grant + Salaried post-funding.',
   },
   {
     id: 'head-of-tax-compliance-etims',
@@ -121,7 +121,7 @@ export const ALL_ROLES = [
     department: 'Engineering',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: '0.40% – 0.80% ESOP',
     tags: ['KRA eTIMS', 'VSCU/OSCU', 'Tax Procedures Act', 'Cryptography', 'FinTech'],
     summary:
@@ -134,7 +134,7 @@ export const ALL_ROLES = [
       'Proven track record implementing or integrating eTIMS, TIMS, or fiscal device middleware in Kenya.',
       'Strong technical background in cryptography (digital signatures, RSA/ECDSA, QR code payloads, PKI).',
     ],
-    benefitsNote: 'Direct executive leadership role + Comprehensive Medical + Generous ESOP.',
+    benefitsNote: 'Direct regulatory architecture leadership + Generous ESOP Stake + Salaried post-funding.',
   },
   {
     id: 'head-of-growth-marketing',
@@ -142,8 +142,8 @@ export const ALL_ROLES = [
     department: 'Marketing & Growth',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
-    equity: 'Meaningful ESOP Stake + Performance Bonus',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
+    equity: 'Meaningful Founding ESOP Stake',
     tags: ['Performance Marketing', 'B2B SaaS', 'Accountant Network', 'SEO/SEM', 'CAC/LTV'],
     summary:
       'Own top-of-funnel customer acquisition and merchant expansion across Kenya. Build our automated acquisition engine across digital channels, partner accountant networks, and referral loops to acquire 5,000+ paying businesses.',
@@ -155,7 +155,7 @@ export const ALL_ROLES = [
       '4+ years driving measurable growth at a high-velocity B2B SaaS, FinTech, or fast-growing startup in East Africa.',
       'Demonstrated track record managing 7-figure marketing budgets with strict CAC and payback constraints.',
     ],
-    benefitsNote: 'Tier-1 Health + Uncapped Performance Bonus + Executive Equity Stake.',
+    benefitsNote: 'Meaningful Founding ESOP Stake + Salaried post-funding + Uncapped revenue share upon funding.',
   },
   {
     id: 'field-trade-corridor-marketing-lead',
@@ -163,8 +163,8 @@ export const ALL_ROLES = [
     department: 'Marketing & Growth',
     location: 'Nairobi, Kenya (Trade Corridors / Field & Remote)',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
-    equity: 'Meaningful ESOP Stake + Field Mobility Allowance',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
+    equity: 'Meaningful Founding ESOP Stake',
     tags: ['Field Activation', 'Merchant Corridors', 'Trade Associations', 'Gikomba', 'Eastleigh'],
     summary:
       'Take Kabuor ERP straight into Kenya’s most lucrative commercial hubs. You will lead ground activations in Gikomba, Eastleigh, Industrial Area, and River Road, driving wholesale adoption through merchant association partnerships and live demo days.',
@@ -175,7 +175,7 @@ export const ALL_ROLES = [
     requirements: [
       '3+ years of field marketing, FMCG route-to-market, or merchant acquisition leadership in urban Kenyan hubs.',
     ],
-    benefitsNote: 'Dedicated Field Mobility / Transport Allowance + Health Insurance + Monthly Performance Incentives.',
+    benefitsNote: 'Grassroots commercial corridor leadership + Founding ESOP Stake + Full mobility support post-funding.',
   },
   {
     id: 'content-and-brand-lead',
@@ -183,8 +183,8 @@ export const ALL_ROLES = [
     department: 'Marketing & Growth',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
-    equity: 'Meaningful ESOP Stake',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
+    equity: 'Meaningful Founding ESOP Stake',
     tags: ['Video Storytelling', 'LinkedIn Thought Leadership', 'SME Case Studies', 'TikTok/YouTube'],
     summary:
       'Tell the story of African commerce through the lens of the ambitious business builders who run it. You will create documentary-style customer case studies, founder video content, tax masterclasses, and viral social campaigns.',
@@ -195,7 +195,7 @@ export const ALL_ROLES = [
     requirements: [
       '3+ years creating high-engagement content for high-growth tech brands, agencies, or business media.',
     ],
-    benefitsNote: 'High-end Production Kit + Creative Freedom + Tier-1 Medical + Equity.',
+    benefitsNote: 'Creative freedom & voice of the brand + Founding ESOP Stake + Production kit post-funding.',
   },
   {
     id: 'strategic-partner-accountant-lead',
@@ -203,8 +203,8 @@ export const ALL_ROLES = [
     department: 'Marketing & Growth',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
-    equity: 'Meaningful ESOP Stake + Recurring Rev Share',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
+    equity: 'Meaningful Founding ESOP Stake + Future Revenue Share',
     tags: ['ICPAK Network', 'Accountants', 'Audit Firms', 'Affiliate Programs', 'B2B Sales'],
     summary:
       'Empower Kenya’s Certified Public Accountants (CPAs) and audit firms. Build our nationwide Accountant Partner Network where practicing accountants manage their SME clients on Kabuor ERP while earning recurring referral commissions.',
@@ -215,7 +215,7 @@ export const ALL_ROLES = [
     requirements: [
       '3+ years in B2B channel sales, accounting software consultancy, or corporate banking relationship management.',
     ],
-    benefitsNote: 'Uncapped Recurring Affiliate Revenue Share + Comprehensive Medical + ESOP.',
+    benefitsNote: 'Founding ESOP Stake + Recurring Partner Affiliate Model + Salaried post-funding.',
   },
   {
     id: 'head-of-enterprise-sales',
@@ -223,8 +223,8 @@ export const ALL_ROLES = [
     department: 'Sales & Commercial',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
-    equity: 'Meaningful ESOP Stake + Uncapped Commissions',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
+    equity: 'Meaningful Founding ESOP Stake',
     tags: ['Enterprise Sales', 'B2B Wholesalers', 'Distributors', 'Contract Negotiation'],
     summary:
       'Drive high-value enterprise contracts with mid-market distributors, multi-branch supermarket chains, and FMCG manufacturers across Kenya.',
@@ -235,7 +235,7 @@ export const ALL_ROLES = [
     requirements: [
       '5+ years enterprise software or corporate technology sales experience in East Africa with documented quota achievement.',
     ],
-    benefitsNote: 'Top-tier base + Uncapped commission accelerators + Tier-1 Medical + Equity.',
+    benefitsNote: 'Founding ESOP Stake + Executive commission structure & salary post-funding.',
   },
   {
     id: 'head-of-merchant-success',
@@ -243,7 +243,7 @@ export const ALL_ROLES = [
     department: 'Operations & Success',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: '0.25% – 0.50% ESOP',
     tags: ['Customer Success', 'Zero Churn', 'ERP Onboarding', 'Data Migration', 'NPS'],
     summary:
@@ -255,7 +255,7 @@ export const ALL_ROLES = [
     requirements: [
       '4+ years leading Customer Success, Implementation, or Solutions Engineering in B2B software in Africa.',
     ],
-    benefitsNote: 'Leadership autonomy + Health Insurance + Home Office & Hardware Budget + Stock Options.',
+    benefitsNote: 'Founding ESOP Stake + Direct solutions architecture leadership + Salaried post-funding.',
   },
   {
     id: 'finance-director-controller',
@@ -263,7 +263,7 @@ export const ALL_ROLES = [
     department: 'Finance, Legal & People',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
-    compensationNote: 'Undisclosed · Top 10% Benchmark in Kenya',
+    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Meaningful Executive ESOP Stake',
     tags: ['CPA-K', 'Financial Controller', 'KRA Compliance', 'Audit', 'Treasury'],
     summary:
@@ -275,7 +275,7 @@ export const ALL_ROLES = [
     requirements: [
       '6+ years in corporate financial management, with active ICPAK (CPA-K) or ACCA membership.',
     ],
-    benefitsNote: 'Executive package + Tier-1 Family Medical + Equity ownership.',
+    benefitsNote: 'Founding Executive ESOP Stake + Corporate governance leadership + Salaried post-funding.',
   },
   {
     id: 'young-builders-fellowship',
@@ -283,7 +283,7 @@ export const ALL_ROLES = [
     department: 'Young Builders & Volunteers',
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Fellowship / Early-Career',
-    compensationNote: 'Paid Monthly Stipend + Hardware Access + Mentorship',
+    compensationNote: 'Pre-Funding: Volunteer / Fellow Track · Equity & Mentorship (Salaried post-funding)',
     equity: 'Fellowship Completion Grant & Full-Time Priority',
     tags: ['Young Builders', 'Students', 'Self-Taught', 'React', 'C# .NET', 'Product'],
     summary:
@@ -297,7 +297,7 @@ export const ALL_ROLES = [
       'No formal degree or university credentials required. We evaluate raw curiosity, coding speed, and passion.',
       'A demonstrable portfolio of side projects, GitHub repositories, or tools you built because you cared.',
     ],
-    benefitsNote: '1-on-1 Founder & Architect Mentorship + Monthly Fellowship Stipend + Laptop & Internet Allowance + Fast-track to full-time engineering.',
+    benefitsNote: '1-on-1 Founder & Architect Mentorship + Real Production Experience + Founding Equity Grant + Fast-track to Salaried Engineering post-funding.',
   },
   {
     id: 'open-source-volunteer-contributor',
@@ -305,7 +305,7 @@ export const ALL_ROLES = [
     department: 'Young Builders & Volunteers',
     location: 'Pan-Africa & Global · 100% Remote',
     type: 'Volunteer / Open Contributor',
-    compensationNote: 'Volunteer Track (Flexible Hours)',
+    compensationNote: 'Volunteer Track (Flexible Hours & Contributor Equity)',
     equity: 'Public Contributor Attribution & Swag',
     tags: ['Open Source', 'Community', 'Localization', 'Docs', 'APIs', 'Volunteer'],
     summary:
@@ -326,8 +326,8 @@ export const ALL_ROLES = [
     title: 'Campus & Student Tech Community Lead',
     department: 'Young Builders & Volunteers',
     location: 'Kenyan Universities & Colleges · Remote & Campus',
-    type: 'Fellowship / Community',
-    compensationNote: 'Event Budget & Performance Stipends',
+    type: 'Volunteer / Community',
+    compensationNote: 'Volunteer Community Track · Builder Recognition & Event Support',
     equity: 'Builder Certificate & Priority Hiring',
     tags: ['Campus', 'Youth Community', 'Hackathons', 'Student Builder'],
     summary:
@@ -341,40 +341,40 @@ export const ALL_ROLES = [
       'Current student at a Kenyan or East African university/college with an active role in tech communities.',
       'Strong communication, empathy, and high enthusiasm for building African technology.',
     ],
-    benefitsNote: 'Campus event sponsorship budget + Kabuor Builds swag + Executive mentorship + Direct pipeline to full-time roles.',
+    benefitsNote: 'Campus leadership credential + Event builder support + Executive mentorship + Fast-track fellowship pipeline.',
   },
 ];
 
 const PERKS = [
   {
-    icon: ShieldCheck,
-    title: 'Comprehensive Tier-1 Medical',
-    description: 'Inpatient and outpatient healthcare covering Aga Khan, Nairobi Hospital, and MP Shah for you and your family.',
+    icon: Rocket,
+    title: 'Generous Founding ESOP Ownership',
+    description: 'We reward early conviction with meaningful stock option grants with formal 4-year vesting. You own real equity in the company upside from day one.',
   },
   {
-    icon: Rocket,
-    title: 'Generous ESOP Ownership',
-    description: 'Meaningful stock option grants with standard 4-year vesting and 1-year cliff. You own real equity in our upside.',
+    icon: ShieldCheck,
+    title: 'Post-Funding Salary & Medical Guarantee',
+    description: 'We are currently pre-funding and bootstrapping. All founding roles have contractual market-competitive salaries and tier-1 health cover locked in upon closing our funding round.',
   },
   {
     icon: Laptop,
-    title: '100% Fully Remote & Hardware Stipend',
-    description: 'Headquartered along Ngong Road, Nairobi, we work 100% fully remote. Includes Apple M3 Max MacBook Pro / ThinkPad, 4K display, and home office stipend.',
+    title: '100% Fully Remote & High Autonomy',
+    description: 'Headquartered along Ngong Road, Nairobi, we operate 100% remote. Work on your schedule with zero micromanagement, focused purely on shipped merchant impact.',
   },
   {
-    icon: DollarSign,
-    title: 'Competitive Benchmark Compensation',
-    description: 'Salaries benchmarked in the top 10% of Kenyan venture-backed tech startups, tailored to candidate caliber and paid punctually in KES.',
+    icon: Zap,
+    title: 'Real Production Systems Ownership',
+    description: 'No busywork or toy apps. You architect and deploy low-allocation C# .NET 10 microservices and offline React 19 PWAs moving real transactions for Kenyan businesses.',
   },
   {
     icon: GraduationCap,
-    title: '$1,500 Annual Learning Budget',
-    description: 'Yearly stipend for books, online courses, technical certifications, and international conferences.',
+    title: 'Founder & Senior Architect Mentorship',
+    description: 'Direct pairing with experienced founders and engineers who have built and scaled high-throughput financial infrastructure across East Africa.',
   },
   {
     icon: HeartHandshake,
-    title: '24 Paid Vacation Days',
-    description: 'Rest when you need it, plus 16 weeks paid maternity leave, 4 weeks paternity leave, and mental health recharge days.',
+    title: 'Flexible Leave & Collaborative Culture',
+    description: 'High-trust environment with flexible time off, asynchronous engineering workflows, and deep commitment to work-life sustainability.',
   },
 ];
 
@@ -541,12 +541,12 @@ export default function CareersPage({ info }) {
       <section className="py-20 bg-[#F7F7FB] border-b border-[#E6E7F0]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-xs font-bold tracking-wider text-[#2357F5] uppercase">Total Rewards & Benefits</h2>
+            <h2 className="text-xs font-bold tracking-wider text-[#2357F5] uppercase">Pre-Funding Commitment & Rewards</h2>
             <p className="mt-2 text-3xl sm:text-4xl font-serif font-bold tracking-tight text-[#1E1B18]">
-              Competitive compensation built for Kenya's top talent.
+              Equity today, market compensation upon funding.
             </p>
             <p className="mt-3 text-base text-[#585C80]">
-              All salaries remain undisclosed and benchmarked in the top 10% of Kenyan venture-backed tech startups, combined with meaningful equity and comprehensive healthcare.
+              We are transparent with our team: we are currently bootstrapping and pre-funding. We offer generous founding ESOP equity for builders and volunteers joining now, with pre-agreed competitive cash salaries activating immediately upon closing our funding round.
             </p>
           </div>
 
@@ -658,7 +658,7 @@ export default function CareersPage({ info }) {
                 Open Positions ({filteredRoles.length})
               </h2>
               <p className="mt-1 text-sm text-[#585C80]">
-                Explore open roles across all departments. All compensations are benchmark-competitive with meaningful ESOP equity.
+                Explore open roles and volunteer tracks. All founding positions include generous ESOP equity with pre-agreed market salaries upon funding.
               </p>
             </div>
 
@@ -727,7 +727,7 @@ export default function CareersPage({ info }) {
                         <div className="text-left lg:text-right">
                           <p className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E1B18] bg-[#F7F7FB] px-2.5 py-1 rounded-full border border-[#E6E7F0]">
                             <Lock className="h-3 w-3 text-[#8A8DB0]" />
-                            <span>Salary Undisclosed · Competitive</span>
+                            <span>Founding Equity (ESOP) · Salaried Post-Funding</span>
                           </p>
                           <p className="mt-1 text-xs font-semibold text-emerald-600">{role.equity}</p>
                         </div>
@@ -784,7 +784,7 @@ export default function CareersPage({ info }) {
                       <div className="rounded-lg bg-[#E8EEFF]/60 p-4 border border-[#2357F5]/20 flex items-start gap-3">
                         <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-[#2357F5]" />
                         <div className="text-xs sm:text-sm text-[#1E1B18] leading-relaxed">
-                          <span className="font-bold text-[#2357F5]">Total Rewards Guarantee:</span> All salaries remain undisclosed and benchmarked in the top decile of Kenyan tech startups. Includes {role.benefitsNote}
+                          <span className="font-bold text-[#2357F5]">Pre-Funding Founding Track:</span> All positions operate on generous founding ESOP equity grants until our funding round closes, with pre-agreed market salaries activating upon funding. {role.benefitsNote}
                         </div>
                       </div>
 
@@ -855,7 +855,7 @@ export default function CareersPage({ info }) {
                     Apply for {applyingRole.title}
                   </h3>
                   <p className="mt-1 text-xs text-[#585C80]">
-                    {applyingRole.location} · Compensation: Undisclosed / Benchmark Competitive
+                    {applyingRole.location} · Compensation: Pre-Funding ESOP Equity (Salaried Upon Funding)
                   </p>
                 </div>
 
