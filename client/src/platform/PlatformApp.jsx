@@ -11,6 +11,7 @@ import { EASE, ksh, papi } from './shared';
 import Wizard from './Wizard';
 import Company from './Company';
 import Erp from './Erp';
+import CareersPage from './CareersPage';
 import { SiteFooter, SiteHeader, tel, whatsapp } from './Site';
 import { platformOrigin } from '../lib/base';
 
@@ -449,6 +450,7 @@ export default function PlatformApp({ site }) {
         />
         <Route path="/shops" element={<Landing info={info} />} />
         <Route path="/erp" element={<Erp info={info} />} />
+        <Route path="/careers" element={<CareersPage info={info} />} />
         <Route path="*" element={<Company info={info} />} />
       </Routes>
     </div>
