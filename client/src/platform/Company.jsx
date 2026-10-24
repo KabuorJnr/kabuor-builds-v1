@@ -7,21 +7,14 @@ import { motion } from 'framer-motion';
 import {
   ArrowRight,
   BarChart3,
-  Briefcase,
-  Building2,
   Check,
-  CheckCircle2,
   ExternalLink,
   Languages,
-  Lock,
-  MapPin,
   MessageCircle,
   ReceiptText,
-  ShieldCheck,
   ShoppingBag,
   Smartphone,
   Sparkles,
-  Users,
   Wallet,
 } from 'lucide-react';
 import { EASE, ksh } from './shared';
@@ -295,9 +288,7 @@ export default function Company({ info }) {
         <div className="container-x">
           <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-white/[0.04] p-8 ring-1 ring-white/10 md:flex-row md:items-center">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#2357F5]/20 px-3 py-1 text-xs font-semibold text-[#9DB6FF] ring-1 ring-[#2357F5]/40">
-                <Briefcase className="h-3.5 w-3.5" /> Kabuor Technologies Careers · We're Hiring
-              </div>
+              <p className="kb-kicker text-[#9DB6FF]">Kabuor Technologies Careers · We're Hiring</p>
               <h2 className="kb-display mt-3 text-3xl sm:text-4xl">
                 Build the core infrastructure <span className="text-[#F2C14E]">powering East African commerce.</span>
               </h2>
