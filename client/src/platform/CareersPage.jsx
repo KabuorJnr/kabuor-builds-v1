@@ -277,6 +277,72 @@ export const ALL_ROLES = [
     ],
     benefitsNote: 'Executive package + Tier-1 Family Medical + Equity ownership.',
   },
+  {
+    id: 'young-builders-fellowship',
+    title: 'Young African Builder Fellow (Engineering, Product & Design)',
+    department: 'Young Builders & Volunteers',
+    location: 'Ngong Road, Nairobi · Fully Remote',
+    type: 'Fellowship / Early-Career',
+    compensationNote: 'Paid Monthly Stipend + Hardware Access + Mentorship',
+    equity: 'Fellowship Completion Grant & Full-Time Priority',
+    tags: ['Young Builders', 'Students', 'Self-Taught', 'React', 'C# .NET', 'Product'],
+    summary:
+      'A hands-on fellowship for hungry, high-potential young Africans (students, fresh graduates, and self-taught tinkerers). Work directly alongside our core architects on real production code that powers Kenyan commerce.',
+    responsibilities: [
+      'Pair-program with senior engineers building C# .NET 10 microservices, React 19 offline PWAs, and merchant analytics.',
+      'Ship weekly improvements to real business tools used by wholesale merchants across Kenya.',
+      'Participate in architecture reviews, code profiling, and technical deep-dives.',
+    ],
+    requirements: [
+      'No formal degree or university credentials required. We evaluate raw curiosity, coding speed, and passion.',
+      'A demonstrable portfolio of side projects, GitHub repositories, or tools you built because you cared.',
+    ],
+    benefitsNote: '1-on-1 Founder & Architect Mentorship + Monthly Fellowship Stipend + Laptop & Internet Allowance + Fast-track to full-time engineering.',
+  },
+  {
+    id: 'open-source-volunteer-contributor',
+    title: 'Open-Source & African Software Volunteer Contributor',
+    department: 'Young Builders & Volunteers',
+    location: 'Pan-Africa & Global · 100% Remote',
+    type: 'Volunteer / Open Contributor',
+    compensationNote: 'Volunteer Track (Flexible Hours)',
+    equity: 'Public Contributor Attribution & Swag',
+    tags: ['Open Source', 'Community', 'Localization', 'Docs', 'APIs', 'Volunteer'],
+    summary:
+      'Contribute your passion and skills on your own schedule. Help us build open-source tools, developer documentation, African language translations (Kiswahili & vernaculars), and merchant helper libraries.',
+    responsibilities: [
+      'Contribute to open repositories, SDKs, merchant integration guides, and developer docs.',
+      'Help translate, localize, and test offline workflows for various regional dialects and merchant personas.',
+      'Report edge cases, write integration tests, and collaborate in our open builder forums.',
+    ],
+    requirements: [
+      'Passion for advancing homegrown African software and empowering local small businesses.',
+      'Open to developers, technical writers, UX designers, and students of all experience levels.',
+    ],
+    benefitsNote: 'Official Contributor Recognition on our platform + Direct Slack/Discord access to the engineering team + Reference letters & hackathon invitations.',
+  },
+  {
+    id: 'campus-builder-lead',
+    title: 'Campus & Student Tech Community Lead',
+    department: 'Young Builders & Volunteers',
+    location: 'Kenyan Universities & Colleges · Remote & Campus',
+    type: 'Fellowship / Community',
+    compensationNote: 'Event Budget & Performance Stipends',
+    equity: 'Builder Certificate & Priority Hiring',
+    tags: ['Campus', 'Youth Community', 'Hackathons', 'Student Builder'],
+    summary:
+      'Lead the young builder movement at your campus. Organize tech demo days, developer sessions around eTIMS, M-Pesa APIs, and offline web tech, connecting talented classmates to real-world software opportunities.',
+    responsibilities: [
+      'Champion homegrown African software and modern engineering practices across your campus tech club or student guild.',
+      'Host hands-on demo sessions showcasing how to build offline-first apps and integrate local APIs.',
+      'Identify top student talent and recommend peers for our engineering fellowships.',
+    ],
+    requirements: [
+      'Current student at a Kenyan or East African university/college with an active role in tech communities.',
+      'Strong communication, empathy, and high enthusiasm for building African technology.',
+    ],
+    benefitsNote: 'Campus event sponsorship budget + Kabuor Builds swag + Executive mentorship + Direct pipeline to full-time roles.',
+  },
 ];
 
 const PERKS = [
@@ -330,7 +396,7 @@ export default function CareersPage({ info }) {
   const [submittedRef, setSubmittedRef] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const departments = ['All', 'Leadership', 'Engineering', 'Marketing & Growth', 'Sales & Commercial', 'Operations & Success', 'Finance, Legal & People'];
+  const departments = ['All', 'Young Builders & Volunteers', 'Engineering', 'Leadership', 'Marketing & Growth', 'Sales & Commercial', 'Operations & Success', 'Finance, Legal & People'];
 
   const filteredRoles = ALL_ROLES.filter((role) => {
     const matchesDept = selectedDept === 'All' || role.department === selectedDept;
@@ -393,6 +459,9 @@ export default function CareersPage({ info }) {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <a href="#open-roles" className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-3.5 px-7 text-base shadow-lg shadow-[#2357F5]/25">
               Explore Open Roles ({ALL_ROLES.length}) <Briefcase className="h-5 w-5 ml-2" />
+            </a>
+            <a href="#young-builders" className="btn bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30 hover:bg-emerald-500/30 py-3.5 px-6 text-base">
+              Young Builders & Volunteers <Sparkles className="h-4 w-4 ml-2" />
             </a>
             <a href="#why-kabuor" className="btn bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/20 py-3.5 px-6 text-base">
               Why Join Us <ChevronDown className="h-4 w-4 ml-1" />
@@ -493,6 +562,86 @@ export default function CareersPage({ info }) {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Young Builders & Volunteers Fellowship Callout */}
+      <section id="young-builders" className="py-16 bg-gradient-to-b from-[#0A0B1E] to-[#121432] text-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 sm:p-12 lg:p-16 backdrop-blur-sm">
+            <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/20 px-3.5 py-1 text-xs font-semibold text-emerald-300 ring-1 ring-emerald-500/30">
+                  <Sparkles className="h-3.5 w-3.5" /> For Students, Self-Taught Hackers & Volunteers
+                </div>
+                <h2 className="mt-4 font-serif text-3xl font-extrabold sm:text-4xl lg:text-5xl leading-tight">
+                  You don’t need 10 years of experience to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F2C14E] to-[#9DB6FF]">build Africa’s future.</span>
+                </h2>
+                <p className="mt-4 text-base text-white/80 leading-relaxed sm:text-lg">
+                  We are deeply committed to mentoring the next generation of African builders. If you are a young programmer, university student, or volunteer hungry to write real production code that solves real problems for Kenyan merchants, we want to build with you.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <button
+                    onClick={() => {
+                      setSelectedDept('Young Builders & Volunteers');
+                      document.getElementById('open-roles')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] px-6 py-3.5 text-sm font-semibold shadow-lg shadow-[#2357F5]/30 inline-flex items-center gap-2"
+                  >
+                    View Young Builder & Volunteer Tracks <ArrowRight className="h-4 w-4" />
+                  </button>
+                  <a
+                    href="mailto:careers@kabuor.com?subject=Young%20Builder%20%2F%20Volunteer%20Inquiry%20-%20Kabuor%20Technologies"
+                    className="btn bg-white/10 text-white hover:bg-white/20 px-6 py-3.5 text-sm font-semibold ring-1 ring-white/15"
+                  >
+                    Pitch Your Project / Volunteer Directly
+                  </a>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#2357F5]/20 text-[#9DB6FF]">
+                    <Laptop className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-white">Real Production Code</h3>
+                  <p className="mt-2 text-xs text-white/70 leading-relaxed">
+                    No coffee runs or toy apps. You will build high-throughput C# backends, offline React PWAs, and local payment rails from day one.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-500/20 text-emerald-400">
+                    <HeartHandshake className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-white">Direct Mentorship</h3>
+                  <p className="mt-2 text-xs text-white/70 leading-relaxed">
+                    Pair directly with core architects and founders who have scaled financial systems and high-growth African startups.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#F2C14E]/20 text-[#F2C14E]">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-white">No Degree Barrier</h3>
+                  <p className="mt-2 text-xs text-white/70 leading-relaxed">
+                    We care about your passion, curiosity, and speed of learning. Self-taught tinkerers and student developers are warmly welcome.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-purple-500/20 text-purple-300">
+                    <Rocket className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-white">Full-Time Pathway</h3>
+                  <p className="mt-2 text-xs text-white/70 leading-relaxed">
+                    Top-performing fellows and open contributors graduate into full-time engineering and product positions with equity ownership.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -797,7 +946,9 @@ export default function CareersPage({ info }) {
                       value={applicant.experienceYears}
                       onChange={(e) => setApplicant({ ...applicant, experienceYears: e.target.value })}
                     >
-                      <option value="1-2 years">1 – 2 years</option>
+                      <option value="Young Builder / Student">Young Builder / Student / Self-Taught</option>
+                      <option value="Volunteer / Contributor">Open Source Contributor / Volunteer</option>
+                      <option value="1-2 years">1 – 2 years (Early Career)</option>
                       <option value="3-5 years">3 – 5 years (Mid-Level)</option>
                       <option value="6-9 years">6 – 9 years (Senior)</option>
                       <option value="10+ years">10+ years (Lead / Principal / Executive)</option>
@@ -813,7 +964,7 @@ export default function CareersPage({ info }) {
                       required
                       rows={3}
                       className="w-full rounded-md border border-[#E6E7F0] px-3 py-2 text-sm focus:border-[#2357F5] focus:outline-none"
-                      placeholder="Tell us about the toughest system you built, campaign you scaled, or why you want to build African commerce infrastructure..."
+                      placeholder="Tell us about what you have built, why you're passionate about African software, or what open-source/volunteer track you'd like to work on..."
                       value={applicant.coverNote}
                       onChange={(e) => setApplicant({ ...applicant, coverNote: e.target.value })}
                     />

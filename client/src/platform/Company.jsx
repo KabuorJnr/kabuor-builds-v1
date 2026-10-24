@@ -293,14 +293,14 @@ export default function Company({ info }) {
                 Build the core infrastructure <span className="text-[#F2C14E]">powering East African commerce.</span>
               </h2>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-cream/70 sm:text-base">
-                We are assembling our founding team across Leadership, Engineering, Growth, Design, and Operations. High autonomy, top-decile compensation (undisclosed), and generous ESOP equity ownership.
+                We are assembling our core team alongside open fellowships for young builders, student developers, and volunteers passionate about engineering African software. Headquartered along Ngong Road, Nairobi and 100% fully remote.
               </p>
             </div>
             <Link
               to="/careers"
               className="btn bg-[#2357F5] px-7 py-4 text-sm font-semibold text-white shadow-lg transition hover:bg-[#3A6BFF] inline-flex items-center gap-2 shrink-0"
             >
-              Explore Open Roles & Apply <ArrowRight className="h-4 w-4" />
+              Explore Roles & Fellowships <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
