@@ -1,329 +1,15 @@
-import { useState, useId } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ChevronDown,
   ChevronUp,
   Search,
-  X,
 } from 'lucide-react';
 import { SiteHeader, SiteFooter } from './Site';
+import { DEFAULT_ROLES, getStoredRoles } from './careersStore';
+import CareersApplicationPage from './CareersApplicationPage';
 
-export const ALL_ROLES = [
-  {
-    id: 'chief-of-staff',
-    title: 'Chief of Staff / Head of Strategic Operations',
-    department: 'Leadership',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Generous Founding ESOP Equity Grant',
-    tags: ['Executive', 'Operations', 'Strategy', 'Expansion', 'Fundraising'],
-    summary:
-      'Partner directly with the Founder & CEO to drive company-wide operational velocity, board reporting, cross-functional OKRs, and strategic market expansion across East Africa.',
-    responsibilities: [
-      'Lead strategic operational initiatives spanning commercial partnerships, recruitment sprints, and Series A investor relations.',
-      'Establish rigorous operating cadence across Engineering, Growth, and Customer Success pods.',
-      'Unblock executive bottlenecks and represent executive leadership in strategic trade dialogues.',
-    ],
-    requirements: [
-      '5+ years in high-growth tech startups, top-tier management consulting, or venture capital in Africa.',
-      'Uncanny ability to translate ambiguous strategic goals into crisp operational execution.',
-    ],
-    benefitsNote: 'Direct founder mentorship + Founding ESOP Stake + Executive Salaried Package post-funding.',
-  },
-  {
-    id: 'vp-engineering',
-    title: 'VP of Engineering & Core Architecture',
-    department: 'Leadership',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Significant Executive ESOP Stake',
-    tags: ['C# .NET 10', 'Distributed Systems', 'Architecture', 'Team Leadership'],
-    summary:
-      'Lead our engineering organization. Set architectural direction across backend transaction processing, offline edge runtimes, security posture, and high-velocity developer ergonomics.',
-    responsibilities: [
-      'Lead and grow high-caliber engineering pods across platform, frontend edge, and tax compliance.',
-      'Maintain 99.99% availability for 500,000+ daily financial transactions across Kenya.',
-      'Drive engineering excellence, automated testing standards, and zero-allocation memory profiling.',
-    ],
-    requirements: [
-      '8+ years building enterprise SaaS or high-throughput financial infrastructure.',
-      'Proven track record leading engineering teams of 15+ engineers in fast-paced environments.',
-    ],
-    benefitsNote: 'Significant Executive ESOP Stake + Core Architecture Ownership + Executive Salaried Package post-funding.',
-  },
-  {
-    id: 'lead-platform-architect',
-    title: 'Lead Platform Architect (.NET 10 / Cloud)',
-    department: 'Engineering',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: '0.50% – 1.00% ESOP',
-    tags: ['.NET 10', 'C#', 'SequenceGate', 'PostgreSQL', 'High-Throughput'],
-    summary:
-      'Own the core distributed transaction backbone of Kabuor ERP. Scale our SequenceGate concurrency engine, real-time M-Pesa ledger pipelines, and zero-loss event streaming to handle 500k+ transactions per day.',
-    responsibilities: [
-      'Architect and profile low-allocation C# .NET 10 backend services powering multi-tenant ERP operations.',
-      'Scale the SequenceGate transactional engine to guarantee linearizable ledger commits across thousands of checkout counters.',
-      'Design fault-tolerant event streams interfacing with Safaricom Daraja M-Pesa APIs and KRA eTIMS daemons.',
-    ],
-    requirements: [
-      '6+ years architecting high-throughput, low-latency distributed systems (C#/.NET, Go, or Rust).',
-      'Deep mastery of relational databases (PostgreSQL/SQL Server), transactional isolation levels, and row locking.',
-    ],
-    benefitsNote: 'Core Distributed Systems Leadership + Generous ESOP Stake + Salaried Package post-funding.',
-  },
-  {
-    id: 'senior-edge-frontend-engineer',
-    title: 'Senior Edge & Frontend Systems Engineer (React 19 / Offline PWA)',
-    department: 'Engineering',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: '0.35% – 0.75% ESOP',
-    tags: ['React 19', 'TypeScript', 'Offline PWA', 'IndexedDB', 'Tailwind'],
-    summary:
-      'Lead our mission to make business software instant and indestructible. Build the client runtime that keeps Kenyan wholesale storefronts, supermarkets, and field vans running smoothly even when the cellular network drops completely.',
-    responsibilities: [
-      'Evolve our client-side offline engine using IndexedDB, Web Workers, and multi-tab synchronization.',
-      'Craft lightning-fast, zero-friction POS and ERP workflows optimized for desktop browsers, touch tablets, and mobile devices.',
-    ],
-    requirements: [
-      '4+ years building production web applications in modern React, TypeScript, and modern CSS.',
-      'Hands-on expertise with Progressive Web Apps (PWA), Service Workers, CacheStorage, and offline sync.',
-    ],
-    benefitsNote: '100% Fully Remote + Offline PWA Runtime Ownership + ESOP Equity Grant + Salaried post-funding.',
-  },
-  {
-    id: 'head-of-tax-compliance-etims',
-    title: 'Head of Tax Compliance & eTIMS Architecture',
-    department: 'Engineering',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: '0.40% – 0.80% ESOP',
-    tags: ['KRA eTIMS', 'VSCU/OSCU', 'Tax Procedures Act', 'Cryptography', 'FinTech'],
-    summary:
-      'Lead the technological bridge between 1.5 million Kenyan businesses and the Kenya Revenue Authority. You will own our native eTIMS transmission infrastructure, cryptographic invoice signing, and regulatory compliance roadmap.',
-    responsibilities: [
-      'Own the direct technical integration with KRA eTIMS VSCU/OSCU REST endpoints and cryptographic signing pipelines.',
-      'Ensure 100% compliance with the Kenyan Tax Procedures Act, VAT regulations, and withholding tax mandates.',
-    ],
-    requirements: [
-      'Proven track record implementing or integrating eTIMS, TIMS, or fiscal device middleware in Kenya.',
-      'Strong technical background in cryptography (digital signatures, RSA/ECDSA, QR code payloads, PKI).',
-    ],
-    benefitsNote: 'Direct regulatory architecture leadership + Generous ESOP Stake + Salaried post-funding.',
-  },
-  {
-    id: 'head-of-growth-marketing',
-    title: 'Head of Growth & Performance Marketing',
-    department: 'Marketing & Growth',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake',
-    tags: ['Performance Marketing', 'B2B SaaS', 'Accountant Network', 'SEO/SEM', 'CAC/LTV'],
-    summary:
-      'Own top-of-funnel customer acquisition and merchant expansion across Kenya. Build our automated acquisition engine across digital channels, partner accountant networks, and referral loops to acquire 5,000+ paying businesses.',
-    responsibilities: [
-      'Scale profitable paid customer acquisition across Google Search, Meta Ads, and LinkedIn targeting Kenyan business owners.',
-      'Design high-converting landing pages, interactive ROI/tax savings calculators, and customer onboarding funnels.',
-    ],
-    requirements: [
-      '4+ years driving measurable growth at a high-velocity B2B SaaS, FinTech, or fast-growing startup in East Africa.',
-      'Demonstrated track record managing 7-figure marketing budgets with strict CAC and payback constraints.',
-    ],
-    benefitsNote: 'Meaningful Founding ESOP Stake + Salaried post-funding + Uncapped revenue share upon funding.',
-  },
-  {
-    id: 'field-trade-corridor-marketing-lead',
-    title: 'Trade Corridor & Field Marketing Lead',
-    department: 'Marketing & Growth',
-    location: 'Nairobi, Kenya (Trade Corridors / Field & Remote)',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake',
-    tags: ['Field Activation', 'Merchant Corridors', 'Trade Associations', 'Gikomba', 'Eastleigh'],
-    summary:
-      'Take Kabuor ERP straight into Kenya’s most lucrative commercial hubs. You will lead ground activations in Gikomba, Eastleigh, Industrial Area, and River Road, driving wholesale adoption through merchant association partnerships and live demo days.',
-    responsibilities: [
-      'Build grassroots merchant community presence in key commercial trade hubs across Nairobi and neighboring counties.',
-      'Partner with business welfare groups, SACCOs, and trade associations (KAM, KNCCI, Chamber of Commerce).',
-    ],
-    requirements: [
-      '3+ years of field marketing, FMCG route-to-market, or merchant acquisition leadership in urban Kenyan hubs.',
-    ],
-    benefitsNote: 'Grassroots commercial corridor leadership + Founding ESOP Stake + Full mobility support post-funding.',
-  },
-  {
-    id: 'content-and-brand-lead',
-    title: 'Content, Social & Brand Marketing Lead',
-    department: 'Marketing & Growth',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake',
-    tags: ['Video Storytelling', 'LinkedIn Thought Leadership', 'SME Case Studies', 'TikTok/YouTube'],
-    summary:
-      'Tell the story of African commerce through the lens of the ambitious business builders who run it. You will create documentary-style customer case studies, founder video content, tax masterclasses, and viral social campaigns.',
-    responsibilities: [
-      'Produce short-form and long-form video case studies spotlighting Kenyan manufacturers, distributors, and retailers.',
-      'Ghostwrite founder thought leadership essays and breakdown threads on Kenyan economic data, eTIMS, and commerce tech.',
-    ],
-    requirements: [
-      '3+ years creating high-engagement content for high-growth tech brands, agencies, or business media.',
-    ],
-    benefitsNote: 'Creative freedom & voice of the brand + Founding ESOP Stake + Production kit post-funding.',
-  },
-  {
-    id: 'strategic-partner-accountant-lead',
-    title: 'Strategic Partner & Accountant Affiliate Lead',
-    department: 'Marketing & Growth',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake + Future Revenue Share',
-    tags: ['ICPAK Network', 'Accountants', 'Audit Firms', 'Affiliate Programs', 'B2B Sales'],
-    summary:
-      'Empower Kenya’s Certified Public Accountants (CPAs) and audit firms. Build our nationwide Accountant Partner Network where practicing accountants manage their SME clients on Kabuor ERP while earning recurring referral commissions.',
-    responsibilities: [
-      'Recruit, certify, and enable independent accountants and audit consultancies across Kenya onto the Kabuor Partner Portal.',
-      'Conduct hands-on CPD-accredited training webinars on automated eTIMS filing and real-time bank reconciliation.',
-    ],
-    requirements: [
-      '3+ years in B2B channel sales, accounting software consultancy, or corporate banking relationship management.',
-    ],
-    benefitsNote: 'Founding ESOP Stake + Recurring Partner Affiliate Model + Salaried post-funding.',
-  },
-  {
-    id: 'head-of-enterprise-sales',
-    title: 'Head of Direct Enterprise Sales',
-    department: 'Sales & Commercial',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake',
-    tags: ['Enterprise Sales', 'B2B Wholesalers', 'Distributors', 'Contract Negotiation'],
-    summary:
-      'Drive high-value enterprise contracts with mid-market distributors, multi-branch supermarket chains, and FMCG manufacturers across Kenya.',
-    responsibilities: [
-      'Target, pitch, and close enterprise deals with decision-makers (Managing Directors, CFOs, Operations Directors).',
-      'Manage sales pipeline from discovery demo to signed contract, achieving ambitious quarterly revenue quotas.',
-    ],
-    requirements: [
-      '5+ years enterprise software or corporate technology sales experience in East Africa with documented quota achievement.',
-    ],
-    benefitsNote: 'Founding ESOP Stake + Executive commission structure & salary post-funding.',
-  },
-  {
-    id: 'head-of-merchant-success',
-    title: 'Head of Merchant Success & Enterprise Onboarding',
-    department: 'Operations & Success',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: '0.25% – 0.50% ESOP',
-    tags: ['Customer Success', 'Zero Churn', 'ERP Onboarding', 'Data Migration', 'NPS'],
-    summary:
-      'Guarantee that every business transitioning to Kabuor ERP experiences flawless onboarding and lifetime value. Lead our solutions engineering, historical data migration, and proactive merchant support operations.',
-    responsibilities: [
-      'Design white-glove onboarding programs for supermarkets, pharmacies, manufacturers, and multi-branch retailers.',
-      'Supervise rapid historical data migration into Kabuor ERP.',
-    ],
-    requirements: [
-      '4+ years leading Customer Success, Implementation, or Solutions Engineering in B2B software in Africa.',
-    ],
-    benefitsNote: 'Founding ESOP Stake + Direct solutions architecture leadership + Salaried post-funding.',
-  },
-  {
-    id: 'finance-director-controller',
-    title: 'Finance Director / Controller (CPA-K)',
-    department: 'Finance, Legal & People',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Full-Time',
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Executive ESOP Stake',
-    tags: ['CPA-K', 'Financial Controller', 'KRA Compliance', 'Audit', 'Treasury'],
-    summary:
-      'Lead our corporate financial management. Own statutory compliance, management accounts, audit readiness, and treasury management as Kabuor ERP scales its revenue.',
-    responsibilities: [
-      'Oversee monthly management accounts, balance sheet reconciliations, and payroll statutory filings.',
-      'Manage corporate tax planning and direct liaisons with Kenya Revenue Authority (KRA).',
-    ],
-    requirements: [
-      '6+ years in corporate financial management, with active ICPAK (CPA-K) or ACCA membership.',
-    ],
-    benefitsNote: 'Founding Executive ESOP Stake + Corporate governance leadership + Salaried post-funding.',
-  },
-  {
-    id: 'young-builders-fellowship',
-    title: 'Young African Builder Fellow (Engineering, Product & Design)',
-    department: 'Young Builders & Volunteers',
-    location: 'Ngong Road, Nairobi · Fully Remote',
-    type: 'Fellowship / Early-Career',
-    compensationNote: 'Pre-Funding: Volunteer / Fellow Track · Equity & Mentorship (Salaried post-funding)',
-    equity: 'Fellowship Completion Grant & Full-Time Priority',
-    tags: ['Young Builders', 'Students', 'Self-Taught', 'React', 'C# .NET', 'Product'],
-    summary:
-      'A hands-on fellowship for hungry, high-potential young Africans (students, fresh graduates, and self-taught tinkerers). Work directly alongside our core architects on real production code that powers Kenyan commerce.',
-    responsibilities: [
-      'Pair-program with senior engineers building C# .NET 10 microservices, React 19 offline PWAs, and merchant analytics.',
-      'Ship weekly improvements to real business tools used by wholesale merchants across Kenya.',
-      'Participate in architecture reviews, code profiling, and technical deep-dives.',
-    ],
-    requirements: [
-      'No formal degree or university credentials required. We evaluate raw curiosity, coding speed, and passion.',
-      'A demonstrable portfolio of side projects, GitHub repositories, or tools you built because you cared.',
-    ],
-    benefitsNote: '1-on-1 Founder & Architect Mentorship + Real Production Experience + Founding Equity Grant + Fast-track to Salaried Engineering post-funding.',
-  },
-  {
-    id: 'open-source-volunteer-contributor',
-    title: 'Open-Source & African Software Volunteer Contributor',
-    department: 'Young Builders & Volunteers',
-    location: 'Pan-Africa & Global · 100% Remote',
-    type: 'Volunteer / Open Contributor',
-    compensationNote: 'Volunteer Track (Flexible Hours & Contributor Equity)',
-    equity: 'Public Contributor Attribution & Swag',
-    tags: ['Open Source', 'Community', 'Localization', 'Docs', 'APIs', 'Volunteer'],
-    summary:
-      'Contribute your passion and skills on your own schedule. Help us build open-source tools, developer documentation, African language translations (Kiswahili & vernaculars), and merchant helper libraries.',
-    responsibilities: [
-      'Contribute to open repositories, SDKs, merchant integration guides, and developer docs.',
-      'Help translate, localize, and test offline workflows for various regional dialects and merchant personas.',
-      'Report edge cases, write integration tests, and collaborate in our open builder forums.',
-    ],
-    requirements: [
-      'Passion for advancing homegrown African software and empowering local small businesses.',
-      'Open to developers, technical writers, UX designers, and students of all experience levels.',
-    ],
-    benefitsNote: 'Official Contributor Recognition on our platform + Direct Slack/Discord access to the engineering team + Reference letters & hackathon invitations.',
-  },
-  {
-    id: 'campus-builder-lead',
-    title: 'Campus & Student Tech Community Lead',
-    department: 'Young Builders & Volunteers',
-    location: 'Kenyan Universities & Colleges · Remote & Campus',
-    type: 'Volunteer / Community',
-    compensationNote: 'Volunteer Community Track · Builder Recognition & Event Support',
-    equity: 'Builder Certificate & Priority Hiring',
-    tags: ['Campus', 'Youth Community', 'Hackathons', 'Student Builder'],
-    summary:
-      'Lead the young builder movement at your campus. Organize tech demo days, developer sessions around eTIMS, M-Pesa APIs, and offline web tech, connecting talented classmates to real-world software opportunities.',
-    responsibilities: [
-      'Champion homegrown African software and modern engineering practices across your campus tech club or student guild.',
-      'Host hands-on demo sessions showcasing how to build offline-first apps and integrate local APIs.',
-      'Identify top student talent and recommend peers for our engineering fellowships.',
-    ],
-    requirements: [
-      'Current student at a Kenyan or East African university/college with an active role in tech communities.',
-      'Strong communication, empathy, and high enthusiasm for building African technology.',
-    ],
-    benefitsNote: 'Campus leadership credential + Event builder support + Executive mentorship + Fast-track fellowship pipeline.',
-  },
-];
+export const ALL_ROLES = DEFAULT_ROLES;
+
 
 const PERKS = [
   {
@@ -353,26 +39,34 @@ const PERKS = [
 ];
 
 export default function CareersPage({ info }) {
+  const [roles, setRoles] = useState(getStoredRoles());
   const [selectedDept, setSelectedDept] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedRole, setExpandedRole] = useState(null);
   const [applyingRole, setApplyingRole] = useState(null);
 
-  const [applicant, setApplicant] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    linkedIn: '',
-    portfolio: '',
-    experienceYears: '3-5 years',
-    coverNote: '',
-  });
-  const [submittedRef, setSubmittedRef] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  useEffect(() => {
+    const handleRolesChange = () => setRoles(getStoredRoles());
+    window.addEventListener('kb-roles-changed', handleRolesChange);
+    return () => window.removeEventListener('kb-roles-changed', handleRolesChange);
+  }, []);
+
+  if (applyingRole) {
+    return (
+      <CareersApplicationPage
+        role={applyingRole}
+        onBack={() => {
+          setApplyingRole(null);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        info={info}
+      />
+    );
+  }
 
   const departments = ['All', 'Young Builders & Volunteers', 'Engineering', 'Leadership', 'Marketing & Growth', 'Sales & Commercial', 'Operations & Success', 'Finance, Legal & People'];
 
-  const filteredRoles = ALL_ROLES.filter((role) => {
+  const filteredRoles = roles.filter((role) => {
     const matchesDept = selectedDept === 'All' || role.department === selectedDept;
     const query = searchQuery.toLowerCase().trim();
     const matchesSearch =
@@ -385,25 +79,9 @@ export default function CareersPage({ info }) {
 
   const handleApply = (role) => {
     setApplyingRole(role);
-    setSubmittedRef(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const submitApplication = (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setSubmittedRef(`KBR-APP-${Math.floor(100000 + Math.random() * 900000)}`);
-    }, 500);
-  };
-
-  const nameId = useId();
-  const emailId = useId();
-  const phoneId = useId();
-  const linkedInId = useId();
-  const portfolioId = useId();
-  const expId = useId();
-  const noteId = useId();
 
   return (
     <div className="min-h-screen bg-[#FDFCF7] text-espresso selection:bg-[#2357F5] selection:text-white">
@@ -653,6 +331,15 @@ export default function CareersPage({ info }) {
                           <span className="rounded bg-[#F7F7FB] px-2 py-0.5 text-xs font-medium text-[#3B3F5C] border border-[#E6E7F0]">
                             {role.type}
                           </span>
+                          {role.status === 'closed' ? (
+                            <span className="rounded-full bg-red-100 text-red-800 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider border border-red-200">
+                              Applications Closed
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold border border-emerald-200">
+                              Open
+                            </span>
+                          )}
                           <span className="text-xs text-espresso/60">
                             {role.location}
                           </span>
@@ -673,16 +360,22 @@ export default function CareersPage({ info }) {
                           <p className="mt-1 text-xs font-semibold text-emerald-600">{role.equity}</p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleApply(role);
-                            }}
-                            className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-2 px-4 text-xs font-semibold"
-                          >
-                            Apply Now
-                          </button>
+                          {role.status === 'closed' ? (
+                            <span className="rounded-lg bg-red-50 text-red-700 border border-red-200 py-1.5 px-3 text-xs font-semibold">
+                              Closed
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleApply(role);
+                              }}
+                              className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-2 px-4 text-xs font-semibold"
+                            >
+                              Apply Now
+                            </button>
+                          )}
                           <button
                             type="button"
                             aria-label="Toggle details"
@@ -732,13 +425,19 @@ export default function CareersPage({ info }) {
                         <p className="text-xs text-[#585C80]">
                           Role ID: <code className="text-[#1E1B18] font-semibold">{role.id}</code>
                         </p>
-                        <button
-                          type="button"
-                          onClick={() => handleApply(role)}
-                          className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-2.5 px-6 text-sm font-semibold"
-                        >
-                          Apply for {role.title}
-                        </button>
+                        {role.status === 'closed' ? (
+                          <span className="rounded-lg bg-red-50 text-red-700 border border-red-200 py-2 px-4 text-xs font-semibold">
+                            Applications Closed
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleApply(role)}
+                            className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-2.5 px-6 text-sm font-semibold shadow-md"
+                          >
+                            Apply for {role.title}
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -748,181 +447,6 @@ export default function CareersPage({ info }) {
           </div>
         </div>
       </section>
-
-      {/* Application Modal */}
-      {applyingRole && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-sm overflow-y-auto">
-          <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-[#E6E7F0] my-8">
-            <button
-              onClick={() => setApplyingRole(null)}
-              className="absolute top-5 right-5 grid h-8 w-8 place-items-center rounded-full text-[#585C80] hover:bg-[#F7F7FB]"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            {submittedRef ? (
-              <div className="text-center py-6">
-                <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-emerald-50 text-emerald-600 font-bold text-xl">
-                  ✓
-                </div>
-                <h3 className="kb-display mt-5 text-2xl text-[#1E1B18]">Application Received!</h3>
-                <p className="mt-2 text-sm text-[#585C80]">
-                  Thank you, <b className="text-[#1E1B18]">{applicant.fullName}</b>. Your application for <b className="text-[#1E1B18]">{applyingRole.title}</b> is logged with the Kabuor Technologies talent desk.
-                </p>
-                <div className="mt-6 rounded-lg bg-[#F7F7FB] p-4 text-xs text-[#585C80] text-left border border-[#E6E7F0] space-y-1">
-                  <p><b>Candidate:</b> {applicant.fullName}</p>
-                  <p><b>Role:</b> {applyingRole.title}</p>
-                  <p><b>Tracking Ref:</b> <code className="font-bold text-[#1E1B18]">{submittedRef}</code></p>
-                  <p><b>Company:</b> Kabuor Technologies Ltd</p>
-                  <p><b>Talent Desk:</b> careers@kabuor.com</p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setApplyingRole(null)}
-                  className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] mt-6 w-full py-3 text-sm font-semibold"
-                >
-                  Done
-                </button>
-              </div>
-            ) : (
-              <div>
-                <div className="mb-6">
-                  <span className="rounded bg-[#E8EEFF] px-2.5 py-1 text-xs font-semibold text-[#2357F5]">
-                    {applyingRole.department}
-                  </span>
-                  <h3 className="kb-display mt-2 text-2xl text-[#1E1B18]">
-                    Apply for {applyingRole.title}
-                  </h3>
-                  <p className="mt-1 text-xs text-[#585C80]">
-                    {applyingRole.location} · Compensation: Pre-Funding ESOP Equity (Salaried Upon Funding)
-                  </p>
-                </div>
-
-                <form onSubmit={submitApplication} className="space-y-4">
-                  <div>
-                    <label htmlFor={nameId} className="block text-xs font-semibold text-[#3B3F5C] mb-1">
-                      Full Legal Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id={nameId}
-                      required
-                      type="text"
-                      className="w-full rounded-md border border-[#E6E7F0] px-3 py-2 text-sm focus:border-[#2357F5] focus:outline-none"
-                      placeholder="e.g. Achieng Ochieng"
-                      value={applicant.fullName}
-                      onChange={(e) => setApplicant({ ...applicant, fullName: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div>
-                      <label htmlFor={emailId} className="block text-xs font-semibold text-[#3B3F5C] mb-1">
-                        Email Address <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id={emailId}
-                        required
-                        type="email"
-                        className="w-full rounded-md border border-[#E6E7F0] px-3 py-2 text-sm focus:border-[#2357F5] focus:outline-none"
-                        placeholder="you@domain.com"
-                        value={applicant.email}
-                        onChange={(e) => setApplicant({ ...applicant, email: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor={phoneId} className="block text-xs font-semibold text-[#3B3F5C] mb-1">
-                        Phone / WhatsApp <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id={phoneId}
-                        required
-                        type="tel"
-                        className="w-full rounded-md border border-[#E6E7F0] px-3 py-2 text-sm focus:border-[#2357F5] focus:outline-none"
-                        placeholder="0712 345 678"
-                        value={applicant.phone}
-                        onChange={(e) => setApplicant({ ...applicant, phone: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div>
-                      <label htmlFor={linkedInId} className="block text-xs font-semibold text-[#3B3F5C] mb-1">
-                        LinkedIn Profile URL <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id={linkedInId}
-                        required
-                        type="url"
-                        className="w-full rounded-md border border-[#E6E7F0] px-3 py-2 text-sm focus:border-[#2357F5] focus:outline-none"
-                        placeholder="https://linkedin.com/in/username"
-                        value={applicant.linkedIn}
-                        onChange={(e) => setApplicant({ ...applicant, linkedIn: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor={portfolioId} className="block text-xs font-semibold text-[#3B3F5C] mb-1">
-                        GitHub / Portfolio / Website
-                      </label>
-                      <input
-                        id={portfolioId}
-                        type="url"
-                        className="w-full rounded-md border border-[#E6E7F0] px-3 py-2 text-sm focus:border-[#2357F5] focus:outline-none"
-                        placeholder="https://github.com/..."
-                        value={applicant.portfolio}
-                        onChange={(e) => setApplicant({ ...applicant, portfolio: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor={expId} className="block text-xs font-semibold text-[#3B3F5C] mb-1">
-                      Relevant Years of Experience
-                    </label>
-                    <select
-                      id={expId}
-                      className="w-full rounded-md border border-[#E6E7F0] px-3 py-2 text-sm focus:border-[#2357F5] focus:outline-none"
-                      value={applicant.experienceYears}
-                      onChange={(e) => setApplicant({ ...applicant, experienceYears: e.target.value })}
-                    >
-                      <option value="Young Builder / Student">Young Builder / Student / Self-Taught</option>
-                      <option value="Volunteer / Contributor">Open Source Contributor / Volunteer</option>
-                      <option value="1-2 years">1 – 2 years (Early Career)</option>
-                      <option value="3-5 years">3 – 5 years (Mid-Level)</option>
-                      <option value="6-9 years">6 – 9 years (Senior)</option>
-                      <option value="10+ years">10+ years (Lead / Principal / Executive)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor={noteId} className="block text-xs font-semibold text-[#3B3F5C] mb-1">
-                      Why Kabuor Technologies? (Brief note on your best work & impact) <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id={noteId}
-                      required
-                      rows={3}
-                      className="w-full rounded-md border border-[#E6E7F0] px-3 py-2 text-sm focus:border-[#2357F5] focus:outline-none"
-                      placeholder="Tell us about what you have built, why you're passionate about African software, or what open-source/volunteer track you'd like to work on..."
-                      value={applicant.coverNote}
-                      onChange={(e) => setApplicant({ ...applicant, coverNote: e.target.value })}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] w-full py-3 text-sm font-semibold"
-                  >
-                    {submitting ? 'Submitting Application...' : `Submit Application for ${applyingRole.title}`}
-                  </button>
-                </form>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       <SiteFooter info={info} />
     </div>

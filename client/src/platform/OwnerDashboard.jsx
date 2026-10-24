@@ -9,6 +9,7 @@ import { ksh } from './shared';
 import { Wordmark } from './PlatformApp';
 import MpesaRequests from './MpesaRequests';
 import DemoRequests from './DemoRequests';
+import CareersAdmin from './CareersAdmin';
 import { shopAddress } from '../lib/base';
 
 const KEY = 'kb-owner-token';
@@ -410,6 +411,9 @@ export default function OwnerDashboard() {
           {(o.demoRequests ?? 0) === 0 && <div className="mt-10"><DemoRequests oapi={oapi} onError={fail} /></div>}
           <h2 className="kb-display mt-10 text-3xl">Shops</h2>
           <div className="mt-3">{list && <ShopsTable data={list} stage={stage} setStage={setStage} q={q} setQ={setQ} />}</div>
+          <div className="mt-12">
+            <CareersAdmin />
+          </div>
         </>
       )}
     </div>
