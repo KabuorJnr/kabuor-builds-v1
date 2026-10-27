@@ -10,13 +10,14 @@ export function Wordmark({ name = 'Kabuor Technologies', light = false, stacked 
   const [first, ...rest] = name.split(' ');
   return (
     <span className={`inline-flex items-center whitespace-nowrap ${stacked ? 'gap-4' : 'gap-2.5'} ${className}`}>
-      <img src="/brand/mark.svg" alt="" className={stacked ? 'w-20' : 'w-9 shrink-0 sm:w-11'} />
+      <img src="/brand/mark.svg" alt="" className={stacked ? 'w-14 shrink-0 sm:w-20' : 'w-9 shrink-0 sm:w-11'} />
       <span className={stacked ? 'block' : 'inline-flex items-baseline gap-1.5'}>
-        <span className={`kb-display ${stacked ? 'block text-5xl' : 'text-[1.15rem] sm:text-[1.45rem]'} ${light ? 'text-cream' : 'text-espresso'}`}>
+        {/* Stacked, "Technologies" is wider than a phone at 5xl, so it steps down there. */}
+        <span className={`kb-display ${stacked ? 'block text-[2rem] sm:text-5xl' : 'text-[1.15rem] sm:text-[1.45rem]'} ${light ? 'text-cream' : 'text-espresso'}`}>
           {first}
           {stacked ? <span className="block text-[#2357F5]">{rest.join(' ')}</span> : <span className="text-[#2357F5]"> {rest.join(' ')}</span>}
         </span>
-        {stacked && tagline && <span className={`kb-serif mt-2 block text-xl ${light ? 'text-[#F2C14E]' : 'text-cocoa'}`}>{tagline}</span>}
+        {stacked && tagline && <span className={`kb-serif mt-2 block text-xl whitespace-normal ${light ? 'text-[#F2C14E]' : 'text-cocoa'}`}>{tagline}</span>}
       </span>
     </span>
   );
@@ -83,9 +84,9 @@ export function SiteHeader({ info, cta }) {
         <a href="/#about" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
           About
         </a>
-        <a href="/#careers" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
-          Careers <span className="rounded bg-[#2357F5]/60 px-1.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">Hiring</span>
-        </a>
+        <NavLink to="/careers" className={({ isActive }) => cn(link({ isActive }), 'hidden lg:block')}>
+          Careers <span className="rounded bg-[#2357F5]/60 px-1.5 py-0.5 text-xs font-bold tracking-wider text-white uppercase">Hiring</span>
+        </NavLink>
         <a href="#contact" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
           Contact
         </a>
@@ -154,7 +155,7 @@ export function SiteFooter({ info, children }) {
             Start a shop
           </Go>
           <Link to="/careers" className="text-cream/80 hover:text-cream flex items-center gap-1.5">
-            Careers <span className="rounded bg-[#2357F5]/30 px-1.5 py-0.5 text-[10px] font-bold text-white">We're hiring</span>
+            Careers <span className="rounded bg-[#2357F5]/30 px-1.5 py-0.5 text-xs font-bold text-white">We're hiring</span>
           </Link>
         </nav>
         <div>

@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
-import {
-  ChevronDown,
-  ChevronUp,
-  Search,
-} from 'lucide-react';
+import { useSearchParams } from 'react-router';
+import { Search } from 'lucide-react';
 import { SiteHeader, SiteFooter } from './Site';
-import { DEFAULT_ROLES, getStoredRoles } from './careersStore';
+import { DEFAULT_ROLES, getStoredRoles, payLine } from './careersStore';
 import CareersApplicationPage from './CareersApplicationPage';
 
 export const ALL_ROLES = DEFAULT_ROLES;
 
+// Listing order of the team filter; teams without roles are left out.
+const DEPARTMENTS = ['Young Builders & Volunteers', 'Engineering', 'Leadership', 'Marketing & Growth', 'Sales & Commercial', 'Operations & Success', 'Finance, Legal & People'];
 
 const PERKS = [
   {
@@ -38,12 +37,164 @@ const PERKS = [
   },
 ];
 
+const PRINCIPLES = [
+  {
+    title: 'Zero Tolerance for Slowness',
+    description: 'When a cashier in a supermarket has 15 customers queuing with groceries, every millisecond matters. We optimize down to zero-allocation memory pools in C# and client-side caching.',
+  },
+  {
+    title: 'Massive Economic Impact',
+    description: 'MSMEs contribute over 40% of Kenya’s GDP. Giving them automated financial controls and instant tax compliance fundamentally protects their business livelihoods.',
+  },
+  {
+    title: 'Extreme Ownership & Equity',
+    description: "You won't be a cog in an 8-layer approval chain. You will own complete functional domains, deploy weekly, and share directly in company ownership through our formal ESOP equity program.",
+  },
+];
+
+const BUILDER_POINTS = [
+  { title: 'Real Production Code', description: 'No coffee runs or toy apps. You will build high-throughput C# backends, offline React PWAs, and local payment rails from day one.' },
+  { title: 'Direct Mentorship', description: 'Pair directly with core architects and founders who have scaled financial systems and high-growth African startups.' },
+  { title: 'No Degree Barrier', description: 'We care about your passion, curiosity, and speed of learning. Self-taught tinkerers and student developers are warmly welcome.' },
+  { title: 'Full-Time Pathway', description: 'Top-performing fellows and open contributors graduate into full-time engineering and product positions with equity ownership.' },
+];
+
+function RoleCard({ role, expanded, onToggle, onApply }) {
+  const [copied, setCopied] = useState(false);
+  const closed = role.status === 'closed';
+  const detailsId = `role-details-${role.id}`;
+
+  const copyLink = async () => {
+    const url = new URL(window.location.href);
+    url.search = `?role=${role.id}`;
+    url.hash = '';
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // The address bar already shows this role's link (opening a role puts it there).
+    }
+  };
+
+  return (
+    <article
+      id={`role-${role.id}`}
+      className={`scroll-mt-6 overflow-hidden rounded-2xl border bg-white transition ${
+        expanded ? 'border-[#2357F5] ring-1 ring-[#2357F5]' : 'border-[#E6E7F0] hover:border-[#B9BBD3]'
+      }`}
+    >
+      <div className="p-5 sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+          <div className="min-w-0">
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-[#2357F5]">
+              {role.department}
+              {closed && (
+                <span className="rounded-full bg-espresso/[0.06] px-2.5 py-0.5 text-xs font-semibold text-espresso/70">Applications closed</span>
+              )}
+            </p>
+            <h3 className="kb-display mt-1.5 text-2xl leading-[1.05] text-espresso">
+              <button type="button" onClick={onToggle} aria-expanded={expanded} aria-controls={detailsId} className="text-left hover:text-[#2357F5]">
+                {role.title}
+              </button>
+            </h3>
+            <p className="mt-2 text-sm text-espresso/65">
+              {role.type} · {role.experience} · {role.location}
+            </p>
+          </div>
+          <div className="shrink-0 sm:max-w-[19rem] sm:text-right">
+            <p className="text-[15px] font-semibold text-emerald-700">{role.equity}</p>
+            <p className="mt-0.5 text-sm text-espresso/60">{payLine(role)}</p>
+          </div>
+        </div>
+
+        <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-espresso/75">{role.summary}</p>
+
+        <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Skills">
+          {role.tags.map((tag) => (
+            <li key={tag} className="rounded-full border border-[#E6E7F0] bg-[#F7F7FB] px-2.5 py-1 text-[13px] font-medium text-[#3B3F5C]">
+              {tag}
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2.5">
+          {!closed && (
+            <button type="button" onClick={onApply} className="btn bg-[#2357F5] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#3A6BFF]">
+              Apply
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={expanded}
+            aria-controls={detailsId}
+            className="btn border border-[#E6E7F0] bg-white px-5 py-2.5 text-sm font-semibold text-espresso hover:border-[#B9BBD3]"
+          >
+            {expanded ? 'Hide details' : 'Responsibilities & requirements'}
+          </button>
+        </div>
+      </div>
+
+      {expanded && (
+        <div id={detailsId} className="grid gap-8 border-t border-[#E6E7F0] bg-[#FAF9F5] p-5 sm:p-6 md:grid-cols-2">
+          <section>
+            <h4 className="text-[13px] font-bold tracking-[0.12em] text-espresso/60 uppercase">What you’ll do</h4>
+            <ul className="mt-3 space-y-2.5">
+              {role.responsibilities.map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-[15px] leading-relaxed text-[#3B3F5C]">
+                  <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#2357F5]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h4 className="text-[13px] font-bold tracking-[0.12em] text-espresso/60 uppercase">What we’re looking for</h4>
+            <ul className="mt-3 space-y-2.5">
+              {role.requirements.map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-[15px] leading-relaxed text-[#3B3F5C]">
+                  <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#2357F5]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="rounded-2xl border border-[#2357F5]/20 bg-[#E8EEFF]/60 p-5 md:col-span-2">
+            <h4 className="text-[13px] font-bold tracking-[0.12em] text-[#2357F5] uppercase">What you get</h4>
+            <p className="mt-2 text-[15px] leading-relaxed text-[#1E1B18]">{role.benefitsNote}</p>
+            <p className="mt-2 text-sm leading-relaxed text-espresso/65">{role.compensationNote}</p>
+          </section>
+
+          <div className="flex flex-wrap items-center gap-2.5 md:col-span-2">
+            {closed ? (
+              <p className="text-[15px] text-espresso/70">This role isn’t taking applications right now.</p>
+            ) : (
+              <button type="button" onClick={onApply} className="btn bg-[#2357F5] px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-[#3A6BFF]">
+                Apply for this role
+              </button>
+            )}
+            <button type="button" onClick={copyLink} className="btn px-4 py-3 text-sm font-semibold text-[#2357F5] hover:bg-[#E8EEFF]">
+              {copied ? 'Link copied' : 'Copy link to this role'}
+            </button>
+          </div>
+        </div>
+      )}
+    </article>
+  );
+}
+
 export default function CareersPage({ info }) {
   const [roles, setRoles] = useState(getStoredRoles());
   const [selectedDept, setSelectedDept] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedRole, setExpandedRole] = useState(null);
-  const [applyingRole, setApplyingRole] = useState(null);
+  // The open role and the application form live in the address (?role=…, ?apply=…), so links can be shared and
+  // the browser's Back button returns to the list.
+  const [params, setParams] = useSearchParams();
+  const expandedRole = params.get('role');
+  const applyingRole = roles.find((r) => r.id === params.get('apply'));
 
   useEffect(() => {
     const handleRolesChange = () => setRoles(getStoredRoles());
@@ -51,37 +202,56 @@ export default function CareersPage({ info }) {
     return () => window.removeEventListener('kb-roles-changed', handleRolesChange);
   }, []);
 
-  if (applyingRole) {
+  // Arriving from a shared role link: bring that role into view, again once the web fonts have loaded and
+  // reflowed the page above it.
+  useEffect(() => {
+    if (!expandedRole) return;
+    const show = () => document.getElementById(`role-${expandedRole}`)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    show();
+    document.fonts?.ready.then(show);
+  }, []);
+
+  if (params.get('apply')) {
     return (
       <CareersApplicationPage
         role={applyingRole}
         onBack={() => {
-          setApplyingRole(null);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setParams(applyingRole ? { role: applyingRole.id } : {}, { replace: true });
+          requestAnimationFrame(() => document.getElementById(applyingRole ? `role-${applyingRole.id}` : 'open-roles')?.scrollIntoView({ block: 'start', behavior: 'instant' }));
         }}
         info={info}
       />
     );
   }
 
-  const departments = ['All', 'Young Builders & Volunteers', 'Engineering', 'Leadership', 'Marketing & Growth', 'Sales & Commercial', 'Operations & Success', 'Finance, Legal & People'];
-
-  const filteredRoles = roles.filter((role) => {
-    const matchesDept = selectedDept === 'All' || role.department === selectedDept;
-    const query = searchQuery.toLowerCase().trim();
-    const matchesSearch =
-      !query ||
-      role.title.toLowerCase().includes(query) ||
-      role.tags.some((t) => t.toLowerCase().includes(query)) ||
-      role.summary.toLowerCase().includes(query);
-    return matchesDept && matchesSearch;
-  });
+  const openRoles = roles.filter((r) => r.status !== 'closed');
+  const query = searchQuery.toLowerCase().trim();
+  const matchesSearch = (role) =>
+    !query ||
+    role.title.toLowerCase().includes(query) ||
+    role.department.toLowerCase().includes(query) ||
+    role.tags.some((t) => t.toLowerCase().includes(query)) ||
+    role.summary.toLowerCase().includes(query);
+  const searched = roles.filter(matchesSearch);
+  const departments = DEPARTMENTS.filter((d) => roles.some((r) => r.department === d));
+  // Open roles first; closed ones stay listed (people arrive from old links) but sink to the bottom.
+  const filteredRoles = searched
+    .filter((role) => selectedDept === 'All' || role.department === selectedDept)
+    .sort((a, b) => (a.status === 'closed') - (b.status === 'closed'));
 
   const handleApply = (role) => {
-    setApplyingRole(role);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setParams({ apply: role.id });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  const toggle = (role) => setParams(expandedRole === role.id ? {} : { role: role.id }, { replace: true });
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedDept('All');
+  };
+
+  const filtered = query || selectedDept !== 'All';
 
   return (
     <div className="min-h-screen bg-[#FDFCF7] text-espresso selection:bg-[#2357F5] selection:text-white">
@@ -90,112 +260,85 @@ export default function CareersPage({ info }) {
       </div>
 
       {/* Hero Header */}
-      <section className="kb-ink relative overflow-hidden py-16 sm:py-24 text-cream">
+      <section className="kb-ink relative overflow-hidden py-16 text-cream sm:py-24">
         <div className="container-x relative text-center">
-          <p className="kb-kicker text-[#9DB6FF]">
-            Kabuor Technologies · Ngong Road, Nairobi · 100% Fully Remote
-          </p>
+          <p className="kb-kicker text-[#9DB6FF]">Kabuor Technologies · Ngong Road, Nairobi · 100% Fully Remote</p>
 
-          <h1 className="kb-display mt-4 max-w-4xl mx-auto text-[2.75rem] sm:text-[4.75rem] leading-[0.95]">
+          <h1 className="kb-display mx-auto mt-4 max-w-4xl text-[2.75rem] leading-[0.95] sm:text-[4.75rem]">
             Build the Financial Operating System for <span className="text-[#F2C14E]">African Commerce.</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-3xl text-lg text-cream/75 leading-relaxed sm:text-xl">
+          <p className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-cream/75 sm:text-xl">
             Over 1.5 million Kenyan merchants power East Africa on M-Pesa, paper dockets, and sheer resilience. We are engineering the automated platform that handles instant KRA eTIMS, offline retail point-of-sale, and real-time cashflow reconciliation at a scale of 500,000 transactions a day.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <a href="#open-roles" className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-3.5 px-7 text-sm font-semibold shadow-lg shadow-[#2357F5]/25">
-              Explore Open Roles ({ALL_ROLES.length})
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <a href="#open-roles" className="btn bg-[#2357F5] px-7 py-3.5 text-[15px] font-semibold text-white shadow-lg shadow-[#2357F5]/25 hover:bg-[#3A6BFF]">
+              See {openRoles.length} open roles
             </a>
-            <a href="#young-builders" className="btn bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30 hover:bg-emerald-500/30 py-3.5 px-6 text-sm font-semibold">
+            <a href="#young-builders" className="btn bg-emerald-500/20 px-6 py-3.5 text-[15px] font-semibold text-emerald-300 ring-1 ring-emerald-400/30 hover:bg-emerald-500/30">
               Young Builders & Volunteers
             </a>
-            <a href="#why-kabuor" className="btn bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/20 py-3.5 px-6 text-sm font-semibold">
+            <a href="#why-kabuor" className="btn bg-white/10 px-6 py-3.5 text-[15px] font-semibold text-white ring-1 ring-white/20 hover:bg-white/20">
               Why Join Us
             </a>
           </div>
 
           {/* Scale Proof Metrics */}
-          <div className="mt-16 grid grid-cols-2 gap-4 border-t border-white/10 pt-12 sm:grid-cols-4 text-left">
-            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-              <p className="kb-display text-3xl text-[#F2C14E]">500,000+</p>
-              <p className="mt-1 text-xs text-cream/60">Load-tested daily transactions</p>
-            </div>
-            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-              <p className="kb-display text-3xl text-emerald-400">100%</p>
-              <p className="mt-1 text-xs text-cream/60">Offline-first PWA resilience</p>
-            </div>
-            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-              <p className="kb-display text-3xl text-[#9DB6FF]">0 Seconds</p>
-              <p className="mt-1 text-xs text-cream/60">eTIMS & M-Pesa auto-reconcile</p>
-            </div>
-            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-              <p className="kb-display text-3xl text-white">100% ESOP</p>
-              <p className="mt-1 text-xs text-cream/60">Equity for all full-time hires</p>
-            </div>
-          </div>
+          <dl className="mt-16 grid grid-cols-2 gap-3 border-t border-white/10 pt-12 text-left sm:grid-cols-4 sm:gap-4">
+            {[
+              ['500,000+', 'Load-tested daily transactions', 'text-[#F2C14E]'],
+              ['100%', 'Offline-first PWA resilience', 'text-emerald-400'],
+              ['0 Seconds', 'eTIMS & M-Pesa auto-reconcile', 'text-[#9DB6FF]'],
+              ['100% ESOP', 'Equity for all full-time hires', 'text-white'],
+            ].map(([value, label, tone]) => (
+              <div key={label} className="flex flex-col-reverse rounded-2xl border border-white/5 bg-white/[0.03] p-4">
+                <dt className="mt-1 text-sm text-cream/65">{label}</dt>
+                <dd className={`kb-display text-3xl ${tone}`}>{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
       {/* Culture Section */}
-      <section id="why-kabuor" className="scroll-mt-6 py-16 sm:py-24 border-b border-espresso/10 bg-white">
+      <section id="why-kabuor" className="scroll-mt-6 border-b border-espresso/10 bg-white py-16 sm:py-24">
         <div className="container-x">
           <div className="max-w-2xl">
             <p className="kb-kicker text-caramel">Company Culture & Principles</p>
-            <h2 className="kb-display mt-3 text-3xl sm:text-5xl text-espresso">
-              We build for the real trenches of commerce.
-            </h2>
-            <p className="mt-3 text-base text-espresso/70 leading-relaxed">
+            <h2 className="kb-display mt-3 text-3xl text-espresso sm:text-5xl">We build for the real trenches of commerce.</h2>
+            <p className="mt-4 text-[17px] leading-relaxed text-espresso/70">
               Our software doesn't run in air-conditioned ivory towers. It powers wholesale warehouses in Industrial Area, retail storefronts in Eastleigh and Gikomba, and distributor fleets across Kenya.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-2xl border border-espresso/10 bg-[#FDFCF7] p-6">
-              <h3 className="kb-display text-xl text-espresso">Zero Tolerance for Slowness</h3>
-              <p className="mt-2 text-sm text-espresso/75 leading-relaxed">
-                When a cashier in a supermarket has 15 customers queuing with groceries, every millisecond matters. We optimize down to zero-allocation memory pools in C# and client-side caching.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-espresso/10 bg-[#FDFCF7] p-6">
-              <h3 className="kb-display text-xl text-espresso">Massive Economic Impact</h3>
-              <p className="mt-2 text-sm text-espresso/75 leading-relaxed">
-                MSMEs contribute over 40% of Kenya’s GDP. Giving them automated financial controls and instant tax compliance fundamentally protects their business livelihoods.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-espresso/10 bg-[#FDFCF7] p-6">
-              <h3 className="kb-display text-xl text-espresso">Extreme Ownership & Equity</h3>
-              <p className="mt-2 text-sm text-espresso/75 leading-relaxed">
-                You won't be a cog in an 8-layer approval chain. You will own complete functional domains, deploy weekly, and share directly in company ownership through our formal ESOP equity program.
-              </p>
-            </div>
+          <div className="mt-12 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {PRINCIPLES.map((p) => (
+              <div key={p.title} className="rounded-2xl border border-espresso/10 bg-[#FDFCF7] p-6">
+                <h3 className="kb-display text-xl text-espresso">{p.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-espresso/75">{p.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Rewards / Perks */}
-      <section className="scroll-mt-6 py-16 sm:py-24 bg-[#F7F7FB] border-b border-espresso/10">
+      <section className="scroll-mt-6 border-b border-espresso/10 bg-[#F7F7FB] py-16 sm:py-24">
         <div className="container-x">
           <div className="max-w-3xl">
             <p className="kb-kicker text-caramel">Pre-Funding Commitment & Rewards</p>
-            <h2 className="kb-display mt-3 text-3xl sm:text-5xl text-espresso">
-              Equity today, market compensation upon funding.
-            </h2>
-            <p className="mt-3 text-base text-espresso/70 leading-relaxed">
+            <h2 className="kb-display mt-3 text-3xl text-espresso sm:text-5xl">Equity today, market compensation upon funding.</h2>
+            <p className="mt-4 text-[17px] leading-relaxed text-espresso/70">
               We are transparent with our team: we are currently bootstrapping and pre-funding. We offer generous founding ESOP equity for builders and volunteers joining now, with pre-agreed competitive cash salaries activating immediately upon closing our funding round.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {PERKS.map((perk) => (
-              <div key={perk.title} className="rounded-2xl border border-espresso/10 bg-white p-6 flex flex-col justify-between">
-                <div>
-                  <h3 className="kb-display text-lg text-espresso">{perk.title}</h3>
-                  <p className="mt-2 text-sm text-espresso/70 leading-relaxed">{perk.description}</p>
-                </div>
+              <div key={perk.title} className="rounded-2xl border border-espresso/10 bg-white p-6">
+                <h3 className="kb-display text-xl text-espresso">{perk.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-espresso/70">{perk.description}</p>
               </div>
             ))}
           </div>
@@ -203,65 +346,46 @@ export default function CareersPage({ info }) {
       </section>
 
       {/* Young Builders & Volunteers Fellowship Callout */}
-      <section id="young-builders" className="scroll-mt-6 kb-ink relative overflow-hidden py-16 sm:py-24 text-cream">
+      <section id="young-builders" className="kb-ink relative scroll-mt-6 overflow-hidden py-16 text-cream sm:py-24">
         <div className="container-x relative">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 sm:p-12 lg:p-16">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 sm:p-12 lg:p-16">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <div>
                 <p className="kb-kicker text-[#F2C14E]">For Students, Self-Taught Hackers & Volunteers</p>
-                <h2 className="kb-display mt-3 text-3xl sm:text-5xl text-white">
+                <h2 className="kb-display mt-3 text-3xl text-white sm:text-5xl">
                   You don’t need 10 years of experience to <span className="text-[#F2C14E]">build Africa’s future.</span>
                 </h2>
-                <p className="mt-4 text-base text-cream/75 leading-relaxed sm:text-lg">
+                <p className="mt-4 text-[17px] leading-relaxed text-cream/75 sm:text-lg">
                   We are deeply committed to mentoring the next generation of African builders. If you are a young programmer, university student, or volunteer hungry to write real production code that solves real problems for Kenyan merchants, we want to build with you.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <button
+                    type="button"
                     onClick={() => {
+                      setSearchQuery('');
                       setSelectedDept('Young Builders & Volunteers');
                       document.getElementById('open-roles')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] px-6 py-3.5 text-sm font-semibold shadow-lg shadow-[#2357F5]/30"
+                    className="btn bg-[#2357F5] px-6 py-3.5 text-[15px] font-semibold text-white shadow-lg shadow-[#2357F5]/30 hover:bg-[#3A6BFF]"
                   >
-                    View Young Builder & Volunteer Tracks
+                    See fellowship & volunteer roles
                   </button>
                   <a
                     href="mailto:careers@kabuor.com?subject=Young%20Builder%20%2F%20Volunteer%20Inquiry%20-%20Kabuor%20Technologies"
-                    className="btn bg-white/10 text-white hover:bg-white/20 px-6 py-3.5 text-sm font-semibold ring-1 ring-white/15"
+                    className="btn bg-white/10 px-6 py-3.5 text-[15px] font-semibold text-white ring-1 ring-white/15 hover:bg-white/20"
                   >
-                    Pitch Your Project / Volunteer Directly
+                    Email us your project
                   </a>
                 </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                  <h3 className="kb-display text-lg text-white">Real Production Code</h3>
-                  <p className="mt-2 text-xs text-cream/70 leading-relaxed">
-                    No coffee runs or toy apps. You will build high-throughput C# backends, offline React PWAs, and local payment rails from day one.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                  <h3 className="kb-display text-lg text-white">Direct Mentorship</h3>
-                  <p className="mt-2 text-xs text-cream/70 leading-relaxed">
-                    Pair directly with core architects and founders who have scaled financial systems and high-growth African startups.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                  <h3 className="kb-display text-lg text-white">No Degree Barrier</h3>
-                  <p className="mt-2 text-xs text-cream/70 leading-relaxed">
-                    We care about your passion, curiosity, and speed of learning. Self-taught tinkerers and student developers are warmly welcome.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                  <h3 className="kb-display text-lg text-white">Full-Time Pathway</h3>
-                  <p className="mt-2 text-xs text-cream/70 leading-relaxed">
-                    Top-performing fellows and open contributors graduate into full-time engineering and product positions with equity ownership.
-                  </p>
-                </div>
+                {BUILDER_POINTS.map((p) => (
+                  <div key={p.title} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                    <h3 className="kb-display text-lg text-white">{p.title}</h3>
+                    <p className="mt-2 text-[15px] leading-relaxed text-cream/70">{p.description}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -269,181 +393,84 @@ export default function CareersPage({ info }) {
       </section>
 
       {/* Open Roles Directory */}
-      <section id="open-roles" className="scroll-mt-6 py-16 sm:py-24 bg-white">
+      <section id="open-roles" className="scroll-mt-6 bg-white py-16 sm:py-24">
         <div className="container-x">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pb-8 border-b border-espresso/10">
-            <div>
+          <div className="flex flex-col gap-6 border-b border-espresso/10 pb-8 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
               <p className="kb-kicker text-caramel">Open Opportunities Across Company</p>
-              <h2 className="kb-display mt-3 text-3xl sm:text-5xl text-espresso">
-                Open Positions ({filteredRoles.length})
-              </h2>
-              <p className="mt-1 text-sm text-espresso/70">
-                Explore open roles and volunteer tracks. All founding positions include generous ESOP equity with pre-agreed market salaries upon funding.
+              <h2 className="kb-display mt-3 text-3xl text-espresso sm:text-5xl">Open positions</h2>
+              <p className="mt-3 text-[15px] leading-relaxed text-espresso/70">
+                {openRoles.length} of {roles.length} roles are taking applications. Founding roles are paid in ESOP equity now, with pre-agreed salaries from our funding round.
               </p>
             </div>
 
-            <div className="relative w-full md:w-72">
-              <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#8A8DB0]" />
+            <label className="relative block w-full md:w-80">
+              <span className="sr-only">Search roles</span>
+              <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#8A8DB0]" />
               <input
-                type="text"
+                type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search roles or skills..."
-                className="w-full rounded-md border border-[#E6E7F0] bg-white px-3 py-2 pl-9 text-sm focus:border-[#2357F5] focus:outline-none"
+                placeholder="Search roles, skills or teams"
+                className="w-full rounded-xl border border-[#E6E7F0] bg-white py-3 pr-3 pl-10 text-[15px] focus:border-[#2357F5] focus:ring-2 focus:ring-[#2357F5]/20 focus:outline-none"
               />
-            </div>
+            </label>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-2">
-            {departments.map((dept) => (
-              <button
-                key={dept}
-                onClick={() => setSelectedDept(dept)}
-                className={`rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition border ${
-                  selectedDept === dept
-                    ? 'bg-[#0A0B1E] text-white border-[#0A0B1E] shadow-sm'
-                    : 'bg-[#F7F7FB] text-[#3B3F5C] border-[#E6E7F0] hover:bg-white'
-                }`}
-              >
-                {dept}
-                {dept === 'All' ? ` (${ALL_ROLES.length})` : ` (${ALL_ROLES.filter((r) => r.department === dept).length})`}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-8 space-y-4">
-            {filteredRoles.map((role) => {
-              const isExpanded = expandedRole === role.id;
+          {/* One swipeable row on phones (eight teams would fill the screen), wrapped from sm up. */}
+          <div className="no-scrollbar -mx-4 mt-6 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter by team">
+            {['All', ...departments].map((dept) => {
+              const count = dept === 'All' ? searched.length : searched.filter((r) => r.department === dept).length;
+              const active = selectedDept === dept;
               return (
-                <div
-                  key={role.id}
-                  className={`rounded-xl border transition overflow-hidden ${
-                    isExpanded ? 'border-[#2357F5] ring-1 ring-[#2357F5]' : 'border-[#E6E7F0] hover:border-[#8A8DB0]'
-                  }`}
+                <button
+                  key={dept}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setSelectedDept(dept)}
+                  className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition ${
+                    active ? 'border-[#0A0B1E] bg-[#0A0B1E] text-white' : 'border-[#E6E7F0] bg-[#F7F7FB] text-[#3B3F5C] hover:bg-white'
+                  } ${!count && !active ? 'opacity-50' : ''}`}
                 >
-                  <div className="p-6 cursor-pointer bg-white" onClick={() => setExpandedRole(isExpanded ? null : role.id)}>
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <span className="rounded bg-[#E8EEFF] px-2 py-0.5 text-xs font-semibold text-[#2357F5]">
-                            {role.department}
-                          </span>
-                          <span className="rounded bg-[#F7F7FB] px-2 py-0.5 text-xs font-medium text-[#3B3F5C] border border-[#E6E7F0]">
-                            {role.type}
-                          </span>
-                          {role.status === 'closed' ? (
-                            <span className="rounded-full bg-red-100 text-red-800 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider border border-red-200">
-                              Applications Closed
-                            </span>
-                          ) : (
-                            <span className="rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold border border-emerald-200">
-                              Open
-                            </span>
-                          )}
-                          <span className="text-xs text-espresso/60">
-                            {role.location}
-                          </span>
-                        </div>
-                        <h3 className="kb-display text-xl text-espresso hover:text-[#2357F5] transition">
-                          {role.title}
-                        </h3>
-                        <p className="mt-2 text-sm text-espresso/70 line-clamp-2 leading-relaxed">
-                          {role.summary}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between gap-3 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-[#E6E7F0]">
-                        <div className="text-left lg:text-right">
-                          <p className="text-xs font-semibold text-espresso/80">
-                            Founding Equity (ESOP) · Salaried Post-Funding
-                          </p>
-                          <p className="mt-1 text-xs font-semibold text-emerald-600">{role.equity}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {role.status === 'closed' ? (
-                            <span className="rounded-lg bg-red-50 text-red-700 border border-red-200 py-1.5 px-3 text-xs font-semibold">
-                              Closed
-                            </span>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleApply(role);
-                              }}
-                              className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-2 px-4 text-xs font-semibold"
-                            >
-                              Apply Now
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            aria-label="Toggle details"
-                            className="grid h-8 w-8 place-items-center rounded-md bg-[#F7F7FB] text-[#585C80] border border-[#E6E7F0]"
-                          >
-                            {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-1.5">
-                      {role.tags.map((tag) => (
-                        <span key={tag} className="rounded-full bg-[#F7F7FB] px-2.5 py-0.5 text-xs text-[#3B3F5C] font-medium border border-[#E6E7F0]">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {isExpanded && (
-                    <div className="border-t border-[#E6E7F0] bg-[#FAF9F5] p-6 sm:p-8 space-y-6">
-                      <div>
-                        <h4 className="text-xs font-bold text-[#1E1B18] uppercase tracking-wider">The Mission</h4>
-                        <p className="mt-2 text-sm text-[#3B3F5C] leading-relaxed">{role.summary}</p>
-                      </div>
-
-                      <div>
-                        <h4 className="text-xs font-bold text-[#1E1B18] uppercase tracking-wider">Key Responsibilities</h4>
-                        <ul className="mt-3 space-y-2">
-                          {role.responsibilities.map((resp, i) => (
-                            <li key={i} className="flex items-start gap-2.5 text-sm text-[#3B3F5C] leading-relaxed">
-                              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#2357F5] shrink-0" />
-                              <span>{resp}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="rounded-lg bg-[#E8EEFF]/60 p-4 border border-[#2357F5]/20">
-                        <div className="text-xs sm:text-sm text-[#1E1B18] leading-relaxed">
-                          <span className="font-bold text-[#2357F5]">Pre-Funding Founding Track:</span> All positions operate on generous founding ESOP equity grants until our funding round closes, with pre-agreed market salaries activating upon funding. {role.benefitsNote}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2">
-                        <p className="text-xs text-[#585C80]">
-                          Role ID: <code className="text-[#1E1B18] font-semibold">{role.id}</code>
-                        </p>
-                        {role.status === 'closed' ? (
-                          <span className="rounded-lg bg-red-50 text-red-700 border border-red-200 py-2 px-4 text-xs font-semibold">
-                            Applications Closed
-                          </span>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => handleApply(role)}
-                            className="btn bg-[#2357F5] text-white hover:bg-[#3A6BFF] py-2.5 px-6 text-sm font-semibold shadow-md"
-                          >
-                            Apply for {role.title}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  {dept === 'All' ? 'All teams' : dept}
+                  <span className={`tabular-nums ${active ? 'text-white/60' : 'text-[#8A8DB0]'}`}>{count}</span>
+                </button>
               );
             })}
+          </div>
+
+          <p className="mt-5 text-sm text-espresso/60" aria-live="polite">
+            {filtered ? `Showing ${filteredRoles.length} of ${roles.length} roles` : `${roles.length} roles`}
+            {query && <> matching “{searchQuery.trim()}”</>}
+            {selectedDept !== 'All' && <> in {selectedDept}</>}
+            {filtered && (
+              <button type="button" onClick={clearFilters} className="ml-2 font-semibold text-[#2357F5] hover:underline">
+                Clear filters
+              </button>
+            )}
+          </p>
+
+          <div className="mt-4 space-y-4">
+            {filteredRoles.map((role) => (
+              <RoleCard key={role.id} role={role} expanded={expandedRole === role.id} onToggle={() => toggle(role)} onApply={() => handleApply(role)} />
+            ))}
+
+            {!filteredRoles.length && (
+              <div className="rounded-2xl border border-dashed border-espresso/20 px-6 py-12 text-center">
+                <p className="kb-display text-2xl text-espresso">No roles match {query ? `“${searchQuery.trim()}”` : 'this team'}</p>
+                <p className="mx-auto mt-2 max-w-md text-[15px] text-espresso/65">
+                  Try a broader skill such as “React”, “sales” or “finance”, or see every team. Not seeing your fit? Tell us what you’d build.
+                </p>
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  <button type="button" onClick={clearFilters} className="btn bg-[#2357F5] px-6 py-3 text-sm font-semibold text-white hover:bg-[#3A6BFF]">
+                    Show all {roles.length} roles
+                  </button>
+                  <a href="mailto:careers@kabuor.com?subject=Open%20application%20-%20Kabuor%20Technologies" className="btn border border-espresso/15 bg-white px-6 py-3 text-sm font-semibold text-espresso hover:border-espresso/30">
+                    Email an open application
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

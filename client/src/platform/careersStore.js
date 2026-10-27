@@ -1,5 +1,7 @@
 // Store and persistent state for Kabuor Technologies Careers & Hiring Desk
 // Supports toggling job status (open vs closed) from admin and persisting candidate submissions.
+// `experience` is the headline requirement shown on each listing; `technical` roles ask for code (GitHub, a live
+// app, the cleanest PR) and the offline-architecture question, the others for a LinkedIn/CV link and work samples.
 
 export const DEFAULT_ROLES = [
   {
@@ -9,6 +11,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '5+ years experience',
+    technical: false,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Generous Founding ESOP Equity Grant',
     tags: ['Executive', 'Operations', 'Strategy', 'Expansion', 'Fundraising'],
@@ -32,6 +36,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '8+ years experience',
+    technical: true,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Significant Executive ESOP Stake',
     tags: ['C# .NET 10', 'Distributed Systems', 'Architecture', 'Team Leadership'],
@@ -55,6 +61,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '6+ years experience',
+    technical: true,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: '0.50% – 1.00% ESOP',
     tags: ['.NET 10', 'C#', 'SequenceGate', 'PostgreSQL', 'High-Throughput'],
@@ -78,6 +86,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '4+ years experience',
+    technical: true,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: '0.35% – 0.75% ESOP',
     tags: ['React 19', 'TypeScript', 'Offline PWA', 'IndexedDB', 'Tailwind'],
@@ -100,6 +110,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: 'eTIMS integration experience',
+    technical: true,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: '0.40% – 0.80% ESOP',
     tags: ['KRA eTIMS', 'VSCU/OSCU', 'Tax Procedures Act', 'Cryptography', 'FinTech'],
@@ -122,6 +134,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '4+ years experience',
+    technical: false,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Meaningful Founding ESOP Stake',
     tags: ['Performance Marketing', 'B2B SaaS', 'Accountant Network', 'SEO/SEM', 'CAC/LTV'],
@@ -144,6 +158,8 @@ export const DEFAULT_ROLES = [
     location: 'Nairobi, Kenya (Trade Corridors / Field & Remote)',
     type: 'Full-Time',
     status: 'open',
+    experience: '3+ years experience',
+    technical: false,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Meaningful Founding ESOP Stake',
     tags: ['Field Activation', 'Merchant Corridors', 'Trade Associations', 'Gikomba', 'Eastleigh'],
@@ -165,6 +181,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '3+ years experience',
+    technical: false,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Meaningful Founding ESOP Stake',
     tags: ['Video Storytelling', 'LinkedIn Thought Leadership', 'SME Case Studies', 'TikTok/YouTube'],
@@ -186,6 +204,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '3+ years experience',
+    technical: false,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Meaningful Founding ESOP Stake + Future Revenue Share',
     tags: ['ICPAK Network', 'Accountants', 'Audit Firms', 'Affiliate Programs', 'B2B Sales'],
@@ -207,6 +227,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '5+ years experience',
+    technical: false,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Meaningful Founding ESOP Stake',
     tags: ['Enterprise Sales', 'B2B Wholesalers', 'Distributors', 'Contract Negotiation'],
@@ -228,6 +250,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: '4+ years experience',
+    technical: false,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: '0.25% – 0.50% ESOP',
     tags: ['Customer Success', 'Zero Churn', 'ERP Onboarding', 'Data Migration', 'NPS'],
@@ -249,6 +273,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Full-Time',
     status: 'open',
+    experience: 'CPA-K or ACCA, 6+ years',
+    technical: false,
     compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
     equity: 'Meaningful Executive ESOP Stake',
     tags: ['CPA-K', 'Financial Controller', 'KRA Compliance', 'Audit', 'Treasury'],
@@ -270,6 +296,8 @@ export const DEFAULT_ROLES = [
     location: 'Ngong Road, Nairobi · Fully Remote',
     type: 'Fellowship / Early-Career',
     status: 'open',
+    experience: 'No degree needed',
+    technical: true,
     compensationNote: 'Pre-Funding: Volunteer / Fellow Track · Equity & Mentorship (Salaried post-funding)',
     equity: 'Fellowship Completion Grant & Full-Time Priority',
     tags: ['Young Builders', 'Students', 'Self-Taught', 'React', 'C# .NET', 'Product'],
@@ -293,6 +321,8 @@ export const DEFAULT_ROLES = [
     location: 'Pan-Africa & Global · 100% Remote',
     type: 'Volunteer / Open Contributor',
     status: 'open',
+    experience: 'All experience levels',
+    technical: false,
     compensationNote: 'Volunteer Track (Flexible Hours & Contributor Equity)',
     equity: 'Public Contributor Attribution & Swag',
     tags: ['Open Source', 'Community', 'Localization', 'Docs', 'APIs', 'Volunteer'],
@@ -316,6 +346,8 @@ export const DEFAULT_ROLES = [
     location: 'Kenyan Universities & Colleges · Remote & Campus',
     type: 'Volunteer / Community',
     status: 'open',
+    experience: 'Current students',
+    technical: false,
     compensationNote: 'Volunteer Community Track · Builder Recognition & Event Support',
     equity: 'Builder Certificate & Priority Hiring',
     tags: ['Campus', 'Youth Community', 'Hackathons', 'Student Builder'],
@@ -406,6 +438,59 @@ export function saveApplication(appData) {
     console.error('Failed to save application', err);
     return { success: false, error: err.message };
   }
+}
+
+/** What each role pays today, in the words candidates use: volunteers aren't salaried, everyone else is from funding. */
+export const payLine = (role) => (/volunteer/i.test(role.type) ? 'Volunteer role, unpaid' : 'Salary starts when we close funding');
+
+// Answer options on the application form as [stored value, label]. The stored values are what earlier
+// applications already hold, so keep them; change only the labels.
+export const EXPERIENCE_LEVELS = [
+  ['Young Builder / Student', 'Student or self-taught'],
+  ['Open Source Volunteer', 'Open-source volunteer'],
+  ['1 - 2 years', '1–2 years'],
+  ['3 - 5 years', '3–5 years'],
+  ['6 - 9 years', '6–9 years'],
+  ['10+ years', '10+ years'],
+];
+export const WEEKLY_COMMITMENTS = [
+  ['40+ hours/week (Full focus)', 'Full time, 40+ hours'],
+  ['20 - 30 hours/week', 'Part time, 20–30 hours'],
+  ['10 - 20 hours/week (Volunteer / Fellow)', '10–20 hours'],
+  ['Flexible / Async Volunteer', 'Flexible, when I can'],
+];
+export const START_DATES = [
+  ['Immediately / Today', 'Right away'],
+  ['Within 1 - 2 weeks', 'In 1–2 weeks'],
+  ['Within 1 month', 'Within a month'],
+];
+export const optionLabel = (options, value) => options.find(([v]) => v === value)?.[1] ?? value;
+
+/** Where an application is in review, in pipeline order (admin filter chips and status picker). */
+export const REVIEW_STATUSES = ['New', 'Shortlisted', 'Interviewing', 'Rejected'];
+
+// An unfinished application, kept per role on this device so long answers survive leaving the page.
+const draftKey = (roleId) => `kb_careers_draft_${roleId}`;
+
+export function loadDraft(roleId) {
+  try {
+    const raw = localStorage.getItem(draftKey(roleId));
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveDraft(roleId, data) {
+  try {
+    localStorage.setItem(draftKey(roleId), JSON.stringify(data));
+  } catch {}
+}
+
+export function clearDraft(roleId) {
+  try {
+    localStorage.removeItem(draftKey(roleId));
+  } catch {}
 }
 
 export function updateApplicationReviewStatus(trackingRef, reviewStatus) {
