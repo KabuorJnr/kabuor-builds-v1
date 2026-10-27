@@ -12,6 +12,7 @@ import { PRICES, testMode } from './billing.js';
 import { KINDS } from './presets.js';
 import { connectForShop, declineRequest, listRequests, markWorking, openRequestCount } from './mpesaRequests.js';
 import { listDemoRequests, newDemoCount, setDemoStatus } from './demoRequests.js';
+import { listApplications, newApplicationCount, setApplicationStatus, setRoleStatus } from './careers.js';
 import { backupNow, latestBackup } from '../backups.js';
 import { getShop, shopState } from './shops.js';
 import { pdb } from './store.js';
@@ -170,6 +171,7 @@ ownerAdmin.get('/overview', (req, res) => {
     gmv: { amount: gmv, orders },
     mpesaRequests: openRequestCount(),
     demoRequests: newDemoCount(),
+    careerApplications: newApplicationCount(),
   });
 });
 
@@ -221,6 +223,11 @@ ownerAdmin.get('/backups/latest/file', (req, res) => {
 // ---------- demo requests from the company site ----------
 ownerAdmin.get('/demo-requests', (req, res) => res.json(listDemoRequests(['open', 'closed', 'all'].includes(req.query.status) ? req.query.status : 'open')));
 ownerAdmin.post('/demo-requests/:id/status', (req, res) => res.json(setDemoStatus(req.params.id, req.body?.status)));
+
+// ---------- careers: applications and which roles are open ----------
+ownerAdmin.get('/careers', (req, res) => res.json(listApplications()));
+ownerAdmin.post('/careers/applications/:ref/status', (req, res) => res.json(setApplicationStatus(req.params.ref, req.body?.status)));
+ownerAdmin.post('/careers/roles/:id/status', (req, res) => res.json(setRoleStatus(req.params.id, req.body?.status)));
 
 // ---------- M-Pesa setup requests from shop owners ----------
 ownerAdmin.get('/mpesa-requests', (req, res) => res.json(listRequests(['open', 'live', 'cancelled', 'all'].includes(req.query.status) ? req.query.status : 'open')));

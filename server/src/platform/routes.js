@@ -19,6 +19,7 @@ import { clientBrand, KINDS, makeBrand, slugify, styleList, STYLES } from './pre
 import { forgetShop, getShop, LINK_RULE, previewToken, requestHost, RESERVED, shopDir, shopState } from './shops.js';
 import { getShopRecord, now, pdb, shopByToken, updateShop } from './store.js';
 import { createDemoRequest } from './demoRequests.js';
+import { createApplication, roleStatuses } from './careers.js';
 
 export const platformRouter = Router();
 // Kabuor Builds' own dashboard (sign-in and numbers).
@@ -26,6 +27,10 @@ platformRouter.use('/admin', ownerAdmin);
 
 /** "Request a demo" on the company site (rate-limited in index.js). */
 platformRouter.post('/demo', (req, res) => res.json(createDemoRequest(req.body ?? {})));
+
+/** The careers page: which roles the dashboard has opened or closed, and applications (rate-limited in index.js). */
+platformRouter.get('/careers', (req, res) => res.json({ roles: roleStatuses() }));
+platformRouter.post('/careers/apply', (req, res) => res.json(createApplication(req.body ?? {})));
 
 const text = (v, max) => String(v ?? '').trim().slice(0, max);
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;

@@ -29,10 +29,11 @@ app.use('/api/platform/signup', limit('signup', 10, 60, 'Too many signups from t
 app.use('/api/platform/check-link', limit('check', 120, 10));
 // Only real submissions count (a browser's CORS preflight is an OPTIONS request before each one).
 app.use('/api/platform/demo', (req, res, next) => (req.method === 'POST' ? limit('demo', 6, 60, 'Too many requests from this connection. WhatsApp us instead.')(req, res, next) : next()));
-// The standalone company site (e.g. on Vercel) reads the platform's info and sends demo requests from another
-// address. Only those two endpoints answer it; COMPANY_SITE_ORIGINS lists the addresses (comma-separated).
+app.use('/api/platform/careers/apply', (req, res, next) => (req.method === 'POST' ? limit('apply', 6, 60, 'Too many applications from this connection. Email careers@kabuor.com instead.')(req, res, next) : next()));
+// The standalone company site (e.g. on Vercel) reads the platform's info, sends demo requests and runs the careers
+// page from another address. Only those endpoints answer it; COMPANY_SITE_ORIGINS lists the addresses (comma-separated).
 const COMPANY_ORIGINS = (process.env.COMPANY_SITE_ORIGINS || 'https://kabuor-builds.vercel.app').split(',').map((o) => o.trim().replace(/\/+$/, '')).filter(Boolean);
-app.use(['/api/platform/info', '/api/platform/demo'], (req, res, next) => {
+app.use(['/api/platform/info', '/api/platform/demo', '/api/platform/careers'], (req, res, next) => {
   const origin = req.get('origin');
   if (origin && (COMPANY_ORIGINS.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin))) {
     res.set({ 'Access-Control-Allow-Origin': origin, Vary: 'Origin', 'Access-Control-Allow-Methods': 'GET, POST', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Max-Age': '86400' });

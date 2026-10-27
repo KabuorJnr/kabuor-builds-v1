@@ -1,6 +1,7 @@
 // The platform server, started for real on throwaway data (no .env, so no M-Pesa keys and no real SMS):
 // health, the company site's API (info, demo requests, CORS), the owner's dashboard sign-in, demo request
-// follow-up, and backups (made, listed, downloadable, and no way to reach files outside them).
+// follow-up, careers applications and role status, and backups (made, listed, downloadable, and no way to reach
+// files outside them).
 import { after, before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -89,6 +90,70 @@ describe('company site API', () => {
     assert.equal(list.requests[0].phone, '0712345678');
     const moved = await call(`/api/platform/admin/demo-requests/${list.requests[0].id}/status`, { method: 'POST', token, body: { status: 'booked' } });
     assert.equal(moved.json.status, 'booked');
+  });
+});
+
+describe('careers', () => {
+  const application = {
+    roleId: 'lead-platform-architect',
+    roleTitle: 'Lead Platform Architect (.NET 10 / Cloud)',
+    department: 'Engineering',
+    fullName: 'Wanjiru Kamau-Ochieng',
+    email: 'Wanjiru.K@Example.com',
+    phone: '0722 418 903',
+    location: 'Nairobi, Kenya',
+    experienceTrack: '6 - 9 years',
+    githubUrl: 'https://github.com/wkamau',
+    liveProjectUrl1: 'javascript:alert(1)',
+    hardestProblem: 'Two pods raced on the same M-Pesa receipt.\n\nA unique index fixed it.',
+    whyAfricaKabuor: 'My aunt runs her shop on exercise books.',
+    weeklyCommitment: '40+ hours/week (Full focus)',
+    earliestStartDate: 'Within 1 month',
+    equityAcknowledgment: true,
+  };
+
+  test('the company site may load role status and apply from its own address', async () => {
+    const r = await call('/api/platform/careers', { headers: { Origin: 'https://kabuor-builds.vercel.app' } });
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.json.roles, {});
+    assert.equal(r.headers.get('access-control-allow-origin'), 'https://kabuor-builds.vercel.app');
+  });
+
+  test('applications are checked, saved once per role a day, reviewed from the dashboard, and refused when a role closes', async () => {
+    assert.equal((await call('/api/platform/careers/apply', { method: 'POST', body: { ...application, email: 'nope' } })).status, 400);
+    const first = await call('/api/platform/careers/apply', { method: 'POST', body: application });
+    assert.equal(first.status, 200);
+    assert.match(first.json.trackingRef, /^KBR-APP-\d{6}$/);
+    // Sending again the same day (a double tap) updates the first application.
+    const again = await call('/api/platform/careers/apply', { method: 'POST', body: { ...application, location: 'Kisumu, Kenya' } });
+    assert.equal(again.json.trackingRef, first.json.trackingRef);
+    // A bot filling the hidden field is told "ok" and nothing is saved.
+    assert.equal((await call('/api/platform/careers/apply', { method: 'POST', body: { ...application, email: 'bot@spam.example', website: 'spam' } })).status, 200);
+
+    assert.equal((await call('/api/platform/admin/careers')).status, 401);
+    const token = (await call('/api/platform/admin/login', { method: 'POST', body: ADMIN })).json.token;
+    const list = (await call('/api/platform/admin/careers', { token })).json;
+    assert.equal(list.applications.length, 1);
+    const [app] = list.applications;
+    assert.equal(app.trackingRef, first.json.trackingRef);
+    assert.equal(app.email, 'wanjiru.k@example.com');
+    assert.equal(app.location, 'Kisumu, Kenya');
+    assert.equal(app.reviewStatus, 'new');
+    assert.equal(app.liveProjectUrl1, '', 'only http(s) links are kept');
+    assert.match(app.hardestProblem, /receipt\.\n\nA unique/, 'paragraphs survive');
+
+    const moved = await call(`/api/platform/admin/careers/applications/${app.trackingRef}/status`, { method: 'POST', token, body: { status: 'shortlisted' } });
+    assert.equal(moved.json.reviewStatus, 'shortlisted');
+    assert.equal((await call(`/api/platform/admin/careers/applications/${app.trackingRef}/status`, { method: 'POST', token, body: { status: 'hired!' } })).status, 400);
+
+    // Closing a role closes it for every visitor, and the server refuses applications to it.
+    assert.equal((await call('/api/platform/admin/careers/roles/lead-platform-architect/status', { method: 'POST', token, body: { status: 'closed' } })).status, 200);
+    assert.equal((await call('/api/platform/careers')).json.roles['lead-platform-architect'], 'closed');
+    assert.equal((await call('/api/platform/careers/apply', { method: 'POST', body: application })).status, 409);
+    await call('/api/platform/admin/careers/roles/lead-platform-architect/status', { method: 'POST', token, body: { status: 'open' } });
+    const reopened = await call('/api/platform/careers/apply', { method: 'POST', body: application });
+    assert.equal(reopened.status, 200);
+    assert.notEqual(reopened.json.trackingRef, first.json.trackingRef, 'a reviewed application is not overwritten');
   });
 });
 
