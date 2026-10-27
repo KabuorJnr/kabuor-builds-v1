@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from 'react';
 import { ArrowLeft, Check, CheckCircle2, Copy } from 'lucide-react';
 import { SiteHeader, SiteFooter } from './Site';
-import { EXPERIENCE_LEVELS, START_DATES, WEEKLY_COMMITMENTS, clearDraft, loadDraft, payLine, saveApplication, saveDraft } from './careersStore';
+import { EXPERIENCE_LEVELS, START_DATES, WEEKLY_COMMITMENTS, clearDraft, loadDraft, payLine, saveDraft, sendApplication } from './careersStore';
 
 const EMPTY = {
   fullName: '',
@@ -157,6 +157,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
   const [submitError, setSubmitError] = useState(null);
   const [submissionResult, setSubmissionResult] = useState(null);
   const [copiedRef, setCopiedRef] = useState(false);
+  const [trap, setTrap] = useState(''); // the hidden "website" field: only bots fill it in
   const uid = useId();
   const id = (name) => `${uid}-${name}`;
 
@@ -178,8 +179,9 @@ export default function CareersApplicationPage({ role, onBack, info }) {
     setErrors({});
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
     const data = { ...formData };
     for (const [key] of linkFields(technical)) data[key] = withScheme(data[key]);
     setFormData(data);
@@ -192,22 +194,19 @@ export default function CareersApplicationPage({ role, onBack, info }) {
     }
     setSubmitting(true);
     setSubmitError(null);
-    setTimeout(() => {
-      const result = saveApplication({
-        roleId: role.id,
-        roleTitle: role.title,
-        department: role.department,
-        ...data,
-      });
-      setSubmitting(false);
-      if (!result.success) {
-        setSubmitError('We couldn’t save your application. Your answers are still here: try again, or email them to careers@kabuor.com.');
-        return;
-      }
+    try {
+      const result = await sendApplication({ roleId: role.id, roleTitle: role.title, department: role.department, ...data, website: trap });
       clearDraft(role.id);
       setSubmissionResult(result);
       window.scrollTo({ top: 0, behavior: 'instant' });
-    }, 600);
+    } catch (err) {
+      // A role closed while they wrote says so itself; anything else (no connection, a check the server makes)
+      // keeps the answers here and gives a way out.
+      const reason = err.status ? err.message.replace(/\.?$/, '.') : 'We couldn’t reach our server.';
+      setSubmitError(err.status === 409 ? err.message : `${reason} Your answers are still here: try again, or email them to careers@kabuor.com.`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const copyRef = async () => {
@@ -459,6 +458,8 @@ export default function CareersApplicationPage({ role, onBack, info }) {
           </section>
 
           <div className="border-t border-espresso/10 pt-8">
+            {/* Hidden from people; bots fill it in. */}
+            <input type="text" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} className="hidden" aria-hidden="true" />
             {errorCount > 0 && (
               <p role="alert" className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-[15px] font-medium text-red-800">
                 {errorCount === 1 ? 'One answer needs fixing' : `${errorCount} answers need fixing`} before you can send this. They’re marked in red above.

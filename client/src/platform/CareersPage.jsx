@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { Search } from 'lucide-react';
 import { SiteHeader, SiteFooter } from './Site';
-import { DEFAULT_ROLES, getStoredRoles, payLine } from './careersStore';
+import { DEFAULT_ROLES, fetchRoleStatuses, payLine, withStatus } from './careersStore';
 import CareersApplicationPage from './CareersApplicationPage';
 
 export const ALL_ROLES = DEFAULT_ROLES;
@@ -187,7 +187,7 @@ function RoleCard({ role, expanded, onToggle, onApply }) {
 }
 
 export default function CareersPage({ info }) {
-  const [roles, setRoles] = useState(getStoredRoles());
+  const [roles, setRoles] = useState(DEFAULT_ROLES);
   const [selectedDept, setSelectedDept] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   // The open role and the application form live in the address (?role=…, ?apply=…), so links can be shared and
@@ -196,10 +196,12 @@ export default function CareersPage({ info }) {
   const expandedRole = params.get('role');
   const applyingRole = roles.find((r) => r.id === params.get('apply'));
 
+  // Which roles the hiring desk has closed. If the platform can't be reached the roles show as written; it still
+  // refuses applications to a closed role, and the form says so.
   useEffect(() => {
-    const handleRolesChange = () => setRoles(getStoredRoles());
-    window.addEventListener('kb-roles-changed', handleRolesChange);
-    return () => window.removeEventListener('kb-roles-changed', handleRolesChange);
+    fetchRoleStatuses()
+      .then((statuses) => setRoles(withStatus(statuses)))
+      .catch(() => {});
   }, []);
 
   // Arriving from a shared role link: bring that role into view, again once the web fonts have loaded and

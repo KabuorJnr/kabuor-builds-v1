@@ -1,25 +1,15 @@
 // The talent desk on the platform dashboard: who applied and what to do with them, and which roles are open on
 // /careers. Applications come first because they're what needs a decision.
-import { useEffect, useState } from 'react';
-import { ExternalLink, Mail, MessageCircle, Search } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { ExternalLink, Loader2, Mail, MessageCircle, Search } from 'lucide-react';
 import { cn } from '../lib/format';
-import {
-  EXPERIENCE_LEVELS,
-  REVIEW_STATUSES,
-  START_DATES,
-  WEEKLY_COMMITMENTS,
-  getStoredApplications,
-  getStoredRoles,
-  optionLabel,
-  toggleRoleStatus,
-  updateApplicationReviewStatus,
-} from './careersStore';
+import { EXPERIENCE_LEVELS, REVIEW_STATUSES, START_DATES, WEEKLY_COMMITMENTS, optionLabel, withStatus } from './careersStore';
 
 const STATUS_TONE = {
-  New: 'border-[#2357F5]/30 bg-[#E8EEFF] text-[#1D46C9]',
-  Shortlisted: 'border-amber-300 bg-amber-50 text-amber-900',
-  Interviewing: 'border-emerald-300 bg-emerald-50 text-emerald-800',
-  Rejected: 'border-espresso/15 bg-espresso/[0.04] text-espresso/60',
+  new: 'border-[#2357F5]/30 bg-[#E8EEFF] text-[#1D46C9]',
+  shortlisted: 'border-amber-300 bg-amber-50 text-amber-900',
+  interviewing: 'border-emerald-300 bg-emerald-50 text-emerald-800',
+  rejected: 'border-espresso/15 bg-espresso/[0.04] text-espresso/60',
 };
 
 const isHttp = (s) => /^https?:\/\//i.test(String(s ?? '').trim());
@@ -31,7 +21,13 @@ function ago(iso) {
   const days = Math.floor(hours / 24);
   return days === 1 ? 'yesterday' : `${days} days ago`;
 }
-const waLink = (phone, text) => `https://wa.me/254${String(phone).replace(/\D/g, '').replace(/^(254|0)/, '')}?text=${encodeURIComponent(text)}`;
+// Kenyan numbers come as 07…/01… or 254…; anyone abroad types their own country code with a +.
+function waLink(phone, text) {
+  const raw = String(phone).trim();
+  const digits = raw.replace(/\D/g, '');
+  const number = raw.startsWith('+') || digits.startsWith('254') ? digits : `254${digits.replace(/^0/, '')}`;
+  return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+}
 const firstName = (name) => String(name ?? '').trim().split(/\s+/)[0];
 
 function Chip({ active, onClick, children, count }) {
@@ -78,7 +74,7 @@ function Empty({ title, children, action }) {
 }
 
 function ApplicationCard({ app, technical, expanded, onToggle, onStatus }) {
-  const status = app.reviewStatus || 'New';
+  const status = app.reviewStatus || 'new';
   // In the order the form asked for them, so the link the role leans on comes first.
   const links = (
     technical
@@ -105,7 +101,7 @@ function ApplicationCard({ app, technical, expanded, onToggle, onStatus }) {
   const detailsId = `app-${app.trackingRef}`;
 
   return (
-    <article className={cn('rounded-2xl border bg-[#FDFCF7] p-4 transition sm:p-5', status === 'New' ? 'border-[#2357F5]/25' : 'border-espresso/10')}>
+    <article className={cn('rounded-2xl border bg-[#FDFCF7] p-4 transition sm:p-5', status === 'new' ? 'border-[#2357F5]/25' : 'border-espresso/10')}>
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
         <div className="min-w-0">
           <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
@@ -131,9 +127,9 @@ function ApplicationCard({ app, technical, expanded, onToggle, onStatus }) {
             onChange={(e) => onStatus(e.target.value)}
             className={cn('rounded-lg border py-2 pr-8 pl-3 text-sm font-semibold focus:ring-2 focus:ring-[#2357F5]/30 focus:outline-none', STATUS_TONE[status])}
           >
-            {REVIEW_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {s}
+            {REVIEW_STATUSES.map(([id, label]) => (
+              <option key={id} value={id}>
+                {label}
               </option>
             ))}
           </select>
@@ -211,36 +207,59 @@ function ApplicationCard({ app, technical, expanded, onToggle, onStatus }) {
   );
 }
 
-export default function CareersAdmin() {
-  const [roles, setRoles] = useState(getStoredRoles);
-  const [applications, setApplications] = useState(getStoredApplications);
-  const [activeTab, setActiveTab] = useState(() => (getStoredApplications().length ? 'applications' : 'roles'));
+/** `oapi` and `onError` come from the dashboard (signed-in calls; a 401 sends the owner back to sign-in). */
+export default function CareersAdmin({ oapi, onError }) {
+  const [data, setData] = useState(null); // { applications, roles: { [roleId]: 'open' | 'closed' } }
+  const [loadError, setLoadError] = useState(null);
+  const [busyRole, setBusyRole] = useState(null);
+  const [activeTab, setActiveTab] = useState(null); // 'applications' | 'roles'; until chosen, applications if any
   const [roleFilter, setRoleFilter] = useState('all'); // 'all' | 'open' | 'closed'
-  const [statusFilter, setStatusFilter] = useState('all'); // 'all' | one of REVIEW_STATUSES
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all' | a REVIEW_STATUSES id
   const [appRoleFilter, setAppRoleFilter] = useState('all'); // 'all' | a role id
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedAppRef, setExpandedAppRef] = useState(null);
 
+  const load = useCallback(
+    () =>
+      oapi('/careers')
+        .then((d) => {
+          setData(d);
+          setLoadError(null);
+        })
+        .catch((err) => {
+          if (err.status === 401) onError(err);
+          else setLoadError(err.message);
+        }),
+    [oapi, onError],
+  );
   useEffect(() => {
-    const handleRolesChange = () => setRoles(getStoredRoles());
-    const handleAppsChange = () => setApplications(getStoredApplications());
+    load();
+  }, [load]);
 
-    window.addEventListener('kb-roles-changed', handleRolesChange);
-    window.addEventListener('kb-apps-changed', handleAppsChange);
+  const roles = withStatus(data?.roles);
+  const applications = data?.applications ?? [];
 
-    return () => {
-      window.removeEventListener('kb-roles-changed', handleRolesChange);
-      window.removeEventListener('kb-apps-changed', handleAppsChange);
-    };
-  }, []);
+  const handleToggle = (role) => {
+    setBusyRole(role.id);
+    oapi(`/careers/roles/${role.id}/status`, { method: 'POST', body: { status: role.status === 'closed' ? 'open' : 'closed' } })
+      .then(load)
+      .catch(onError)
+      .finally(() => setBusyRole(null));
+  };
+  // The new status shows at once; if saving fails the list reloads to what's really stored.
+  const handleUpdateReviewStatus = (trackingRef, status) => {
+    setData((d) => ({ ...d, applications: d.applications.map((a) => (a.trackingRef === trackingRef ? { ...a, reviewStatus: status } : a)) }));
+    oapi(`/careers/applications/${encodeURIComponent(trackingRef)}/status`, { method: 'POST', body: { status } }).catch((err) => {
+      onError(err);
+      load();
+    });
+  };
 
-  const handleToggle = (roleId) => setRoles(toggleRoleStatus(roleId));
-  const handleUpdateReviewStatus = (trackingRef, status) => setApplications(updateApplicationReviewStatus(trackingRef, status));
-
-  const statusOf = (app) => app.reviewStatus || 'New';
+  const statusOf = (app) => app.reviewStatus || 'new';
+  const tab = activeTab ?? (applications.length ? 'applications' : 'roles');
   const openCount = roles.filter((r) => r.status === 'open').length;
   const closedCount = roles.length - openCount;
-  const newCount = applications.filter((a) => statusOf(a) === 'New').length;
+  const newCount = applications.filter((a) => statusOf(a) === 'new').length;
   const appsFor = (roleId) => applications.filter((a) => a.roleId === roleId);
   const technicalRoles = new Set(roles.filter((r) => r.technical).map((r) => r.id));
 
@@ -264,8 +283,8 @@ export default function CareersAdmin() {
   const rolesWithApps = roles.filter((r) => appsFor(r.id).length);
   const appFiltersOn = statusFilter !== 'all' || appRoleFilter !== 'all' || !!query;
 
-  const switchTab = (tab) => {
-    setActiveTab(tab);
+  const switchTab = (id) => {
+    setActiveTab(id);
     setSearchQuery('');
   };
   const showApplicantsFor = (roleId) => {
@@ -279,8 +298,8 @@ export default function CareersAdmin() {
     setSearchQuery('');
   };
 
-  const tabClass = (tab) =>
-    cn('flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition', activeTab === tab ? 'bg-espresso text-cream shadow-sm' : 'text-espresso/70 hover:text-espresso');
+  const tabClass = (id) =>
+    cn('flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition', tab === id ? 'bg-espresso text-cream shadow-sm' : 'text-espresso/70 hover:text-espresso');
 
   return (
     <section className="rounded-[var(--r-xl)] bg-white p-4 shadow-sm ring-1 ring-espresso/[0.08] sm:p-6" aria-labelledby="hiring-title">
@@ -290,180 +309,206 @@ export default function CareersAdmin() {
           Hiring
         </h2>
         <p className="mt-2 text-[15px] text-espresso/70">
-          {newCount ? (
+          {!data ? (
+            loadError ? (
+              'Applications couldn’t be loaded'
+            ) : (
+              <span className="inline-flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" /> Loading applications…
+              </span>
+            )
+          ) : newCount ? (
             <b className="text-[#1D46C9]">
               {newCount} new {newCount === 1 ? 'application' : 'applications'} to review
             </b>
           ) : (
             'No new applications to review'
           )}
-          {' · '}
-          {openCount} of {roles.length} roles open on <code className="font-semibold text-espresso">/careers</code>
+          {data && (
+            <>
+              {' · '}
+              {openCount} of {roles.length} roles open on <code className="font-semibold text-espresso">/careers</code>
+            </>
+          )}
         </p>
+        {loadError && (
+          <p role="alert" className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-red-50 px-4 py-3 text-[15px] font-medium text-red-800">
+            {loadError}
+            <button type="button" onClick={load} className="font-semibold underline">
+              Try again
+            </button>
+          </p>
+        )}
       </div>
 
-      <div className="mt-5 inline-flex rounded-xl bg-beige p-1" role="tablist" aria-label="Hiring">
-        <button type="button" role="tab" aria-selected={activeTab === 'applications'} onClick={() => switchTab('applications')} className={tabClass('applications')}>
-          Applications
-          <span className={cn('tabular-nums', activeTab === 'applications' ? 'text-cream/60' : 'text-espresso/45')}>{applications.length}</span>
-        </button>
-        <button type="button" role="tab" aria-selected={activeTab === 'roles'} onClick={() => switchTab('roles')} className={tabClass('roles')}>
-          Roles
-          <span className={cn('tabular-nums', activeTab === 'roles' ? 'text-cream/60' : 'text-espresso/45')}>{roles.length}</span>
-        </button>
-      </div>
+      {data && (
+        <>
+          <div className="mt-5 inline-flex rounded-xl bg-beige p-1" role="tablist" aria-label="Hiring">
+            <button type="button" role="tab" aria-selected={tab === 'applications'} onClick={() => switchTab('applications')} className={tabClass('applications')}>
+              Applications
+              <span className={cn('tabular-nums', tab === 'applications' ? 'text-cream/60' : 'text-espresso/45')}>{applications.length}</span>
+            </button>
+            <button type="button" role="tab" aria-selected={tab === 'roles'} onClick={() => switchTab('roles')} className={tabClass('roles')}>
+              Roles
+              <span className={cn('tabular-nums', tab === 'roles' ? 'text-cream/60' : 'text-espresso/45')}>{roles.length}</span>
+            </button>
+          </div>
 
-      {activeTab === 'applications' && (
-        <div className="mt-5" role="tabpanel">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div className="no-scrollbar -mx-4 flex min-w-0 gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter by review status">
-              <Chip active={statusFilter === 'all'} onClick={() => setStatusFilter('all')} count={searchedApps.length}>
-                All
-              </Chip>
-              {REVIEW_STATUSES.map((s) => (
-                <Chip key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)} count={searchedApps.filter((a) => statusOf(a) === s).length}>
-                  {s}
-                </Chip>
-              ))}
-            </div>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <label className="sr-only" htmlFor="careers-admin-role">
-                Role
-              </label>
-              <select
-                id="careers-admin-role"
-                value={appRoleFilter}
-                onChange={(e) => setAppRoleFilter(e.target.value)}
-                className="w-full rounded-xl border border-espresso/15 bg-white py-2.5 pr-8 pl-3 text-[15px] focus:border-[#2357F5] focus:outline-none sm:w-60"
-              >
-                <option value="all">All roles</option>
-                {rolesWithApps.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.title} ({appsFor(r.id).length})
-                  </option>
+          {tab === 'applications' && (
+            <div className="mt-5" role="tabpanel">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div className="no-scrollbar -mx-4 flex min-w-0 gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter by review status">
+                  <Chip active={statusFilter === 'all'} onClick={() => setStatusFilter('all')} count={searchedApps.length}>
+                    All
+                  </Chip>
+                  {REVIEW_STATUSES.map(([id, label]) => (
+                    <Chip key={id} active={statusFilter === id} onClick={() => setStatusFilter(id)} count={searchedApps.filter((a) => statusOf(a) === id).length}>
+                      {label}
+                    </Chip>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <label className="sr-only" htmlFor="careers-admin-role">
+                    Role
+                  </label>
+                  <select
+                    id="careers-admin-role"
+                    value={appRoleFilter}
+                    onChange={(e) => setAppRoleFilter(e.target.value)}
+                    className="w-full rounded-xl border border-espresso/15 bg-white py-2.5 pr-8 pl-3 text-[15px] focus:border-[#2357F5] focus:outline-none sm:w-60"
+                  >
+                    <option value="all">All roles</option>
+                    {rolesWithApps.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.title} ({appsFor(r.id).length})
+                      </option>
+                    ))}
+                  </select>
+                  <SearchBox value={searchQuery} onChange={setSearchQuery} placeholder="Search name, email or reference" />
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                {filteredApps.map((app) => (
+                  <ApplicationCard
+                    key={app.trackingRef}
+                    app={app}
+                    technical={technicalRoles.has(app.roleId)}
+                    expanded={expandedAppRef === app.trackingRef}
+                    onToggle={() => setExpandedAppRef(expandedAppRef === app.trackingRef ? null : app.trackingRef)}
+                    onStatus={(status) => handleUpdateReviewStatus(app.trackingRef, status)}
+                  />
                 ))}
-              </select>
-              <SearchBox value={searchQuery} onChange={setSearchQuery} placeholder="Search name, email or reference" />
-            </div>
-          </div>
 
-          <div className="mt-4 space-y-3">
-            {filteredApps.map((app) => (
-              <ApplicationCard
-                key={app.trackingRef}
-                app={app}
-                technical={technicalRoles.has(app.roleId)}
-                expanded={expandedAppRef === app.trackingRef}
-                onToggle={() => setExpandedAppRef(expandedAppRef === app.trackingRef ? null : app.trackingRef)}
-                onStatus={(status) => handleUpdateReviewStatus(app.trackingRef, status)}
-              />
-            ))}
-
-            {!applications.length && (
-              <Empty title="No applications yet">
-                They appear here, newest first, as soon as someone applies on /careers, with their links and answers.
-              </Empty>
-            )}
-            {applications.length > 0 && !filteredApps.length && (
-              <Empty
-                title="No applications match these filters"
-                action={
-                  appFiltersOn && (
-                    <button type="button" onClick={clearAppFilters} className="mt-4 text-sm font-semibold text-[#2357F5] hover:underline">
-                      Show all {applications.length} applications
-                    </button>
-                  )
-                }
-              >
-                {statusFilter !== 'all' ? `Nobody is at “${statusFilter}”` : 'Nothing matches'}
-                {appRoleFilter !== 'all' ? ` for ${roles.find((r) => r.id === appRoleFilter)?.title ?? 'this role'}` : ''}
-                {query ? ` with “${searchQuery.trim()}”` : ''}.
-              </Empty>
-            )}
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'roles' && (
-        <div className="mt-5" role="tabpanel">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by status">
-              <Chip active={roleFilter === 'all'} onClick={() => setRoleFilter('all')} count={roles.length}>
-                All
-              </Chip>
-              <Chip active={roleFilter === 'open'} onClick={() => setRoleFilter('open')} count={openCount}>
-                Open
-              </Chip>
-              <Chip active={roleFilter === 'closed'} onClick={() => setRoleFilter('closed')} count={closedCount}>
-                Closed
-              </Chip>
-            </div>
-            <SearchBox value={searchQuery} onChange={setSearchQuery} placeholder="Search roles or teams" />
-          </div>
-
-          <div className="mt-4 overflow-hidden rounded-2xl border border-espresso/10">
-            <div className="hidden grid-cols-[minmax(0,1fr)_150px_100px_130px] gap-4 bg-beige/50 px-4 py-2.5 text-[13px] font-semibold text-espresso/60 md:grid">
-              <span>Role</span>
-              <span>Applicants</span>
-              <span>Status</span>
-              <span className="text-right">On /careers</span>
-            </div>
-            <ul className="divide-y divide-espresso/[0.07]">
-              {filteredRoles.map((role) => {
-                const isOpen = role.status === 'open';
-                const apps = appsFor(role.id);
-                const fresh = apps.filter((a) => statusOf(a) === 'New').length;
-                return (
-                  <li key={role.id} className="grid gap-x-4 gap-y-2 px-4 py-4 md:grid-cols-[minmax(0,1fr)_150px_100px_130px] md:items-center">
-                    <div className="min-w-0">
-                      <p className="text-[15px] font-semibold text-espresso">{role.title}</p>
-                      <p className="mt-0.5 text-sm text-espresso/60">
-                        {role.department} · {role.type}
-                      </p>
-                    </div>
-                    <div className="text-sm">
-                      {apps.length ? (
-                        <button type="button" onClick={() => showApplicantsFor(role.id)} className="font-semibold text-[#2357F5] hover:underline">
-                          {apps.length} {apps.length === 1 ? 'applicant' : 'applicants'}
-                          {fresh > 0 && <span className="font-normal text-espresso/60"> · {fresh} new</span>}
+                {!applications.length && (
+                  <Empty title="No applications yet">
+                    They appear here, newest first, as soon as someone applies on /careers, with their links and answers.
+                  </Empty>
+                )}
+                {applications.length > 0 && !filteredApps.length && (
+                  <Empty
+                    title="No applications match these filters"
+                    action={
+                      appFiltersOn && (
+                        <button type="button" onClick={clearAppFilters} className="mt-4 text-sm font-semibold text-[#2357F5] hover:underline">
+                          Show all {applications.length} applications
                         </button>
-                      ) : (
-                        <span className="text-espresso/50">No applicants yet</span>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between gap-3 md:contents">
-                      <span
-                        className={cn(
-                          'inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[13px] font-semibold ring-1',
-                          isOpen ? 'bg-emerald-50 text-emerald-800 ring-emerald-200' : 'bg-espresso/[0.04] text-espresso/65 ring-espresso/10',
-                        )}
-                      >
-                        <span className={cn('h-1.5 w-1.5 rounded-full', isOpen ? 'bg-emerald-500' : 'bg-espresso/35')} />
-                        {isOpen ? 'Open' : 'Closed'}
-                      </span>
-                      <div className="md:text-right">
-                        <button
-                          type="button"
-                          onClick={() => handleToggle(role.id)}
-                          aria-label={`${isOpen ? 'Close' : 'Reopen'} ${role.title}`}
-                          title={isOpen ? 'Stops new applications; the role stays listed as closed' : 'Takes applications again'}
-                          className="rounded-lg border border-espresso/15 bg-white px-3.5 py-2 text-sm font-semibold text-espresso transition hover:border-espresso/35"
-                        >
-                          {isOpen ? 'Close role' : 'Reopen role'}
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-            {!filteredRoles.length && (
-              <p className="px-4 py-10 text-center text-[15px] text-espresso/55">
-                No {roleFilter === 'all' ? '' : `${roleFilter} `}roles{query ? ` match “${searchQuery.trim()}”` : ''}.
-              </p>
-            )}
-          </div>
-        </div>
+                      )
+                    }
+                  >
+                    {statusFilter !== 'all' ? `Nobody is at “${REVIEW_STATUSES.find(([id]) => id === statusFilter)[1]}”` : 'Nothing matches'}
+                    {appRoleFilter !== 'all' ? ` for ${roles.find((r) => r.id === appRoleFilter)?.title ?? 'this role'}` : ''}
+                    {query ? ` with “${searchQuery.trim()}”` : ''}.
+                  </Empty>
+                )}
+              </div>
+            </div>
+          )}
+
+          {tab === 'roles' && (
+            <div className="mt-5" role="tabpanel">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by status">
+                  <Chip active={roleFilter === 'all'} onClick={() => setRoleFilter('all')} count={roles.length}>
+                    All
+                  </Chip>
+                  <Chip active={roleFilter === 'open'} onClick={() => setRoleFilter('open')} count={openCount}>
+                    Open
+                  </Chip>
+                  <Chip active={roleFilter === 'closed'} onClick={() => setRoleFilter('closed')} count={closedCount}>
+                    Closed
+                  </Chip>
+                </div>
+                <SearchBox value={searchQuery} onChange={setSearchQuery} placeholder="Search roles or teams" />
+              </div>
+
+              <div className="mt-4 overflow-hidden rounded-2xl border border-espresso/10">
+                <div className="hidden grid-cols-[minmax(0,1fr)_150px_100px_130px] gap-4 bg-beige/50 px-4 py-2.5 text-[13px] font-semibold text-espresso/60 md:grid">
+                  <span>Role</span>
+                  <span>Applicants</span>
+                  <span>Status</span>
+                  <span className="text-right">On /careers</span>
+                </div>
+                <ul className="divide-y divide-espresso/[0.07]">
+                  {filteredRoles.map((role) => {
+                    const isOpen = role.status === 'open';
+                    const apps = appsFor(role.id);
+                    const fresh = apps.filter((a) => statusOf(a) === 'New').length;
+                    return (
+                      <li key={role.id} className="grid gap-x-4 gap-y-2 px-4 py-4 md:grid-cols-[minmax(0,1fr)_150px_100px_130px] md:items-center">
+                        <div className="min-w-0">
+                          <p className="text-[15px] font-semibold text-espresso">{role.title}</p>
+                          <p className="mt-0.5 text-sm text-espresso/60">
+                            {role.department} · {role.type}
+                          </p>
+                        </div>
+                        <div className="text-sm">
+                          {apps.length ? (
+                            <button type="button" onClick={() => showApplicantsFor(role.id)} className="font-semibold text-[#2357F5] hover:underline">
+                              {apps.length} {apps.length === 1 ? 'applicant' : 'applicants'}
+                              {fresh > 0 && <span className="font-normal text-espresso/60"> · {fresh} new</span>}
+                            </button>
+                          ) : (
+                            <span className="text-espresso/50">No applicants yet</span>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between gap-3 md:contents">
+                          <span
+                            className={cn(
+                              'inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[13px] font-semibold ring-1',
+                              isOpen ? 'bg-emerald-50 text-emerald-800 ring-emerald-200' : 'bg-espresso/[0.04] text-espresso/65 ring-espresso/10',
+                            )}
+                          >
+                            <span className={cn('h-1.5 w-1.5 rounded-full', isOpen ? 'bg-emerald-500' : 'bg-espresso/35')} />
+                            {isOpen ? 'Open' : 'Closed'}
+                          </span>
+                          <div className="md:text-right">
+                            <button
+                              type="button"
+                              onClick={() => handleToggle(role)}
+                              disabled={busyRole === role.id}
+                              aria-label={`${isOpen ? 'Close' : 'Reopen'} ${role.title}`}
+                              title={isOpen ? 'Stops new applications; the role stays listed as closed' : 'Takes applications again'}
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-espresso/15 bg-white px-3.5 py-2 text-sm font-semibold text-espresso transition hover:border-espresso/35 disabled:opacity-60"
+                            >
+                              {busyRole === role.id && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                              {isOpen ? 'Close role' : 'Reopen role'}
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {!filteredRoles.length && (
+                  <p className="px-4 py-10 text-center text-[15px] text-espresso/55">
+                    No {roleFilter === 'all' ? '' : `${roleFilter} `}roles{query ? ` match “${searchQuery.trim()}”` : ''}.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </section>
   );

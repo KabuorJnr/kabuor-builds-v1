@@ -84,6 +84,33 @@ pdb.exec(`
     updated_at TEXT NOT NULL
   );
   CREATE INDEX IF NOT EXISTS idx_demo_requests_status ON demo_requests(status, created_at);
+
+  -- Applications from the careers page. The roles themselves are written in the client (careersStore.js);
+  -- applications only point at them by id, with the title as it was when the person applied.
+  CREATE TABLE IF NOT EXISTS career_applications (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    ref        TEXT NOT NULL UNIQUE,           -- KBR-APP-123456, what the applicant quotes
+    role_id    TEXT NOT NULL,
+    role_title TEXT NOT NULL,
+    department TEXT NOT NULL DEFAULT '',
+    name       TEXT NOT NULL,
+    email      TEXT NOT NULL,
+    phone      TEXT NOT NULL,
+    location   TEXT NOT NULL DEFAULT '',
+    experience TEXT NOT NULL DEFAULT '',
+    answers    TEXT NOT NULL DEFAULT '{}',     -- JSON: links, written answers, availability, terms accepted
+    status     TEXT NOT NULL DEFAULT 'new',    -- new | shortlisted | interviewing | rejected
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_career_applications_role ON career_applications(role_id, created_at);
+
+  -- Roles the dashboard has opened or closed on the careers page (a role with no row is as the client lists it).
+  CREATE TABLE IF NOT EXISTS career_roles (
+    role_id    TEXT PRIMARY KEY,
+    status     TEXT NOT NULL,                  -- open | closed
+    updated_at TEXT NOT NULL
+  );
 `);
 
 export const now = () => new Date().toISOString();

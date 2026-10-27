@@ -340,6 +340,8 @@ export default function OwnerDashboard() {
         <>
           {/* People asking for a demo come first while any are new: they cool off fastest. */}
           {(o.demoRequests ?? 0) > 0 && <div className="mt-6"><DemoRequests oapi={oapi} onError={fail} /></div>}
+          {/* New job applicants come up here too; with none waiting, hiring sits at the bottom. */}
+          {(o.careerApplications ?? 0) > 0 && <div className="mt-6"><CareersAdmin oapi={oapi} onError={fail} /></div>}
           {waitingNow > 0 && <div className="mt-6">{requests}</div>}
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Kpi label={`Money in · last ${rangeLabel}`} value={ksh(o.revenue.amount)}>
@@ -411,9 +413,11 @@ export default function OwnerDashboard() {
           {(o.demoRequests ?? 0) === 0 && <div className="mt-10"><DemoRequests oapi={oapi} onError={fail} /></div>}
           <h2 className="kb-display mt-10 text-3xl">Shops</h2>
           <div className="mt-3">{list && <ShopsTable data={list} stage={stage} setStage={setStage} q={q} setQ={setQ} />}</div>
-          <div className="mt-12">
-            <CareersAdmin />
-          </div>
+          {(o.careerApplications ?? 0) === 0 && (
+            <div className="mt-12">
+              <CareersAdmin oapi={oapi} onError={fail} />
+            </div>
+          )}
         </>
       )}
     </div>

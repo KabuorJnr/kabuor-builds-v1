@@ -1,5 +1,7 @@
-// Store and persistent state for Kabuor Technologies Careers & Hiring Desk
-// Supports toggling job status (open vs closed) from admin and persisting candidate submissions.
+import { papi } from './shared';
+
+// The careers page's roles, and the calls that keep applications and open/closed status on the platform
+// (server/src/platform/careers.js) so they reach the hiring desk and every visitor.
 // `experience` is the headline requirement shown on each listing; `technical` roles ask for code (GitHub, a live
 // app, the cleanest PR) and the offline-architecture question, the others for a LinkedIn/CV link and work samples.
 
@@ -366,79 +368,14 @@ export const DEFAULT_ROLES = [
   },
 ];
 
-const ROLES_KEY = 'kb_careers_roles_v2';
-const APPS_KEY = 'kb_careers_applications_v2';
+/** The roles as listed, with whatever the dashboard has opened or closed ({ [roleId]: 'open' | 'closed' }). */
+export const withStatus = (statuses = {}) => DEFAULT_ROLES.map((r) => (statuses[r.id] ? { ...r, status: statuses[r.id] } : r));
 
-export function getStoredRoles() {
-  try {
-    const raw = localStorage.getItem(ROLES_KEY);
-    if (!raw) return DEFAULT_ROLES;
-    const parsed = JSON.parse(raw);
-    // Merge with defaults while preserving stored status
-    return DEFAULT_ROLES.map((d) => {
-      const saved = parsed.find((p) => p.id === d.id);
-      return saved ? { ...d, status: saved.status || 'open' } : d;
-    });
-  } catch {
-    return DEFAULT_ROLES;
-  }
-}
+/** Which roles the dashboard has opened or closed, from the platform (so a closed role is closed for everyone). */
+export const fetchRoleStatuses = () => papi('/careers').then((d) => d.roles ?? {});
 
-export function saveRoles(roles) {
-  try {
-    localStorage.setItem(ROLES_KEY, JSON.stringify(roles));
-    window.dispatchEvent(new CustomEvent('kb-roles-changed', { detail: roles }));
-  } catch {}
-}
-
-export function toggleRoleStatus(roleId) {
-  const current = getStoredRoles();
-  const updated = current.map((r) => {
-    if (r.id === roleId) {
-      const nextStatus = r.status === 'closed' ? 'open' : 'closed';
-      return { ...r, status: nextStatus };
-    }
-    return r;
-  });
-  saveRoles(updated);
-  return updated;
-}
-
-export function setRoleStatus(roleId, status) {
-  const current = getStoredRoles();
-  const updated = current.map((r) => (r.id === roleId ? { ...r, status } : r));
-  saveRoles(updated);
-  return updated;
-}
-
-export function getStoredApplications() {
-  try {
-    const raw = localStorage.getItem(APPS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-export function saveApplication(appData) {
-  try {
-    const trackingRef = `KBR-APP-${Math.floor(100000 + Math.random() * 900000)}`;
-    const application = {
-      ...appData,
-      trackingRef,
-      submittedAt: new Date().toISOString(),
-      reviewStatus: 'New',
-    };
-    const current = getStoredApplications();
-    const updated = [application, ...current];
-    localStorage.setItem(APPS_KEY, JSON.stringify(updated));
-    window.dispatchEvent(new CustomEvent('kb-apps-changed', { detail: updated }));
-    return { success: true, trackingRef, application };
-  } catch (err) {
-    console.error('Failed to save application', err);
-    return { success: false, error: err.message };
-  }
-}
+/** Sends an application to the platform; resolves to { trackingRef }. */
+export const sendApplication = (data) => papi('/careers/apply', { method: 'POST', body: data });
 
 /** What each role pays today, in the words candidates use: volunteers aren't salaried, everyone else is from funding. */
 export const payLine = (role) => (/volunteer/i.test(role.type) ? 'Volunteer role, unpaid' : 'Salary starts when we close funding');
@@ -467,7 +404,12 @@ export const START_DATES = [
 export const optionLabel = (options, value) => options.find(([v]) => v === value)?.[1] ?? value;
 
 /** Where an application is in review, in pipeline order (admin filter chips and status picker). */
-export const REVIEW_STATUSES = ['New', 'Shortlisted', 'Interviewing', 'Rejected'];
+export const REVIEW_STATUSES = [
+  ['new', 'New'],
+  ['shortlisted', 'Shortlisted'],
+  ['interviewing', 'Interviewing'],
+  ['rejected', 'Rejected'],
+];
 
 // An unfinished application, kept per role on this device so long answers survive leaving the page.
 const draftKey = (roleId) => `kb_careers_draft_${roleId}`;
@@ -491,14 +433,4 @@ export function clearDraft(roleId) {
   try {
     localStorage.removeItem(draftKey(roleId));
   } catch {}
-}
-
-export function updateApplicationReviewStatus(trackingRef, reviewStatus) {
-  const current = getStoredApplications();
-  const updated = current.map((a) => (a.trackingRef === trackingRef ? { ...a, reviewStatus } : a));
-  try {
-    localStorage.setItem(APPS_KEY, JSON.stringify(updated));
-    window.dispatchEvent(new CustomEvent('kb-apps-changed', { detail: updated }));
-  } catch {}
-  return updated;
 }
