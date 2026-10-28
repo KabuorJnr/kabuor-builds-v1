@@ -29,7 +29,7 @@ const FOUNDER = {
   title: 'Founder & CEO',
   phone: '0705 607 954',
   email: 'rooneykabuor2004@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/rooney-odhiambo',
+  linkedin: 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256',
 };
 
 const SHARED = [

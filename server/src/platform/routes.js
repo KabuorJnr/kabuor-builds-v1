@@ -10,7 +10,7 @@ import { hashPassword, ownerToken, setOwnerHashed } from '../auth.js';
 import { HttpError } from '../db.js';
 import { seed } from '../seed.js';
 import { ensureStarterPosts } from '../routes/posts.js';
-import { PLATFORM_DOMAIN, PLATFORM_EMAIL, PLATFORM_NAME, PLATFORM_PHONE, PLATFORM_TAGLINE } from '../site.js';
+import { PLATFORM_DOMAIN, PLATFORM_EMAIL, PLATFORM_NAME, PLATFORM_PHONE, PLATFORM_TAGLINE, PLATFORM_FOUNDER_NAME, PLATFORM_FOUNDER_LINKEDIN } from '../site.js';
 import { runAs } from '../tenant.js';
 import { billingSummary, paymentStatus, PLAN_LABELS, PRICES, settle, startPayment, testMode } from './billing.js';
 import { callbackSecret, resultOf, toMsisdn } from './daraja.js';
@@ -43,6 +43,11 @@ platformRouter.get('/info', (req, res) => {
     tagline: PLATFORM_TAGLINE,
     phone: PLATFORM_PHONE,
     email: PLATFORM_EMAIL,
+    founder: {
+      name: PLATFORM_FOUNDER_NAME,
+      title: 'Founder & CEO',
+      linkedin: PLATFORM_FOUNDER_LINKEDIN,
+    },
     domain: PLATFORM_DOMAIN,
     prices: PRICES,
     plans: PLAN_LABELS,

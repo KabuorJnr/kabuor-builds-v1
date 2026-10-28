@@ -13,6 +13,8 @@ export const PLATFORM_NAME = process.env.PLATFORM_NAME || 'Kabuor Builds';
 export const PLATFORM_TAGLINE = process.env.PLATFORM_TAGLINE || 'Mlete deals.';
 export const PLATFORM_PHONE = process.env.PLATFORM_PHONE || '0705 607 954';
 export const PLATFORM_EMAIL = process.env.PLATFORM_EMAIL || 'rooneykabuor2004@gmail.com';
+export const PLATFORM_FOUNDER_NAME = process.env.PLATFORM_FOUNDER_NAME || 'Rooney Odhiambo Kabuor';
+export const PLATFORM_FOUNDER_LINKEDIN = process.env.PLATFORM_FOUNDER_LINKEDIN || 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256';
 
 // Vercel Functions have no lasting disk: only /tmp is writable, it is wiped when an instance stops, and each
 // instance has its own. Every shop, order and photo would vanish, so refuse to start unless DATA_DIR is set

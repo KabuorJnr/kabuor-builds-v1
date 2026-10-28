@@ -157,6 +157,14 @@ export function SiteFooter({ info, children }) {
           <Link to="/careers" className="text-cream/80 hover:text-cream flex items-center gap-1.5">
             Careers <span className="rounded bg-[#2357F5]/30 px-1.5 py-0.5 text-xs font-bold text-white">We're hiring</span>
           </Link>
+          <a
+            href="https://www.linkedin.com/in/rooney-odhiambo-9a26b6256"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cream/80 hover:text-cream flex items-center gap-1.5"
+          >
+            Founder on LinkedIn
+          </a>
         </nav>
         <div>
           {children ?? (

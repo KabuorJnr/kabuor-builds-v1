@@ -18,6 +18,11 @@ const DEFAULT_INFO = {
   phone: '0712 345 678',
   email: 'hello@kabuor.com',
   prices: { monthly: 2499, yearly: 24990 },
+  founder: {
+    name: 'Rooney Odhiambo Kabuor',
+    title: 'Founder & CEO',
+    linkedin: 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256',
+  },
 };
 
 function CompanySite() {
