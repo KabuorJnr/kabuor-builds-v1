@@ -21,6 +21,17 @@ import { EASE, ksh } from './shared';
 import DemoRequest from './DemoRequest';
 import { ContactButtons, ERP_RAILWAY_URL, Go, SHOPS_RAILWAY_URL, SiteFooter, SiteHeader } from './Site';
 
+// The person behind the company, in the words of the company's own documents (KAB-IT-001). "About us" shows who
+// built it; "Talk to us" puts a face and a direct line to the person a visitor will actually reach.
+const FOUNDER = {
+  name: 'Rooney Odhiambo Kabuor',
+  first: 'Rooney',
+  title: 'Founder & CEO',
+  phone: '0705 607 954',
+  email: 'rooneykabuor2004@gmail.com',
+  linkedin: 'https://www.linkedin.com/in/rooney-odhiambo',
+};
+
 const SHARED = [
   { icon: Wallet, title: 'M-Pesa first', text: 'Prompts, Paybills and Tills built in, not bolted on.' },
   { icon: ReceiptText, title: 'KRA-ready', text: 'VAT done right; invoices prepared for eTIMS.' },
@@ -105,7 +116,6 @@ export default function Company({ info }) {
   useEffect(() => {
     document.title = `${info?.name ?? 'Kabuor Technologies'} · Software for Kenyan businesses`;
   }, [info]);
-  const phone = info?.phone;
   const talk = { href: '#demo', label: 'Request a demo' };
 
   return (
@@ -313,6 +323,28 @@ export default function Company({ info }) {
             <p className="kb-kicker text-caramel">About us</p>
             <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Kabuor Technologies Ltd.</h2>
             <p className="mt-2 text-sm font-semibold text-espresso/50">Parent holding & software engineering company</p>
+
+            {/* The photo is there to be trusted, so it gets real space; the name and role sit under it, never on it. */}
+            <figure className="mt-8 max-w-sm overflow-hidden rounded-[var(--r-xl)] bg-white shadow-sm ring-1 ring-espresso/10">
+              <img
+                src="/brand/founder-rooney-portrait.webp"
+                alt={`${FOUNDER.name}, ${FOUNDER.title} of Kabuor Technologies`}
+                width="720"
+                height="900"
+                loading="lazy"
+                className="aspect-[4/5] w-full object-cover object-top"
+              />
+              <figcaption className="p-5 sm:p-6">
+                <p className="kb-display text-2xl text-espresso">{FOUNDER.name}</p>
+                <p className="mt-1 text-sm font-semibold text-[#3A2BC9]">{FOUNDER.title}</p>
+                <p className="mt-3 text-[15px] leading-relaxed text-espresso/70">
+                  Built Kabuor ERP end to end: the .NET API, the React app, the KRA eTIMS and M-Pesa (Daraja) integrations, and Kenyan payroll.
+                </p>
+                <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#2357F5] hover:underline">
+                  {FOUNDER.first} on LinkedIn <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              </figcaption>
+            </figure>
           </div>
           <div className="space-y-4 text-lg leading-relaxed text-espresso/75">
             <p>
@@ -342,18 +374,35 @@ export default function Company({ info }) {
         </div>
       </section>
 
-      {phone && (
-        <section className="container-x pb-16 sm:pb-24">
-          <div className="grid gap-8 rounded-[var(--r-xl)] bg-beige p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div>
-              <p className="kb-kicker text-caramel">Talk to us</p>
-              <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Not sure where to start?</h2>
-              <p className="mt-3 max-w-lg text-espresso/65">Tell us about your business. We’ll tell you honestly which product fits, or build it for you.</p>
+      <section id="talk" className="container-x scroll-mt-6 pb-16 sm:pb-24">
+        <div className="grid gap-8 rounded-[var(--r-xl)] bg-beige p-6 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="kb-kicker text-caramel">Talk to us</p>
+            <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Not sure where to start?</h2>
+            <p className="mt-3 max-w-lg text-espresso/65">Tell us about your business. We’ll tell you honestly which product fits, or build it for you.</p>
+            <div className="mt-6 flex items-center gap-4">
+              <img src="/brand/founder-rooney-headshot.webp" alt="" width="320" height="320" loading="lazy" className="h-20 w-20 shrink-0 rounded-full object-cover ring-4 ring-white" />
+              <div className="min-w-0">
+                <p className="text-lg font-bold text-espresso">You’ll reach {FOUNDER.first} directly</p>
+                <p className="text-[15px] text-espresso/65">
+                  {FOUNDER.name}, {FOUNDER.title}
+                </p>
+              </div>
             </div>
-            <ContactButtons info={info} message={`Hi ${info.name}, I'd like to talk about my business.`} className="lg:flex-col" />
           </div>
-        </section>
-      )}
+          <div className="grid gap-2.5">
+            <ContactButtons info={FOUNDER} message={`Hi ${FOUNDER.first}, I'd like to talk about my business.`} className="lg:flex-col" />
+            <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-espresso/60 lg:justify-center">
+              <a href={`mailto:${FOUNDER.email}`} className="break-all hover:text-espresso hover:underline">
+                {FOUNDER.email}
+              </a>
+              <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#2357F5] hover:underline">
+                LinkedIn
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
 
       <SiteFooter info={info} />
     </>
