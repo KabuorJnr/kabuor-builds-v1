@@ -36,12 +36,12 @@ const resolveDeployUrl = (val, fallback) => {
 /** Live deployment links for the two products */
 export const SHOPS_RAILWAY_URL = resolveDeployUrl(
   import.meta.env.VITE_SHOPS_URL ?? import.meta.env.VITE_SHOPS_RAILWAY_URL,
-  'https://kabuor-builds.onrender.com'
+  'https://builds.kabuor-technologies.company'
 );
 
 export const ERP_RAILWAY_URL = resolveDeployUrl(
   import.meta.env.VITE_ERP_URL ?? import.meta.env.VITE_ERP_RAILWAY_URL,
-  'https://kabuor-erp.onrender.com'
+  'https://erp.kabuor-technologies.company'
 );
 
 /** A link to a page: inside the app on the platform, or to the platform's product pages from the company site. */
