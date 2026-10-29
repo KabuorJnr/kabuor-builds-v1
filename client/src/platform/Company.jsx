@@ -41,7 +41,7 @@ const SHARED = [
   { icon: MessageCircle, title: 'Real people', text: 'Call or WhatsApp us. We’ll set it up with you.' },
 ];
 
-function ProductCard({ tag, name, line, text, points, meta, launch, primary, secondary, visual, delay }) {
+function ProductCard({ tag, name, line, text, points, meta, status, launch, primary, secondary, visual, delay }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 24 }}
@@ -54,7 +54,7 @@ function ProductCard({ tag, name, line, text, points, meta, launch, primary, sec
         <div className="flex items-center justify-between gap-2">
           <p className="text-xs font-bold tracking-[0.14em] text-[#3A2BC9] uppercase">{tag}</p>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-600/20">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live on Render
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {status}
           </span>
         </div>
         <h3 className="kb-display mt-2 text-3xl sm:text-4xl">{name}</h3>
@@ -114,7 +114,7 @@ function ErpVisual() {
 
 export default function Company({ info }) {
   useEffect(() => {
-    document.title = `${info?.name ?? 'Kabuor Technologies'} · Software for Kenyan businesses`;
+    document.title = 'Kabuor Technologies · ERP and online shops for Kenyan businesses'; // not the platform's name (Kabuor Builds)
   }, [info]);
   const talk = { href: '#demo', label: 'Request a demo' };
 
@@ -128,17 +128,18 @@ export default function Company({ info }) {
             Software Kenyan businesses <span className="text-[#F2C14E]">actually run on.</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15, ease: EASE }} className="mt-6 max-w-2xl text-lg leading-relaxed text-cream/75">
-            Two enterprise-grade systems by Kabuor Technologies built around M-Pesa, KRA eTIMS, and African commerce: Kabuor Builds for online shops & websites, and Kabuor ERP for commercial operating systems.
+            Two enterprise-grade systems by Kabuor Technologies built around M-Pesa, KRA eTIMS, and African commerce: Kabuor Shops for selling online, and Kabuor ERP for running the whole business.
           </motion.p>
 
           <div id="products" className="mt-7 grid scroll-mt-6 gap-5 lg:grid-cols-2">
             <ProductCard
               delay={0.25}
               tag="Websites & Online Stores"
-              name="Kabuor Builds"
+              name="Kabuor Shops"
+              status="Available now"
               line="Your brand’s own online shop & digital web presence."
               text="Your products, your colours, M-Pesa checkout. See it before you pay, and go live the same day."
-              points={['10 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, no commission', 'Your link, like yourbrand.shop.ke']}
+              points={['10 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, no commission', 'Your own shop link, ready to share on WhatsApp']}
               meta={info ? `From ${ksh(info.prices.monthly)} a month · Available now` : 'Available now'}
               visual={<ShopsVisual />}
               launch={
@@ -166,6 +167,7 @@ export default function Company({ info }) {
               delay={0.35}
               tag="Commercial Operating System"
               name="Kabuor ERP"
+              status="Early access"
               line="Sales, M-Pesa ledger, stock, eTIMS and books in one place."
               text="Invoices that M-Pesa pays and matches by itself, eTIMS-ready, stock and suppliers, and Msaidizi, an assistant you can ask in Kiswahili."
               points={['M-Pesa payments match your invoices by themselves', 'VAT, stock and profit worked out as you go', 'Built for the phone, for your whole team']}
@@ -360,7 +362,7 @@ export default function Company({ info }) {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="mt-1 h-2 w-2 rounded-full bg-[#3A2BC9] shrink-0" />
-                  <span><b className="text-espresso">Kabuor Builds</b>: Web engineering studio, digital storefronts, and brand website platform (kabuor-builds.vercel.app).</span>
+                  <span><b className="text-espresso">Kabuor Builds</b>: Web engineering studio, digital storefronts, and brand website platform.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="mt-1 h-2 w-2 rounded-full bg-[#0F7A3D] shrink-0" />

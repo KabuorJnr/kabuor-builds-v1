@@ -3,6 +3,7 @@
 import { HttpError } from '../db.js';
 import { toMsisdn } from '../mpesa.js';
 import { now, pdb } from './store.js';
+import { STORAGE_LASTS } from '../site.js';
 
 const PRODUCTS = ['erp', 'shops', 'both'];
 const STAFF = ['1', '2-10', '11-50', '50+'];
@@ -24,7 +25,7 @@ const view = (r) => ({
 });
 
 export function createDemoRequest(input = {}) {
-  if (text(input.website, 50)) return { ok: true }; // a bot filled the hidden field: pretend it worked
+  if (text(input.website, 50)) return { ok: true, saved: true }; // a bot filled the hidden field: pretend it worked
   const product = PRODUCTS.includes(input.product) ? input.product : 'erp';
   const name = text(input.name, 80);
   const business = text(input.business, 120);
@@ -40,7 +41,8 @@ export function createDemoRequest(input = {}) {
   const fields = [product, name, business, phone, email, STAFF.includes(input.staff) ? input.staff : '', text(input.note, 600)];
   if (recent) pdb.prepare('UPDATE demo_requests SET product = ?, name = ?, business = ?, phone = ?, email = ?, staff = ?, note = ?, updated_at = ? WHERE id = ?').run(...fields, now(), recent.id);
   else pdb.prepare('INSERT INTO demo_requests (product, name, business, phone, email, staff, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').run(...fields, now(), now());
-  return { ok: true };
+  // saved: false tells the page to hand the request to WhatsApp too (see STORAGE_LASTS).
+  return { ok: true, saved: STORAGE_LASTS };
 }
 
 export function listDemoRequests(status = 'open') {

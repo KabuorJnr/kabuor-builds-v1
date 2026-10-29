@@ -4,6 +4,7 @@
 import { randomInt } from 'node:crypto';
 import { HttpError } from '../db.js';
 import { now, pdb } from './store.js';
+import { STORAGE_LASTS } from '../site.js';
 
 export const REVIEW_STATUSES = ['new', 'shortlisted', 'interviewing', 'rejected'];
 const ROLE_STATUSES = ['open', 'closed'];
@@ -47,7 +48,7 @@ function newRef() {
 }
 
 export function createApplication(input = {}) {
-  if (text(input.website, 50)) return { ok: true, trackingRef: `KBR-APP-${randomInt(100000, 1000000)}` }; // a bot filled the hidden field: pretend it worked
+  if (text(input.website, 50)) return { ok: true, saved: true, trackingRef: `KBR-APP-${randomInt(100000, 1000000)}` }; // a bot filled the hidden field: pretend it worked
   const roleId = String(input.roleId ?? '');
   const roleTitle = text(input.roleTitle, 160);
   if (!ROLE_ID.test(roleId) || !roleTitle) throw new HttpError(400, 'Choose a role to apply for.');
@@ -79,13 +80,13 @@ export function createApplication(input = {}) {
     .get(email, roleId, new Date(Date.now() - 864e5).toISOString());
   if (recent) {
     pdb.prepare('UPDATE career_applications SET role_title = ?, department = ?, name = ?, email = ?, phone = ?, location = ?, experience = ?, answers = ?, updated_at = ? WHERE ref = ?').run(...fields, now(), recent.ref);
-    return { ok: true, trackingRef: recent.ref };
+    return { ok: true, saved: STORAGE_LASTS, trackingRef: recent.ref };
   }
   const ref = newRef();
   pdb
     .prepare('INSERT INTO career_applications (ref, role_id, role_title, department, name, email, phone, location, experience, answers, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
     .run(ref, roleId, ...fields, now(), now());
-  return { ok: true, trackingRef: ref };
+  return { ok: true, saved: STORAGE_LASTS, trackingRef: ref };
 }
 
 /** For the dashboard: every application, newest first, and which roles it has opened or closed. */

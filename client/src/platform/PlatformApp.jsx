@@ -13,7 +13,8 @@ import Company from './Company';
 import Erp from './Erp';
 import CareersPage from './CareersPage';
 import { SiteFooter, SiteHeader, tel, whatsapp } from './Site';
-import { platformOrigin } from '../lib/base';
+import { linkLabel, linkParts, platformOrigin } from '../lib/base';
+import { BUILDS_HOST } from './contact';
 
 // Kabuor Builds' own dashboard (only loads for the owner).
 const OwnerDashboard = lazy(() => import('./OwnerDashboard'));
@@ -36,8 +37,9 @@ function useInfo() {
 }
 
 
-/** "[ your-business ].shop.ke" with a live availability check; continues to signup with the link filled in. */
-function ClaimLink({ domain, dark = false }) {
+/** "[ your-business ]" inside the real shape of a shop link, with a live availability check; continues to signup. */
+function ClaimLink({ dark = false }) {
+  const { before, after } = linkParts();
   const [link, setLink] = useState('');
   const [check, setCheck] = useState(null);
   const navigate = useNavigate();
@@ -54,6 +56,7 @@ function ClaimLink({ domain, dark = false }) {
     <form onSubmit={go} className="w-full max-w-xl">
       <div className={`flex items-center gap-2 rounded-full p-1.5 pl-5 ring-1 ${dark ? 'bg-white/[0.07] ring-white/15' : 'bg-white ring-espresso/10 shadow-[0_20px_40px_-24px_rgba(15,17,21,0.4)]'}`}>
         <span className="flex min-w-0 flex-1 items-baseline text-lg">
+          {before && <span className={`hidden shrink-0 sm:inline ${dark ? 'text-cream/50' : 'text-espresso/45'}`}>{before}</span>}
           <input
             aria-label="Your shop link"
             value={link}
@@ -61,14 +64,14 @@ function ClaimLink({ domain, dark = false }) {
             placeholder="yourbrand"
             className={`w-0 min-w-0 flex-1 bg-transparent font-semibold outline-none ${dark ? 'text-cream placeholder:text-cream/35' : 'placeholder:text-espresso/35'}`}
           />
-          <span className={dark ? 'text-cream/50' : 'text-espresso/45'}>.{domain}</span>
+          {after && <span className={dark ? 'text-cream/50' : 'text-espresso/45'}>{after}</span>}
         </span>
         <button className="btn shrink-0 bg-[#2357F5] px-5 py-3 text-white shadow-md shadow-[#2357F5]/30 hover:bg-[#3A6BFF]">
           Claim it <ArrowRight className="h-4 w-4" />
         </button>
       </div>
       <p className={`mt-2 h-5 pl-5 text-sm ${dark ? 'text-cream/70' : 'text-espresso/60'}`} aria-live="polite">
-        {check && (check.available ? <span className={`font-semibold ${dark ? 'text-[#7EE2A0]' : 'text-[#1E8E3E]'}`}>✓ {check.link}.{domain} is free</span> : <>{check.problem} {check.suggestions[0] && <>Try <b>{check.suggestions[0]}</b>.</>}</>)}
+        {check && (check.available ? <span className={`font-semibold ${dark ? 'text-[#7EE2A0]' : 'text-[#1E8E3E]'}`}>✓ {linkLabel(check.link)} is free</span> : <>{check.problem} {check.suggestions[0] && <>Try <b>{check.suggestions[0]}</b>.</>}</>)}
       </p>
     </form>
   );
@@ -80,14 +83,14 @@ const STEPS = [
   { icon: Eye, title: 'See it first', text: 'Add your products and walk through your real shop, on phone and computer.' },
   { icon: Wallet, title: 'Pay & go live', text: 'Happy with it? Pay by M-Pesa prompt and your link is live straight away.' },
 ];
-const INCLUDED = ['Your colours, fonts & real photos', 'M-Pesa checkout & receipts', 'Admin: orders, stock, SMS alerts', 'Fast on every phone', 'Your own link, like anjugu.shop.ke', 'No commission on your sales'];
+const INCLUDED = ['Your colours, fonts & real photos', 'M-Pesa checkout & receipts', 'Admin: orders, stock, SMS alerts', 'Fast on every phone', 'Your own shop link to share', 'No commission on your sales'];
 const FACTS = [
   ['Live the same day', 'Sign up, design, preview, pay. No developer.'],
   ['Paid with M-Pesa', 'Your plan, and your customers’ orders.'],
   ['KSh 0 commission', 'Every shilling customers pay goes to you.'],
 ];
-const faqs = (domain, phone) => [
-  ['Do I need to buy a domain?', `No. Your shop gets its own link, like yourbrand.${domain}, included in the plan.`],
+const faqs = (phone) => [
+  ['Do I need to buy a domain?', `No. Your shop gets its own link, like ${linkLabel('yourbrand')}, included in the plan.`],
   ['Who receives my customers’ money?', 'You do. Customers pay straight to your own M-Pesa Till or Paybill. We never hold your money and take no commission.'],
   ['Can customers pay with an M-Pesa prompt?', 'Yes. Connect your Daraja keys in your admin and customers get the PIN prompt at checkout. Until then, checkout shows your Till or Paybill number.'],
   ['I don’t have professional photos. Is that a problem?', 'No. Use clear phone photos of your products. Products without a photo show a clean drawing of their packaging until you add one.'],
@@ -97,7 +100,7 @@ const faqs = (domain, phone) => [
 ];
 
 /** The hero's picture: a real shop on a phone, with the M-Pesa prompt and a new-order alert beside it. */
-function HeroPhone({ domain }) {
+function HeroPhone() {
   return (
     <div className="relative mx-auto h-[29rem] w-full max-w-[26rem] sm:h-[34rem]" aria-label="A Kabuor Builds shop on a phone">
       <div className="absolute inset-x-[18%] top-[6%] bottom-[2%] rounded-full bg-[#2357F5]/25 blur-3xl" />
@@ -108,7 +111,7 @@ function HeroPhone({ domain }) {
         className="absolute top-0 left-1/2 w-[64%] -translate-x-1/2 rounded-[2.4rem] bg-[#050608] p-2.5 shadow-[0_50px_100px_-40px_rgba(0,0,0,0.9)] ring-1 ring-white/10"
       >
         <div className="overflow-hidden rounded-[1.9rem] bg-white">
-          <div className="flex items-center justify-center bg-[#F4EFE7] py-1.5 text-[10px] font-semibold text-black/55">anjugu.{domain}</div>
+          <div className="flex items-center justify-center bg-[#F4EFE7] py-1.5 text-[10px] font-semibold text-black/55">{linkLabel('anjugu')}</div>
           <img src="/brand/work-anjugu-shop-phone.webp" alt="The Anjugu Peanut Butter shop" className="aspect-[9/17] w-full object-cover object-top" />
         </div>
       </motion.div>
@@ -175,7 +178,6 @@ function Landing({ info }) {
   useEffect(() => {
     document.title = 'Kabuor Shops · Product-first websites that sell';
   }, []);
-  const domain = info?.domain ?? 'shop.ke';
   const name = info?.name ?? 'Kabuor Builds';
   const phone = info?.phone;
   const nav = [
@@ -208,10 +210,10 @@ function Landing({ info }) {
               Product-first websites <span className="text-[#F2C14E]">that sell.</span>
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15, ease: EASE }} className="mt-6 max-w-lg text-lg leading-relaxed text-cream/75">
-              Your product, your colours, your prices. Customers pick, pay with M-Pesa, done. Get a link like <b className="text-cream">anjugu.{domain}</b> and see your shop before you pay a shilling.
+              Your product, your colours, your prices. Customers pick, pay with M-Pesa, done. Get a link like <b className="text-cream">{linkLabel('anjugu')}</b> and see your shop before you pay a shilling.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.25, ease: EASE }} className="mt-8">
-              <ClaimLink domain={domain} dark />
+              <ClaimLink dark />
               {info && (
                 <p className="mt-1 pl-5 text-sm text-cream/55">
                   From {ksh(info.prices.monthly)} a month · <span className="kb-serif text-base text-[#F2C14E]">{info.tagline}</span>
@@ -219,7 +221,7 @@ function Landing({ info }) {
               )}
             </motion.div>
           </div>
-          <HeroPhone domain={domain} />
+          <HeroPhone />
         </section>
 
         <div className="relative border-t border-white/10">
@@ -362,7 +364,7 @@ function Landing({ info }) {
             <p className="mt-3 text-espresso/60">Anything else? WhatsApp us{phone ? ` on ${phone}` : ''}.</p>
           </div>
           <div className="divide-y divide-espresso/10 border-y border-espresso/10">
-            {faqs(domain, phone).map(([q, a]) => (
+            {faqs(phone).map(([q, a]) => (
               <details key={q} className="group py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold [&::-webkit-details-marker]:hidden">
                   {q}
@@ -401,7 +403,7 @@ function Landing({ info }) {
 
       <SiteFooter info={info}>
         <p className="mb-3 text-sm font-semibold text-cream/50">Claim your link</p>
-        <ClaimLink domain={domain} dark />
+        <ClaimLink dark />
       </SiteFooter>
     </>
   );
@@ -409,13 +411,12 @@ function Landing({ info }) {
 
 /** A visitor on a shop link nobody has taken. */
 function Unclaimed({ site }) {
-  const domain = site.platform?.domain ?? 'shop.ke';
   return (
     <div className="kb-ink relative grid min-h-svh place-items-center px-5 text-center">
       <div className="relative max-w-md">
         <Wordmark name={site.platform?.name} light />
         <h1 className="kb-display mt-10 text-5xl">
-          {site.link}.{domain} <span className="text-[#9DB6FF]">is free</span>
+          {linkLabel(site.link)} <span className="text-[#9DB6FF]">is free</span>
         </h1>
         <p className="mt-4 text-cream/65">There’s no shop here yet. If this is your brand’s name, it can be yours in a few minutes.</p>
         <a href={`${platformOrigin()}/start?link=${encodeURIComponent(site.link ?? '')}`} className="btn mt-8 bg-[#2357F5] px-6 py-3.5 text-white shadow-lg shadow-[#2357F5]/30 hover:bg-[#3A6BFF]">
@@ -451,6 +452,8 @@ export default function PlatformApp({ site }) {
         <Route path="/shops" element={<Landing info={info} />} />
         <Route path="/erp" element={<Erp info={info} />} />
         <Route path="/careers" element={<CareersPage info={info} />} />
+        {/* "Launch Shop" opens the platform's own address: there the home page is the shops page. */}
+        <Route path="/" element={BUILDS_HOST ? <Landing info={info} /> : <Company info={info} />} />
         <Route path="*" element={<Company info={info} />} />
       </Routes>
     </div>

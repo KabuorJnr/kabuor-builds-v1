@@ -36,7 +36,7 @@ function client() {
       passkey: k.passkey,
       till: k.type === 'till' ? k.till : '',
       // Results come back to the shop's own address once the platform runs on https.
-      callbackBase: live ? `https://${slug}.${PLATFORM_DOMAIN}` : '',
+      callbackBase: live ? (PLATFORM_DOMAIN ? `https://${slug}.${PLATFORM_DOMAIN}` : `${PUBLIC_URL}/s/${slug}`) : '',
       apiUrl: process.env.MPESA_API_URL,
     },
     { callbackPath: '/api/mpesa/callback', secretSalt: `shop-mpesa:${slug}:${k.salt}` },

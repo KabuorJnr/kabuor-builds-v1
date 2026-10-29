@@ -32,7 +32,7 @@ export function resolveHost(rawHost) {
   if (!host || host === PLATFORM_DOMAIN || host === `www.${PLATFORM_DOMAIN}` || host === 'localhost' || /^[\d.]+$/.test(host)) {
     return { platform: true };
   }
-  for (const base of [PLATFORM_DOMAIN, 'localhost']) {
+  for (const base of [PLATFORM_DOMAIN, 'localhost'].filter(Boolean)) {
     if (host.endsWith(`.${base}`)) {
       const sub = host.slice(0, -(base.length + 1));
       if (sub === 'www') return { platform: true };

@@ -4,6 +4,7 @@ import { Search } from 'lucide-react';
 import { SiteHeader, SiteFooter } from './Site';
 import { DEFAULT_ROLES, fetchRoleStatuses, payLine, withStatus } from './careersStore';
 import CareersApplicationPage from './CareersApplicationPage';
+import { CONTACT_EMAIL } from './contact';
 
 export const ALL_ROLES = DEFAULT_ROLES;
 
@@ -373,7 +374,7 @@ export default function CareersPage({ info }) {
                     See fellowship & volunteer roles
                   </button>
                   <a
-                    href="mailto:careers@kabuor.com?subject=Young%20Builder%20%2F%20Volunteer%20Inquiry%20-%20Kabuor%20Technologies"
+                    href={`mailto:${CONTACT_EMAIL}?subject=Young%20Builder%20%2F%20Volunteer%20Inquiry%20-%20Kabuor%20Technologies`}
                     className="btn bg-white/10 px-6 py-3.5 text-[15px] font-semibold text-white ring-1 ring-white/15 hover:bg-white/20"
                   >
                     Email us your project
@@ -467,7 +468,7 @@ export default function CareersPage({ info }) {
                   <button type="button" onClick={clearFilters} className="btn bg-[#2357F5] px-6 py-3 text-sm font-semibold text-white hover:bg-[#3A6BFF]">
                     Show all {roles.length} roles
                   </button>
-                  <a href="mailto:careers@kabuor.com?subject=Open%20application%20-%20Kabuor%20Technologies" className="btn border border-espresso/15 bg-white px-6 py-3 text-sm font-semibold text-espresso hover:border-espresso/30">
+                  <a href={`mailto:${CONTACT_EMAIL}?subject=Open%20application%20-%20Kabuor%20Technologies`} className="btn border border-espresso/15 bg-white px-6 py-3 text-sm font-semibold text-espresso hover:border-espresso/30">
                     Email an open application
                   </a>
                 </div>

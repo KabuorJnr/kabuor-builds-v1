@@ -10,7 +10,8 @@ import {
 import { cn } from '../lib/format';
 import { EASE, ksh, MpesaPay, PalettePicker, papi, PictureDrop, ShopPreview, StylePicker } from './shared';
 import { Wordmark } from './PlatformApp';
-import { linkLabel } from '../lib/base';
+import { linkLabel, linkParts } from '../lib/base';
+import { whatsapp } from './Site';
 
 const KIND_ICONS = { sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, other: Package };
 const STEP_LABELS = ['Your business', 'Make it yours', 'Products', 'Preview & pay'];
@@ -74,7 +75,7 @@ function BusinessStep({ info, onDone }) {
   const [check, setCheck] = useState(null);
   const [state, setState] = useState({ busy: false, error: null });
   const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target ? e.target.value : e }));
-  const domain = info?.domain ?? 'shop.ke';
+  const { before, after } = linkParts();
 
   // The link follows the business name until the owner types their own.
   useEffect(() => {
@@ -134,6 +135,7 @@ function BusinessStep({ info, onDone }) {
 
       <Field label="Your shop link" error={check && !check.available ? check.problem : null}>
         <span className="field flex items-center gap-0 px-0! py-0! focus-within:ring-2">
+          {before && <span className="hidden shrink-0 pl-4 text-espresso/45 sm:inline">{before}</span>}
           <input
             className="min-w-0 flex-1 bg-transparent px-4 py-3 font-semibold outline-none"
             value={f.link}
@@ -145,7 +147,7 @@ function BusinessStep({ info, onDone }) {
             aria-describedby="link-status"
             required
           />
-          <span className="pr-4 text-espresso/45">.{domain}</span>
+          {after && <span className="pr-4 text-espresso/45">{after}</span>}
         </span>
         <span id="link-status" className="mt-1 flex flex-wrap items-center gap-1.5 text-xs" aria-live="polite">
           {check?.available && <span className="font-semibold text-[#1E8E3E]">✓ Available</span>}
@@ -689,6 +691,27 @@ export default function Wizard({ info }) {
     setStep(0);
   };
   const onSaved = useCallback((s) => setSignup((cur) => ({ ...cur, ...s })), []);
+
+  // This server can't keep shops yet (no lasting storage): say so before anyone fills in four steps.
+  if (info?.signupsOpen === false && !token)
+    return (
+      <div className="container-x pb-20">
+        <header className="py-5">
+          <Link to="/">
+            <Wordmark name={info?.name} />
+          </Link>
+        </header>
+        <div className="mx-auto mt-10 max-w-lg rounded-[var(--r-xl)] bg-white p-8 text-center ring-1 ring-espresso/[0.08]">
+          <h1 className="kb-display text-4xl">New shops open soon.</h1>
+          <p className="mt-3 text-espresso/65">We’re setting up the home your shop will live in for good. Tell us about your brand on WhatsApp and we’ll build your shop with you the day we open, at no extra cost.</p>
+          {info.phone && (
+            <a href={whatsapp(info.phone, 'Hi Kabuor Technologies, I would like a Kabuor Shops online shop for my brand: ')} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-white hover:bg-[#176F30]">
+              WhatsApp {info.phone}
+            </a>
+          )}
+        </div>
+      </div>
+    );
 
   return (
     <div className="container-x pb-20">

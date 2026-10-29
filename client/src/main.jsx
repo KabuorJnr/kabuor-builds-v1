@@ -6,6 +6,7 @@ import './index.css';
 import { applyLook } from './lib/theme';
 import { previewKey } from './lib/api';
 import { PATH_SHOP, SHOP_BASE, setPlatformDomain } from './lib/base';
+import { BUILDS_HOST } from './platform/contact';
 
 // One website for the platform and every shop. The server says who we are from the address:
 // the platform itself, a shop (with its look), or a shop link nobody has taken yet.
@@ -49,7 +50,9 @@ if (site.kind === 'shop') {
   Root = () => <App site={site} />;
 } else {
   if (site.kind === 'missing') head({ title: `${site.link}.${site.platform?.domain ?? ''} is available` });
-  else head({ title: `${site.name ?? 'Kabuor Technologies'} · Software for Kenyan businesses` });
+  // The company's address is Kabuor Technologies (the server's platform name is Kabuor Builds, which Google then
+  // showed as the company's name); the platform's own address is the shops page.
+  else head({ title: BUILDS_HOST ? 'Kabuor Shops · Online shops for Kenyan brands' : 'Kabuor Technologies · ERP and online shops for Kenyan businesses' });
   const { default: PlatformApp } = await import('./platform/PlatformApp');
   Root = () => <PlatformApp site={site} />;
 }

@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from 'react';
 import { ArrowLeft, Check, CheckCircle2, Copy } from 'lucide-react';
 import { SiteHeader, SiteFooter } from './Site';
 import { EXPERIENCE_LEVELS, START_DATES, WEEKLY_COMMITMENTS, clearDraft, loadDraft, payLine, saveDraft, sendApplication } from './careersStore';
+import { CONTACT_EMAIL } from './contact';
 
 const EMPTY = {
   fullName: '',
@@ -203,7 +204,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
       // A role closed while they wrote says so itself; anything else (no connection, a check the server makes)
       // keeps the answers here and gives a way out.
       const reason = err.status ? err.message.replace(/\.?$/, '.') : 'We couldn’t reach our server.';
-      setSubmitError(err.status === 409 ? err.message : `${reason} Your answers are still here: try again, or email them to careers@kabuor.com.`);
+      setSubmitError(err.status === 409 ? err.message : `${reason} Your answers are still here: try again, or email them to ${CONTACT_EMAIL}.`);
     } finally {
       setSubmitting(false);
     }
@@ -260,7 +261,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
           <button type="button" onClick={onBack} className="btn bg-[#2357F5] px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-[#3A6BFF]">
             See open roles
           </button>
-          <a href="mailto:careers@kabuor.com?subject=Volunteer%20%2F%20Young%20Builder%20Pitch" className="btn border border-espresso/15 bg-white px-6 py-3 text-sm font-semibold text-espresso hover:border-espresso/30">
+          <a href={`mailto:${CONTACT_EMAIL}?subject=Volunteer%20%2F%20Young%20Builder%20Pitch`} className="btn border border-espresso/15 bg-white px-6 py-3 text-sm font-semibold text-espresso hover:border-espresso/30">
             Email us your project
           </a>
         </div>
@@ -309,8 +310,8 @@ export default function CareersApplicationPage({ role, onBack, info }) {
             </li>
             <li>
               Questions in the meantime? Email{' '}
-              <a href={`mailto:careers@kabuor.com?subject=${encodeURIComponent(submissionResult.trackingRef)}`} className="font-semibold text-[#2357F5] underline">
-                careers@kabuor.com
+              <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(submissionResult.trackingRef)}`} className="font-semibold text-[#2357F5] underline">
+                {CONTACT_EMAIL}
               </a>{' '}
               with your reference.
             </li>

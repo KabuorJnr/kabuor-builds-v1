@@ -10,7 +10,7 @@ import { hashPassword, ownerToken, setOwnerHashed } from '../auth.js';
 import { HttpError } from '../db.js';
 import { seed } from '../seed.js';
 import { ensureStarterPosts } from '../routes/posts.js';
-import { PLATFORM_DOMAIN, PLATFORM_EMAIL, PLATFORM_NAME, PLATFORM_PHONE, PLATFORM_TAGLINE, PLATFORM_FOUNDER_NAME, PLATFORM_FOUNDER_LINKEDIN } from '../site.js';
+import { PLATFORM_DOMAIN, PLATFORM_EMAIL, PLATFORM_NAME, PLATFORM_PHONE, PLATFORM_TAGLINE, PLATFORM_FOUNDER_NAME, PLATFORM_FOUNDER_LINKEDIN, PUBLIC_URL, STORAGE_LASTS } from '../site.js';
 import { runAs } from '../tenant.js';
 import { billingSummary, paymentStatus, PLAN_LABELS, PRICES, settle, startPayment, testMode } from './billing.js';
 import { callbackSecret, resultOf, toMsisdn } from './daraja.js';
@@ -52,6 +52,7 @@ platformRouter.get('/info', (req, res) => {
     prices: PRICES,
     plans: PLAN_LABELS,
     testMode,
+    signupsOpen: STORAGE_LASTS,
     kinds: Object.entries(KINDS).map(([id, k]) => ({ id, label: k.label, tagline: k.tagline, style: k.style, accent: k.accent })),
     styles: styleList(),
     shops: live,
@@ -95,6 +96,7 @@ platformRouter.get('/check-link', (req, res) => {
 
 // ---------- step 1: the business and the owner's account ----------
 platformRouter.post('/signup', (req, res) => {
+  if (!STORAGE_LASTS) throw Object.assign(new HttpError(409, `New shops open soon. WhatsApp ${PLATFORM_PHONE} and we'll set yours up the day we do.`), { code: 'SIGNUPS_PAUSED' });
   const b = req.body ?? {};
   const name = text(b.name, 60);
   const link = text(b.link, 40).toLowerCase();
@@ -252,7 +254,8 @@ const shopUrl = (slug, req) => {
   const host = (req ? requestHost(req) ?? '' : '').toLowerCase();
   const bare = host.replace(/:\d+$/, '');
   if (bare === 'localhost' || bare.endsWith('.localhost')) return `${req.protocol}://${slug}.localhost:${host.split(':')[1] ?? ''}`.replace(/:$/, '');
-  if (!req || bare === PLATFORM_DOMAIN || bare.endsWith(`.${PLATFORM_DOMAIN}`)) return `https://${slug}.${PLATFORM_DOMAIN}`;
+  if (PLATFORM_DOMAIN && (!req || bare === PLATFORM_DOMAIN || bare.endsWith(`.${PLATFORM_DOMAIN}`))) return `https://${slug}.${PLATFORM_DOMAIN}`;
+  if (!req) return `${PUBLIC_URL}/s/${slug}`;
   return `${req.protocol}://${host}/s/${slug}`;
 };
 
