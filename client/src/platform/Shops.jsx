@@ -175,13 +175,14 @@ export default function Shops({ info }) {
       {/* Real work */}
       <section id="work" aria-labelledby="work-title" className="scroll-mt-20 py-10 sm:py-12">
         <div className="container-x grid items-center gap-10 lg:grid-cols-2">
-          <div className="overflow-hidden rounded-lg border border-[var(--ms-line)]">
-            <img src="/brand/work-anjugu-desk.webp" alt="The Anjugu Peanut Butter website" loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
+<div className="relative sm:pr-[14%] sm:pb-8">
+            <BrowserShot src="/brand/work-anjugu-desk.webp" alt="An online shop we built for a Kenyan peanut butter brand" address="A shop we built" />
+            <PhoneShot src="/brand/work-anjugu-shop-phone.webp" alt="The same shop on a phone" className="absolute right-0 bottom-0 hidden w-[24%] sm:block" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-[var(--ms-blue)]">Customer story</p>
+            <p className="text-sm font-semibold text-[var(--ms-blue)]">Our work</p>
             <h2 id="work-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">
-              Anjugu Peanut Butter
+              A peanut butter brand, online
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-[var(--ms-muted)]">A Kenyan brand with several branches, selling its own jars at its own prices online.</p>
             <ul className="mt-5 space-y-2">
@@ -191,9 +192,9 @@ export default function Shops({ info }) {
                 </li>
               ))}
             </ul>
-            <a href="https://anjugu.co.ke" target="_blank" rel="noopener noreferrer" className="ms-link mt-6">
-              Visit anjugu.co.ke <ChevronRight className="h-4 w-4" />
-            </a>
+            <Link to="/start" className="ms-btn ms-btn-primary mt-6">
+              Get a shop like this
+            </Link>
           </div>
         </div>
       </section>

@@ -177,22 +177,20 @@ export default function Company({ info }) {
         {/* Customer story */}
         <section id="work" aria-labelledby="work-title" className="scroll-mt-20 bg-[#F5F7FC] py-10 sm:py-12">
           <div className="container-x grid items-center gap-10 lg:grid-cols-2">
-            <div className="overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white">
-              <img src="/brand/work-anjugu-desk.webp" alt="The Anjugu Peanut Butter website" loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
+<div className="relative sm:pr-[14%] sm:pb-8">
+              <BrowserShot src="/brand/work-anjugu-desk.webp" alt="An online shop we built for a Kenyan peanut butter brand" address="A shop we built" />
+              <PhoneShot src="/brand/work-anjugu-shop-phone.webp" alt="The same shop on a phone" className="absolute right-0 bottom-0 hidden w-[24%] sm:block" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-[var(--ms-blue)]">Customer story</p>
+              <p className="text-sm font-semibold text-[var(--ms-blue)]">Our work</p>
               <h2 id="work-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">
-                Anjugu Peanut Butter sells online with M-Pesa checkout
+                A peanut butter brand selling online with M-Pesa checkout
               </h2>
-              <p className="mt-4 text-lg leading-relaxed text-[var(--ms-muted)]">A Kenyan brand with several branches, selling its own jars at its own prices, with customers paying by M-Pesa in a few taps.</p>
+              <p className="mt-4 text-lg leading-relaxed text-[var(--ms-muted)]">A Kenyan brand with several branches, selling its own jars at its own prices, with customers paying by M-Pesa in a few taps. Designed around their real products, on a computer and a phone.</p>
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
                 <Go to="/shops" className="ms-btn ms-btn-primary">
                   Get a shop like this
                 </Go>
-                <a href="https://anjugu.co.ke" target="_blank" rel="noopener noreferrer" className="ms-link">
-                  Visit anjugu.co.ke <ExternalLink className="h-4 w-4" />
-                </a>
               </div>
             </div>
           </div>

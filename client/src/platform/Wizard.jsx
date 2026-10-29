@@ -126,7 +126,7 @@ function BusinessStep({ info, onDone }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Business name">
-          <input className="field" value={f.name} onChange={set('name')} placeholder="Anjugu Peanut Butter" maxLength={60} required />
+          <input className="field" value={f.name} onChange={set('name')} placeholder="Mama Pili Sauces" maxLength={60} required />
         </Field>
         <Field label="Town" hint="Where you deliver from">
           <input className="field" value={f.city} onChange={set('city')} placeholder="Nairobi" maxLength={40} />
@@ -143,7 +143,7 @@ function BusinessStep({ info, onDone }) {
               setLinkEdited(true);
               setF((x) => ({ ...x, link: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30) }));
             }}
-            placeholder="anjugu"
+            placeholder="mamapili"
             aria-describedby="link-status"
             required
           />
