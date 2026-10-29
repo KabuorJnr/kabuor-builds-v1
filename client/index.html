@@ -29,6 +29,10 @@
     <meta name="twitter:description" content="Kabuor Technologies makes software Kenyan businesses run on: Kabuor Shops for selling online and Kabuor ERP for running the whole business. M-Pesa first, KRA-ready." />
     <meta name="twitter:image" content="https://www.kabuor-technologies.company/brand/og-image.png" />
 
+    <!-- Robots and Indexing Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
     <!-- Favicon & Icons for Google Search Console, Browsers & PWA -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -89,7 +93,44 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+        <div id="root">
+      <header style="padding:20px;display:flex;justify-content:space-between;align-items:center;background:#0A0B1E;color:#fff;">
+        <strong>Kabuor Technologies</strong>
+        <nav style="display:flex;gap:16px;">
+          <a href="/" style="color:#fff;text-decoration:none;">Home</a>
+          <a href="https://builds.kabuor-technologies.company" style="color:#fff;text-decoration:none;">Kabuor Shops</a>
+          <a href="https://erp.kabuor-technologies.company" style="color:#fff;text-decoration:none;">Kabuor ERP</a>
+          <a href="/careers" style="color:#fff;text-decoration:none;">Careers</a>
+          <a href="/about-founder" style="color:#fff;text-decoration:none;">About Founder</a>
+        </nav>
+      </header>
+      <main style="max-width:960px;margin:40px auto;padding:0 20px;font-family:system-ui,-apple-system,sans-serif;color:#111;">
+        <h1 style="font-size:2.2rem;line-height:1.2;margin-bottom:16px;">Kabuor Technologies &middot; Software for Kenyan businesses</h1>
+        <p style="font-size:1.15rem;line-height:1.6;color:#444;">Enterprise software engineered for Kenyan business operations: Kabuor Shops for selling online and Kabuor ERP for running the whole business. M-Pesa first, KRA-ready.</p>
+        <section style="margin-top:36px;">
+          <h2 style="font-size:1.5rem;margin-bottom:16px;">Our Products</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:20px;">
+            <article style="border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
+              <h3 style="margin-top:0;font-size:1.25rem;">Kabuor Shops</h3>
+              <p style="color:#555;">Modern e-commerce platform built for Kenyan merchants and retail stores with instant M-Pesa payments, real-time inventory synchronization, and localized checkout.</p>
+              <a href="https://builds.kabuor-technologies.company" style="color:#2357F5;font-weight:600;">Explore Kabuor Shops &rarr;</a>
+            </article>
+            <article style="border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
+              <h3 style="margin-top:0;font-size:1.25rem;">Kabuor ERP</h3>
+              <p style="color:#555;">All-in-one cloud business management software with real-time financial accounting, point-of-sale, multi-warehouse inventory, and KRA-ready tax reporting.</p>
+              <a href="https://erp.kabuor-technologies.company" style="color:#2357F5;font-weight:600;">Explore Kabuor ERP &rarr;</a>
+            </article>
+          </div>
+        </section>
+        <section style="margin-top:36px;">
+          <h2 style="font-size:1.5rem;margin-bottom:12px;">Engineered in Nairobi, Kenya</h2>
+          <p style="color:#555;">Headquartered along Ngong Road, Nairobi. Contact our support and sales team at +254 705 607 954 or learn more on our <a href="/about-founder" style="color:#2357F5;">founder profile</a>.</p>
+        </section>
+      </main>
+      <footer style="margin-top:60px;padding:24px 20px;border-top:1px solid #e2e8f0;text-align:center;color:#666;font-size:0.9rem;">
+        <p>&copy; 2026 Kabuor Technologies Ltd. All rights reserved.</p>
+      </footer>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
