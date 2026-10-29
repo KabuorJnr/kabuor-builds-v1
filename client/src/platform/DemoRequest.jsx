@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ArrowRight, Check, Loader2, MessageCircle } from 'lucide-react';
 import { cn } from '../lib/format';
 import { papi } from './shared';
+import { Link } from 'react-router';
 import { whatsapp } from './Site';
 
 const PRODUCTS = [
@@ -144,6 +145,12 @@ export default function DemoRequest({ info, product: initial = 'erp', id = 'demo
             <button className="btn w-full bg-[#2357F5] px-6 py-4 text-base text-white hover:bg-[#3A6BFF] sm:w-auto" disabled={state.busy}>
               {state.busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Request my demo <ArrowRight className="h-4 w-4" />
             </button>
+            <p className="text-sm text-espresso/60">
+              We use these details only to arrange your demo, and delete them after 12 months.{' '}
+              <Link to="/privacy" className="font-semibold text-[#2357F5] hover:underline">
+                Privacy notice
+              </Link>
+            </p>
           </form>
         )}
       </div>

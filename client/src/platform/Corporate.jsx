@@ -16,7 +16,6 @@ export const FOUNDER = {
   email: CONTACT_EMAIL,
   linkedin: 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256',
 };
-export const LEGAL = 'https://erp.kabuor-technologies.company';
 
 const NAV = [
   { to: '/erp', label: 'Kabuor ERP' },
@@ -169,12 +168,12 @@ export function Footer() {
       </div>
       <div className="container-x flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[#d6d6d6] py-5">
         <span>Nairobi, Kenya</span>
-        <a href={`${LEGAL}/privacy`} className="hover:underline">
+        <Link to="/privacy" className="hover:underline">
           Privacy
-        </a>
-        <a href={`${LEGAL}/terms`} className="hover:underline">
+        </Link>
+        <Link to="/terms" className="hover:underline">
           Terms of use
-        </a>
+        </Link>
         <span className="sm:ml-auto">© {new Date().getFullYear()} Kabuor Technologies</span>
       </div>
     </footer>

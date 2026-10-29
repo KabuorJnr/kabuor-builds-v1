@@ -16,6 +16,7 @@ import { PLATFORM_DOMAIN, PLATFORM_EMAIL, PLATFORM_NAME, PLATFORM_TAGLINE } from
 import { runAs } from './tenant.js';
 import { limit, securityHeaders } from './guard.js';
 import { scheduleBackups } from './backups.js';
+import { scheduleRetention } from './platform/retention.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -198,6 +199,7 @@ app.use((err, req, res, next) => {
 if (!process.env.VERCEL) {
   app.listen(PORT, () => console.log(`${PLATFORM_NAME} ready on http://localhost:${PORT} (shops at http://<link>.localhost:${PORT})`));
   if (process.env.BACKUPS !== 'off') scheduleBackups();
+  scheduleRetention(); // keeps the privacy notice's promise on how long demo requests and applications are kept
 }
 
 export default app;

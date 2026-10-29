@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import { ArrowLeft, Check, CheckCircle2, Copy } from 'lucide-react';
+import { Link } from 'react-router';
 import { CorporatePage } from './Corporate';
 import { EXPERIENCE_LEVELS, START_DATES, WEEKLY_COMMITMENTS, clearDraft, loadDraft, payLine, saveDraft, sendApplication } from './careersStore';
 import { CONTACT_EMAIL } from './contact';
@@ -479,6 +480,12 @@ export default function CareersApplicationPage({ role, onBack, info }) {
               {submitting ? 'Sending your application…' : 'Send application'}
             </button>
             <p className="mt-3 text-center text-sm text-espresso/60">We reply to every applicant within 3–5 business days.</p>
+            <p className="mt-1 text-center text-sm text-espresso/60">
+              We use your application only to consider you for roles, and delete it within 12 months.{' '}
+              <Link to="/privacy" className="font-semibold text-[#2357F5] hover:underline">
+                Privacy notice
+              </Link>
+            </p>
           </div>
         </form>
       </div>
