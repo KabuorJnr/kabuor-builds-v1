@@ -103,8 +103,14 @@
     }
     </script>
   </head>
-  <body>
+    <body>
     <div id="root">
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#FFFFFF;">
+        <div style="width:32px;height:32px;border:3px solid #E2E8F0;border-top-color:#2357F5;border-radius:50%;animation:kb-spin 0.75s linear infinite;"></div>
+      </div>
+      <style>@keyframes kb-spin{to{transform:rotate(360deg)}}</style>
+    </div>
+    <noscript>
       <header style="padding:20px;display:flex;justify-content:space-between;align-items:center;background:#0A0B1E;color:#fff;">
         <strong>Kabuor Technologies</strong>
         <nav style="display:flex;gap:16px;">
@@ -141,7 +147,7 @@
       <footer style="margin-top:60px;padding:24px 20px;border-top:1px solid #e2e8f0;text-align:center;color:#666;font-size:0.9rem;">
         <p>&copy; 2026 Kabuor Technologies Ltd. All rights reserved.</p>
       </footer>
-    </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
