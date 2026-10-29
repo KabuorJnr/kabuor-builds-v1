@@ -1,114 +1,224 @@
-// Kabuor Builds, the company (/). A visitor here is deciding two things: "which of these is for me?" and
-// "can I trust these people?". So: the two products side by side with what each costs and does, a plain
-// "which one do I need" guide, what both are built on, real work, who we are, and a person to talk to.
-import { useEffect } from 'react';
+// Kabuor Technologies, the company (/). A visitor is deciding two things: "which of these is for me?" and "can I
+// trust these people?". The page answers in that order, in a plain corporate layout (one font, flat colour, a
+// white header with text links and one blue action, product tiles on a regular grid, a grey footer of link
+// columns): the two products with their status and price, a guide to choosing, what both are built on, real
+// work, a demo request, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { motion } from 'framer-motion';
-import {
-  ArrowRight,
-  BarChart3,
-  Check,
-  ExternalLink,
-  Languages,
-  MessageCircle,
-  ReceiptText,
-  ShoppingBag,
-  Smartphone,
-  Sparkles,
-  Wallet,
-} from 'lucide-react';
-import { EASE, ksh } from './shared';
+import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, Menu, MessageCircle, ReceiptText, Smartphone, Sparkles, Users, Wallet, X } from 'lucide-react';
+import { ksh } from './shared';
 import DemoRequest from './DemoRequest';
-import { ContactButtons, ERP_RAILWAY_URL, Go, SHOPS_RAILWAY_URL, SiteFooter, SiteHeader } from './Site';
+import { ERP_RAILWAY_URL, Go, tel, whatsapp } from './Site';
+import { CONTACT_EMAIL } from './contact';
 
-// The person behind the company, in the words of the company's own documents (KAB-IT-001). "About us" shows who
-// built it; "Talk to us" puts a face and a direct line to the person a visitor will actually reach.
 const FOUNDER = {
   name: 'Rooney Odhiambo Kabuor',
   first: 'Rooney',
   title: 'Founder & CEO',
   phone: '0705 607 954',
-  email: 'rooneykabuor2004@gmail.com',
+  email: CONTACT_EMAIL,
   linkedin: 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256',
 };
+const LEGAL = 'https://erp.kabuor-technologies.company';
 
-const SHARED = [
-  { icon: Wallet, title: 'M-Pesa first', text: 'Prompts, Paybills and Tills built in, not bolted on.' },
-  { icon: ReceiptText, title: 'KRA-ready', text: 'VAT done right; invoices prepared for eTIMS.' },
-  { icon: Languages, title: 'English & Kiswahili', text: 'Plain words your whole team understands.' },
-  { icon: Smartphone, title: 'Phone-first', text: 'Fast on the phones your customers and staff use.' },
-  { icon: BarChart3, title: 'Priced in shillings', text: 'Clear prices per business, not per seat in dollars.' },
-  { icon: MessageCircle, title: 'Real people', text: 'Call or WhatsApp us. We’ll set it up with you.' },
+const NAV = [
+  { to: '/erp', label: 'Kabuor ERP' },
+  { to: '/shops', label: 'Kabuor Shops' },
+  { href: '#work', label: 'Customers' },
+  { href: '#about', label: 'About' },
+  { to: '/careers', label: 'Careers' },
 ];
 
-function ProductCard({ tag, name, line, text, points, meta, status, launch, primary, secondary, visual, delay }) {
+const SHARED = [
+  { icon: Wallet, title: 'M-Pesa first', text: 'Prompts, Paybills and Tills built in, and payments matched to invoices by themselves.' },
+  { icon: ReceiptText, title: 'KRA-ready', text: 'VAT worked out as you go, and invoices prepared for eTIMS.' },
+  { icon: Languages, title: 'English and Kiswahili', text: 'Plain words your whole team understands, in either language.' },
+  { icon: Smartphone, title: 'Phone-first', text: 'Fast on the phones your customers and staff already use.' },
+  { icon: BarChart3, title: 'Priced in shillings', text: 'One clear price per business, not per seat and not in dollars.' },
+  { icon: Users, title: 'Real people', text: 'Call or WhatsApp us. We set it up with you, in person if you like.' },
+];
+
+const CHOOSE = [
+  { need: 'I want customers to find my products and order online.', product: 'Kabuor Shops', to: '/shops', text: 'Your own online shop with M-Pesa checkout, live the same day.' },
+  { need: 'I invoice other businesses, buy stock, and need my books and KRA in order.', product: 'Kabuor ERP', to: '/erp', text: 'Sales, M-Pesa, stock, payroll and books in one place.' },
+  { need: 'I need both.', product: 'Start with Kabuor Shops', to: '/shops', text: 'Then join the ERP early access: online orders will flow straight into your books.' },
+];
+
+function NavItem({ item, className, onClick }) {
+  return item.to ? (
+    <Go to={item.to} className={className} onClick={onClick}>
+      {item.label}
+    </Go>
+  ) : (
+    <a href={item.href} className={className} onClick={onClick}>
+      {item.label}
+    </a>
+  );
+}
+
+/** White bar: the company's logo, the products and pages as plain text links, and one action. */
+function Header() {
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay, ease: EASE }}
-      className="flex flex-col overflow-hidden rounded-[var(--r-xl)] bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]"
-    >
-      <div className="relative h-44 overflow-hidden bg-[#EEF0FB] sm:h-52">{visual}</div>
-      <div className="flex flex-1 flex-col p-6 sm:p-7">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-bold tracking-[0.14em] text-[#3A2BC9] uppercase">{tag}</p>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-600/20">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {status}
-          </span>
-        </div>
-        <h3 className="kb-display mt-2 text-3xl sm:text-4xl">{name}</h3>
-        <p className="mt-1 text-lg font-semibold">{line}</p>
-        <p className="mt-2 text-espresso/65">{text}</p>
-        <ul className="mt-5 space-y-2 text-[15px]">
-          {points.map((p) => (
-            <li key={p} className="flex gap-2.5">
-              <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#3A2BC9]" strokeWidth={3} /> {p}
-            </li>
+    <header className="sticky top-0 z-40 border-b border-[var(--ms-line)] bg-white">
+      <div className="container-x flex h-16 items-center gap-6">
+        <Link to="/" aria-label="Kabuor Technologies home" className="shrink-0">
+          <img src="/brand/kabuor-technologies-logo-blue.svg" alt="Kabuor Technologies" className="h-9 w-auto" />
+        </Link>
+        <nav className="hidden flex-1 items-center gap-1 text-[0.9375rem] lg:flex" aria-label="Main">
+          {NAV.map((item) => (
+            <NavItem key={item.label} item={item} className="rounded px-3 py-2 text-[var(--ms-ink)] hover:underline hover:underline-offset-4" />
           ))}
-        </ul>
-        <p className="mt-5 text-sm font-semibold text-espresso/55">{meta}</p>
-        <div className="mt-5 flex flex-wrap items-center gap-2.5 pt-1">
-          {launch}
-          {primary}
-          {secondary}
+        </nav>
+        <div className="ml-auto flex items-center gap-2">
+          <a href="#contact" className="hidden px-3 py-2 text-[0.9375rem] hover:underline hover:underline-offset-4 sm:block">
+            Contact us
+          </a>
+          <a href="#demo" className="ms-btn ms-btn-primary hidden py-2 sm:inline-flex">
+            Request a demo
+          </a>
+          <button type="button" className="grid h-10 w-10 place-items-center rounded lg:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="ms-menu" onClick={() => setOpen((o) => !o)}>
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </div>
-    </motion.article>
+      {open && (
+        <nav id="ms-menu" className="border-t border-[var(--ms-line)] bg-white lg:hidden" aria-label="Main">
+          <div className="container-x grid py-2">
+            {[...NAV, { href: '#contact', label: 'Contact us' }].map((item) => (
+              <NavItem key={item.label} item={item} onClick={close} className="flex items-center justify-between border-b border-[var(--ms-line)] py-3.5 text-base last:border-0">
+                {item.label}
+              </NavItem>
+            ))}
+            <a href="#demo" onClick={close} className="ms-btn ms-btn-primary my-3">
+              Request a demo
+            </a>
+          </div>
+        </nav>
+      )}
+    </header>
   );
 }
 
-/** A small, honest picture of each product (drawn, not a stock photo). */
-function ShopsVisual() {
+/** The ERP's home screen, drawn small and honestly (no stock photo). */
+function ErpPicture() {
   return (
-    <div className="absolute inset-0 flex items-end justify-center gap-4 px-6 pt-6">
-      <img src="/brand/work-anjugu-desk.webp" alt="" className="hidden h-[88%] rounded-t-xl object-cover object-top shadow-xl ring-1 ring-black/5 sm:block sm:w-[62%]" />
-      <img src="/brand/work-anjugu-shop-phone.webp" alt="" className="h-[95%] w-[40%] rounded-t-[1.2rem] sm:w-[24%] border-[5px] border-b-0 border-[#0A0B1E] object-cover object-top shadow-xl" />
-    </div>
-  );
-}
-
-function ErpVisual() {
-  return (
-    <div className="absolute inset-x-6 top-6 bottom-0 overflow-hidden rounded-t-xl bg-white p-4 shadow-xl ring-1 ring-black/5 sm:inset-x-10">
-      <p className="text-[11px] font-semibold text-espresso/50">Needs you today</p>
+    <div className="rounded-lg border border-[var(--ms-line)] bg-white p-4 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.25)]">
+      <p className="text-xs font-semibold text-[var(--ms-muted)]">Needs you today</p>
       {[
         ['2 invoices overdue', 'KSh 30,100', '#B42318', '#FDECEA'],
         ['3 M-Pesa payments', 'matched', '#0F7A3D', '#E6F6EC'],
         ['Hot Pepper 500g running low', '18 left', '#A15C00', '#FFF4E0'],
       ].map(([t, m, c, bg]) => (
-        <div key={t} className="mt-2 flex items-center gap-2.5 rounded-lg px-2.5 py-2" style={{ background: bg }}>
+        <div key={t} className="mt-2 flex items-center gap-2.5 rounded px-2.5 py-2" style={{ background: bg }}>
           <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c }} />
-          <span className="flex-1 truncate text-[12px] font-semibold">{t}</span>
-          <span className="text-[11px] font-semibold" style={{ color: c }}>
+          <span className="flex-1 truncate text-[13px] font-semibold">{t}</span>
+          <span className="text-xs font-semibold" style={{ color: c }}>
             {m}
           </span>
         </div>
       ))}
-      <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#0A0B1E] px-3 py-2 text-[11px] text-white">
-        <Sparkles className="h-3.5 w-3.5 text-[#F2C14E]" /> “Nani hajalipa mwezi huu?”
+      <div className="mt-3 flex items-center gap-2 rounded bg-[var(--ms-ink)] px-3 py-2 text-xs text-white">
+        <Sparkles className="h-3.5 w-3.5" /> “Nani hajalipa mwezi huu?”
       </div>
     </div>
+  );
+}
+
+/** One product: picture on top, then status and price, name, what it does, and the two ways in. */
+function ProductTile({ picture, status, name, text, points, primary, more }) {
+  return (
+    <article className="flex flex-col overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white">
+      <div className="relative aspect-[16/9] overflow-hidden bg-[#EEF2FC]">{picture}</div>
+      <div className="flex flex-1 flex-col p-6 sm:p-8">
+        <p className="text-sm text-[var(--ms-muted)]">{status}</p>
+        <h3 className="mt-1 text-2xl font-semibold sm:text-[1.75rem]">{name}</h3>
+        <p className="mt-2 text-base leading-relaxed text-[var(--ms-muted)]">{text}</p>
+        <ul className="mt-4 space-y-1.5 text-[0.9375rem]">
+          {points.map((p) => (
+            <li key={p} className="flex gap-2">
+              <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-[var(--ms-blue)]" /> {p}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3 pt-6">
+          {primary}
+          {more}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+const SectionHead = ({ title, text, id }) => (
+  <div className="max-w-3xl">
+    <h2 id={id} className="text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">
+      {title}
+    </h2>
+    {text && <p className="mt-3 text-lg leading-relaxed text-[var(--ms-muted)]">{text}</p>}
+  </div>
+);
+
+function Footer() {
+  const cols = [
+    ['Products', [
+      { to: '/erp', label: 'Kabuor ERP' },
+      { to: '/shops', label: 'Kabuor Shops' },
+      { to: '/start', label: 'Start a shop' },
+      { href: ERP_RAILWAY_URL, label: 'Sign in to Kabuor ERP' },
+    ]],
+    ['For business', [
+      { href: '#demo', label: 'Request a demo' },
+      { href: '#choose', label: 'Which product fits' },
+      { href: '#work', label: 'Customer stories' },
+    ]],
+    ['Company', [
+      { href: '#about', label: 'About Kabuor Technologies' },
+      { to: '/careers', label: 'Careers' },
+      { href: FOUNDER.linkedin, label: 'Founder on LinkedIn' },
+    ]],
+    ['Contact', [
+      { href: whatsapp(FOUNDER.phone, 'Hi Kabuor Technologies, '), label: 'WhatsApp us' },
+      { href: tel(FOUNDER.phone), label: FOUNDER.phone },
+      { href: `mailto:${FOUNDER.email}`, label: 'Email us' },
+    ]],
+  ];
+  return (
+    <footer className="bg-[var(--ms-soft)] text-[0.8125rem] text-[#616161]">
+      <div className="container-x grid grid-cols-2 gap-8 py-12 sm:grid-cols-4">
+        {cols.map(([title, links]) => (
+          <nav key={title} aria-label={title}>
+            <p className="mb-3 text-[0.9375rem] font-semibold text-[var(--ms-ink)]">{title}</p>
+            <ul className="space-y-2.5">
+              {links.map((l) => (
+                <li key={l.label}>
+                  {l.to ? (
+                    <Go to={l.to} className="hover:text-[var(--ms-ink)] hover:underline">
+                      {l.label}
+                    </Go>
+                  ) : (
+                    <a href={l.href} {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="hover:text-[var(--ms-ink)] hover:underline">
+                      {l.label}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+      </div>
+      <div className="container-x flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[#d6d6d6] py-5">
+        <span>Nairobi, Kenya</span>
+        <a href={`${LEGAL}/privacy`} className="hover:underline">
+          Privacy
+        </a>
+        <a href={`${LEGAL}/terms`} className="hover:underline">
+          Terms of use
+        </a>
+        <span className="sm:ml-auto">© {new Date().getFullYear()} Kabuor Technologies</span>
+      </div>
+    </footer>
   );
 }
 
@@ -116,295 +226,230 @@ export default function Company({ info }) {
   useEffect(() => {
     document.title = 'Kabuor Technologies · ERP and online shops for Kenyan businesses'; // not the platform's name (Kabuor Builds)
   }, [info]);
-  const talk = { href: '#demo', label: 'Request a demo' };
+  const price = info?.prices?.monthly ? `From ${ksh(info.prices.monthly)} a month` : null;
 
   return (
-    <>
-      <div className="kb-ink relative overflow-hidden">
-        <SiteHeader info={{ ...info, name: "Kabuor Technologies" }} cta={talk} />
-        <section className="container-x relative pt-3 pb-8 sm:pt-5 sm:pb-10">
-          
-          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.05, ease: EASE }} className="kb-display mt-4 max-w-4xl text-[2.5rem] sm:text-[4.2rem] leading-[1.08] tracking-tight">
-            Software Kenyan businesses <span className="text-[#F2C14E]">actually run on.</span>
-          </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15, ease: EASE }} className="mt-6 max-w-2xl text-lg leading-relaxed text-cream/75">
-            Two enterprise-grade systems by Kabuor Technologies built around M-Pesa, KRA eTIMS, and African commerce: Kabuor Shops for selling online, and Kabuor ERP for running the whole business.
-          </motion.p>
+    <div className="ms min-h-svh">
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded focus:bg-white focus:p-3">
+        Skip to content
+      </a>
+      <Header />
 
-          <div id="products" className="mt-7 grid scroll-mt-6 gap-5 lg:grid-cols-2">
-            <ProductCard
-              delay={0.25}
-              tag="Websites & Online Stores"
-              name="Kabuor Shops"
-              status="Available now"
-              line="Your brand’s own online shop & digital web presence."
-              text="Your products, your colours, M-Pesa checkout. See it before you pay, and go live the same day."
-              points={['10 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, no commission', 'Your own shop link, ready to share on WhatsApp']}
-              meta={info ? `From ${ksh(info.prices.monthly)} a month · Available now` : 'Available now'}
-              visual={<ShopsVisual />}
-              launch={
-                <a
-                  href={SHOPS_RAILWAY_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn bg-[#2357F5] px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-[#3A6BFF] inline-flex items-center gap-2"
-                >
-                  Launch Shop <ExternalLink className="h-4 w-4" />
-                </a>
-              }
-              primary={
-                <Go to="/start" className="btn border border-espresso/15 bg-white px-4 py-3 font-medium text-espresso hover:bg-espresso/5">
-                  Start your shop <ArrowRight className="h-4 w-4" />
-                </Go>
-              }
-              secondary={
-                <Go to="/shops" className="btn btn-ghost px-4 py-3">
-                  How it works
-                </Go>
-              }
-            />
-            <ProductCard
-              delay={0.35}
-              tag="Commercial Operating System"
-              name="Kabuor ERP"
-              status="Early access"
-              line="Sales, M-Pesa ledger, stock, eTIMS and books in one place."
-              text="Invoices that M-Pesa pays and matches by itself, eTIMS-ready, stock and suppliers, and Msaidizi, an assistant you can ask in Kiswahili."
-              points={['M-Pesa payments match your invoices by themselves', 'VAT, stock and profit worked out as you go', 'Built for the phone, for your whole team']}
-              meta="Early access · Priced in shillings per business"
-              visual={<ErpVisual />}
-              launch={
-                <a
-                  href={ERP_RAILWAY_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn bg-[#2357F5] px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-[#3A6BFF] inline-flex items-center gap-2"
-                >
-                  Launch ERP <ExternalLink className="h-4 w-4" />
-                </a>
-              }
-              primary={
-                <Go to="/erp" className="btn border border-espresso/15 bg-white px-4 py-3 font-medium text-espresso hover:bg-espresso/5">
-                  See Kabuor ERP <ArrowRight className="h-4 w-4" />
-                </Go>
-              }
-              secondary={
-                <a href="#demo" className="btn btn-ghost px-4 py-3">
+      <main id="main">
+        {/* Hero: who we are in one line, and the two things a visitor can do next. */}
+        <section className="border-b border-[var(--ms-line)] bg-[#F5F7FC]">
+          <div className="container-x grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:py-20">
+            <div>
+              <p className="text-sm font-semibold text-[var(--ms-blue)]">Kabuor Technologies</p>
+              <h1 className="mt-3 text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">Software Kenyan businesses run on</h1>
+              <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--ms-muted)]">
+                Kabuor ERP runs the whole business: sales, M-Pesa, stock, payroll and books. Kabuor Shops puts your products online with M-Pesa checkout. Both are built for KRA and for the way business works here.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a href="#demo" className="ms-btn ms-btn-primary">
                   Request a demo
                 </a>
-              }
-            />
+                <a href="#products" className="ms-btn ms-btn-secondary">
+                  Explore products
+                </a>
+              </div>
+            </div>
+            {/* Both products at a glance: the ERP's home screen and a shop on a phone. */}
+            <div className="relative mx-auto w-full max-w-lg py-2 sm:py-6 sm:pr-[30%]">
+              <ErpPicture />
+              <img src="/brand/work-anjugu-shop-phone.webp" alt="A Kabuor Shops online shop on a phone" className="absolute top-1/2 right-0 hidden aspect-[9/18] sm:block w-[30%] -translate-y-1/2 rounded-[1.4rem] border-[5px] border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top shadow-[0_16px_40px_-16px_rgba(0,0,0,0.45)]" />
+            </div>
           </div>
         </section>
-      </div>
 
-      {/* which one do I need */}
-      <section className="bg-white py-10 sm:py-14">
-        <div className="container-x">
-          <p className="kb-kicker text-caramel">Which one do I need?</p>
-          <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Start from what you want to fix.</h2>
-          <ul className="mt-10 divide-y divide-espresso/10 border-y border-espresso/10">
-            {[
-              ['“I want customers to find my products and order online.”', 'Kabuor Shops', '/shops', ShoppingBag, SHOPS_RAILWAY_URL, 'Launch Shop'],
-              ['“I invoice other businesses, buy stock, and need my books and KRA in order.”', 'Kabuor ERP', '/erp', BarChart3, ERP_RAILWAY_URL, 'Launch ERP'],
-              ['“Both.”', 'Start with Shops today and join the ERP early access. We’re connecting them so online orders flow straight into your books.', '/erp', Sparkles, null, null],
-            ].map(([need, answer, to, Icon, launchHref, launchText]) => (
-              <li key={need} className="py-6">
-                <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-center sm:gap-8">
-                  <span className="text-lg font-semibold">{need}</span>
-                  <span className="flex items-start gap-3 text-espresso/70">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#ECEBFF] text-[#3A2BC9]">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <span className="pt-1.5">{answer}</span>
-                  </span>
-                  <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-                    {launchHref && (
-                      <a
-                        href={launchHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn bg-[#2357F5] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#3A6BFF] inline-flex items-center gap-1.5"
-                      >
-                        {launchText} <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
-                    )}
-                    <Go to={to} className="group flex items-center text-sm font-semibold text-[#2357F5] hover:underline">
-                      Details <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5" />
-                    </Go>
+        {/* Products */}
+        <section id="products" aria-labelledby="products-title" className="scroll-mt-20 py-14 sm:py-20">
+          <div className="container-x">
+            <SectionHead id="products-title" title="Our products" text="Two products, one way of working: M-Pesa first, KRA-ready, priced in shillings." />
+            <div className="mt-10 grid gap-6 lg:grid-cols-2">
+              <ProductTile
+                picture={
+                  <>
+                    <img src="/brand/work-anjugu-desk.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-top" />
+                    <img src="/brand/work-anjugu-shop-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
+                  </>
+                }
+                status={['Available now', price].filter(Boolean).join(' · ')}
+                name="Kabuor Shops"
+                text="Your brand’s own online shop. Your products, your colours, M-Pesa checkout. See it before you pay, and go live the same day."
+                points={['10 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, with no commission', 'Your own shop link, ready to share on WhatsApp']}
+                primary={
+                  <Go to="/start" className="ms-btn ms-btn-primary">
+                    Start your shop
+                  </Go>
+                }
+                more={
+                  <Go to="/shops" className="ms-link">
+                    Learn more <ChevronRight className="h-4 w-4" />
+                  </Go>
+                }
+              />
+              <ProductTile
+                picture={
+                  <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-10">
+                    <div className="w-full max-w-sm">
+                      <ErpPicture />
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* what both are built on */}
-      <section className="py-10 sm:py-14">
-        <div className="container-x">
-          <p className="kb-kicker text-caramel">What both are built on</p>
-          <h2 className="kb-display mt-3 max-w-3xl text-4xl sm:text-5xl">Made for how business works here.</h2>
-          <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {SHARED.map((s) => (
-              <li key={s.title} className="flex gap-4 rounded-[var(--r-xl)] bg-white p-5 ring-1 ring-espresso/[0.07]">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#ECEBFF] text-[#3A2BC9]">
-                  <s.icon className="h-5 w-5" />
-                </span>
-                <span>
-                  <b className="block text-lg">{s.title}</b>
-                  <span className="text-espresso/60">{s.text}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* real work */}
-      <section id="work" className="scroll-mt-6 bg-white py-10 sm:py-14">
-        <div className="container-x grid items-center gap-10 lg:grid-cols-[1fr_1.3fr]">
-          <div>
-            <p className="kb-kicker text-caramel">Our work</p>
-            <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Anjugu Peanut Butter</h2>
-            <p className="mt-3 max-w-md text-espresso/65">A Kenyan brand with several branches, selling online with M-Pesa checkout, their own jars and their own prices.</p>
-            <Go to="/shops" className="btn btn-ghost mt-6 px-5 py-3">
-              Get a shop like this <ArrowRight className="h-4 w-4" />
-            </Go>
+                }
+                status="Early access · Priced per business, in shillings"
+                name="Kabuor ERP"
+                text="Sales, M-Pesa, stock, payroll and books in one place, with Msaidizi, an assistant you can ask in Kiswahili."
+                points={['M-Pesa payments match your invoices by themselves', 'VAT, stock and profit worked out as you go', 'Built for the phone, for your whole team']}
+                primary={
+                  <a href="#demo" className="ms-btn ms-btn-primary">
+                    Request a demo
+                  </a>
+                }
+                more={
+                  <Go to="/erp" className="ms-link">
+                    Learn more <ChevronRight className="h-4 w-4" />
+                  </Go>
+                }
+              />
+            </div>
           </div>
-          <div className="relative pb-10 sm:pr-10">
-            <div className="overflow-hidden rounded-[var(--r-lg)] bg-white shadow-[0_40px_80px_-40px_rgba(15,17,21,0.6)] ring-1 ring-espresso/10">
-              <div className="flex items-center gap-2 bg-[#EEF1F6] px-4 py-2.5">
-                <i className="h-3 w-3 rounded-full bg-[#CBD2DD]" />
-                <i className="h-3 w-3 rounded-full bg-[#CBD2DD]" />
-                <i className="h-3 w-3 rounded-full bg-[#CBD2DD]" />
-                <span className="ml-3 flex-1 rounded-full bg-white px-3 py-0.5 text-xs text-espresso/55">anjugu.co.ke</span>
-              </div>
+        </section>
+
+        {/* Choosing */}
+        <section id="choose" aria-labelledby="choose-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-14 sm:py-20">
+          <div className="container-x">
+            <SectionHead id="choose-title" title="Which one is right for you?" text="Start from what you want to fix." />
+            <ul className="mt-10 grid gap-6 md:grid-cols-3">
+              {CHOOSE.map((c) => (
+                <li key={c.need} className="flex flex-col rounded-lg bg-white p-6 sm:p-8">
+                  <p className="text-lg font-semibold leading-snug">“{c.need}”</p>
+                  <p className="mt-4 text-sm font-semibold text-[var(--ms-blue)]">{c.product}</p>
+                  <p className="mt-1 text-[0.9375rem] text-[var(--ms-muted)]">{c.text}</p>
+                  <Go to={c.to} className="ms-link mt-auto pt-5">
+                    See {c.product.replace('Start with ', '')} <ChevronRight className="h-4 w-4" />
+                  </Go>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* What both are built on */}
+        <section aria-labelledby="built-title" className="py-14 sm:py-20">
+          <div className="container-x">
+            <SectionHead id="built-title" title="Made for how business works in Kenya" />
+            <ul className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+              {SHARED.map((s) => (
+                <li key={s.title} className="border-t border-[var(--ms-line)] pt-6">
+                  <s.icon className="h-6 w-6 text-[var(--ms-blue)]" strokeWidth={1.75} />
+                  <h3 className="mt-3 text-lg font-semibold">{s.title}</h3>
+                  <p className="mt-1 text-[0.9375rem] leading-relaxed text-[var(--ms-muted)]">{s.text}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* Customer story */}
+        <section id="work" aria-labelledby="work-title" className="scroll-mt-20 bg-[#F5F7FC] py-14 sm:py-20">
+          <div className="container-x grid items-center gap-10 lg:grid-cols-2">
+            <div className="overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white">
               <img src="/brand/work-anjugu-desk.webp" alt="The Anjugu Peanut Butter website" loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
             </div>
-            <div className="absolute -right-1 -bottom-4 w-[25%] overflow-hidden rounded-[1.5rem] border-[6px] border-[#050608] bg-[#050608] shadow-[0_30px_60px_-24px_rgba(0,0,0,0.7)]">
-              <img src="/brand/work-anjugu-shop-phone.webp" alt="The Anjugu shop on a phone" loading="lazy" className="aspect-[9/19] w-full rounded-[1rem] object-cover object-top" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className="container-x py-10 sm:py-14">
-        <DemoRequest info={info} product="erp" />
-      </div>
-
-      {/* Careers & Recruitment Teaser */}
-      <section id="careers" className="scroll-mt-6 bg-[#0A0B1E] py-12 text-cream sm:py-16">
-        <div className="container-x">
-          <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-white/[0.04] p-8 ring-1 ring-white/10 md:flex-row md:items-center">
             <div>
-              <p className="kb-kicker text-[#9DB6FF]">Kabuor Technologies Careers · We're Hiring</p>
-              <h2 className="kb-display mt-3 text-3xl sm:text-4xl">
-                Build the core infrastructure <span className="text-[#F2C14E]">powering East African commerce.</span>
+              <p className="text-sm font-semibold text-[var(--ms-blue)]">Customer story</p>
+              <h2 id="work-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">
+                Anjugu Peanut Butter sells online with M-Pesa checkout
               </h2>
-              <p className="mt-2 max-w-xl text-sm leading-relaxed text-cream/70 sm:text-base">
-                We are assembling our core team alongside open tracks for young builders, student developers, and volunteers passionate about engineering African software. Pre-funding founding equity, 100% fully remote, with our hub along Ngong Road, Nairobi.
-              </p>
+              <p className="mt-4 text-lg leading-relaxed text-[var(--ms-muted)]">A Kenyan brand with several branches, selling its own jars at its own prices, with customers paying by M-Pesa in a few taps.</p>
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Go to="/shops" className="ms-btn ms-btn-primary">
+                  Get a shop like this
+                </Go>
+                <a href="https://anjugu.co.ke" target="_blank" rel="noopener noreferrer" className="ms-link">
+                  Visit anjugu.co.ke <ExternalLink className="h-4 w-4" />
+                </a>
+              </div>
             </div>
-            <Link
-              to="/careers"
-              className="btn bg-[#2357F5] px-7 py-4 text-sm font-semibold text-white shadow-lg transition hover:bg-[#3A6BFF] inline-flex items-center gap-2 shrink-0"
-            >
-              Explore Roles & Fellowships <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
+        </section>
+
+        <div className="container-x py-14 sm:py-20">
+          <DemoRequest info={info} product="erp" className="[&>div]:rounded-lg [&>div]:ring-[var(--ms-line)]" />
         </div>
-      </section>
 
-      {/* who we are */}
-      <section id="about" className="scroll-mt-6 py-10 sm:py-14">
-        <div className="container-x grid gap-10 lg:grid-cols-[1fr_1.2fr]">
-          <div>
-            <p className="kb-kicker text-caramel">About us</p>
-            <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Kabuor Technologies Ltd.</h2>
-            <p className="mt-2 text-sm font-semibold text-espresso/50">Parent holding & software engineering company</p>
-
-            {/* The photo is there to be trusted, so it gets real space; the name and role sit under it, never on it. */}
-            <figure className="mt-8 max-w-sm overflow-hidden rounded-[var(--r-xl)] bg-white shadow-sm ring-1 ring-espresso/10">
-              <img
-                src="/brand/founder-rooney-portrait.webp"
-                alt={`${FOUNDER.name}, ${FOUNDER.title} of Kabuor Technologies`}
-                width="720"
-                height="900"
-                loading="lazy"
-                className="aspect-[4/5] w-full object-cover object-top"
-              />
-              <figcaption className="p-5 sm:p-6">
-                <p className="kb-display text-2xl text-espresso">{FOUNDER.name}</p>
-                <p className="mt-1 text-sm font-semibold text-[#3A2BC9]">{FOUNDER.title}</p>
-                <p className="mt-3 text-[15px] leading-relaxed text-espresso/70">
-                  Built Kabuor ERP end to end: the .NET API, the React app, the KRA eTIMS and M-Pesa (Daraja) integrations, and Kenyan payroll.
-                </p>
-                <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#2357F5] hover:underline">
-                  {FOUNDER.first} on LinkedIn <ExternalLink className="h-3.5 w-3.5" />
+        {/* Who we are */}
+        <section id="about" aria-labelledby="about-title" className="scroll-mt-20 border-t border-[var(--ms-line)] py-14 sm:py-20">
+          <div className="container-x grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+            <div>
+              <SectionHead id="about-title" title="About Kabuor Technologies" />
+              <div className="mt-5 max-w-2xl space-y-4 text-lg leading-relaxed text-[var(--ms-muted)]">
+                <p>We build the software Kenyan businesses run on, starting from how they really work: collecting payments by M-Pesa, staying right with KRA, and talking to customers on WhatsApp.</p>
+                <p>We’re a fully remote team based on Ngong Road, Nairobi. Kabuor Technologies Ltd is being incorporated.</p>
+              </div>
+              <dl className="mt-8 grid max-w-2xl gap-6 border-t border-[var(--ms-line)] pt-6 sm:grid-cols-3">
+                {[
+                  ['Kabuor ERP', 'The whole business in one place'],
+                  ['Kabuor Shops', 'Online shops for Kenyan brands'],
+                  ['Kabuor Builds', 'Websites we design and build for you'],
+                ].map(([t, d]) => (
+                  <div key={t}>
+                    <dt className="font-semibold">{t}</dt>
+                    <dd className="mt-1 text-[0.9375rem] text-[var(--ms-muted)]">{d}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="mt-10 flex flex-col items-start gap-4 rounded-lg bg-[var(--ms-soft)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+                <div>
+                  <h3 className="text-xl font-semibold">We’re hiring</h3>
+                  <p className="mt-1 text-[0.9375rem] text-[var(--ms-muted)]">Engineers, designers and young builders who want to make software for African businesses.</p>
+                </div>
+                <Link to="/careers" className="ms-btn ms-btn-secondary shrink-0">
+                  See open roles
+                </Link>
+              </div>
+            </div>
+            <figure className="h-fit overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white lg:max-w-sm lg:justify-self-end">
+              <img src="/brand/founder-rooney-portrait.webp" alt={`${FOUNDER.name}, ${FOUNDER.title} of Kabuor Technologies`} width="720" height="900" loading="lazy" className="aspect-[4/5] w-full object-cover object-top" />
+              <figcaption className="p-6">
+                <p className="text-lg font-semibold">{FOUNDER.name}</p>
+                <p className="text-sm text-[var(--ms-muted)]">{FOUNDER.title}</p>
+                <p className="mt-3 text-[0.9375rem] leading-relaxed text-[var(--ms-muted)]">Built Kabuor ERP end to end: the .NET API, the React app, the KRA eTIMS and M-Pesa integrations, and Kenyan payroll.</p>
+                <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="ms-link mt-3">
+                  {FOUNDER.first} on LinkedIn <ExternalLink className="h-4 w-4" />
                 </a>
               </figcaption>
             </figure>
           </div>
-          <div className="space-y-4 text-lg leading-relaxed text-espresso/75">
-            <p>
-              <b className="text-espresso">Kabuor Technologies</b> (incorporation in progress as Kabuor Technologies Ltd) is built to power modern African business. Headquartered along Ngong Road, Nairobi and operating as a 100% fully remote team, we build enterprise software tailored for the real counter operations of East Africa.
-            </p>
-            <p>
-              We engineer mission-critical systems ground-up for Kenya: starting from how enterprises collect payments, comply with KRA eTIMS, and communicate with customers on WhatsApp and mobile phones.
-            </p>
-            <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-espresso/10">
-              <h4 className="font-bold text-espresso">Our 3-Tier Brand Architecture:</h4>
-              <ul className="mt-3 space-y-2.5 text-sm text-espresso/80">
-                <li className="flex items-start gap-2.5">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-[#2357F5] shrink-0" />
-                  <span><b className="text-espresso">Kabuor Technologies</b>: The parent technology company, corporate holding entity, and engineering core.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-[#3A2BC9] shrink-0" />
-                  <span><b className="text-espresso">Kabuor Builds</b>: Web engineering studio, digital storefronts, and brand website platform.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-[#0F7A3D] shrink-0" />
-                  <span><b className="text-espresso">Kabuor ERP</b>: Flagship multi-tenant commercial operating system, KRA eTIMS fiscalization, M-Pesa automated ledger, and POS till.</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="talk" className="container-x scroll-mt-6 pb-10 sm:pb-14">
-        <div className="grid gap-8 rounded-[var(--r-xl)] bg-beige p-6 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <p className="kb-kicker text-caramel">Talk to us</p>
-            <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Not sure where to start?</h2>
-            <p className="mt-3 max-w-lg text-espresso/65">Tell us about your business. We’ll tell you honestly which product fits, or build it for you.</p>
-            <div className="mt-6 flex items-center gap-4">
-              <img src="/brand/founder-rooney-headshot.webp" alt="" width="320" height="320" loading="lazy" className="h-20 w-20 shrink-0 rounded-full object-cover ring-4 ring-white" />
-              <div className="min-w-0">
-                <p className="text-lg font-bold text-espresso">You’ll reach {FOUNDER.first} directly</p>
-                <p className="text-[15px] text-espresso/65">
-                  {FOUNDER.name}, {FOUNDER.title}
-                </p>
+        {/* A person to talk to */}
+        <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 bg-[var(--ms-ink)] py-14 text-white sm:py-16">
+          <div className="container-x flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-5">
+              <img src="/brand/founder-rooney-headshot.webp" alt="" width="320" height="320" loading="lazy" className="h-20 w-20 shrink-0 rounded-full object-cover" />
+              <div>
+                <h2 id="contact-title" className="text-2xl font-semibold sm:text-3xl">
+                  Not sure where to start?
+                </h2>
+                <p className="mt-1 text-white/75">Tell us about your business. You’ll reach {FOUNDER.first}, our founder, directly.</p>
               </div>
             </div>
-          </div>
-          <div className="grid gap-2.5">
-            <ContactButtons info={FOUNDER} message={`Hi ${FOUNDER.first}, I'd like to talk about my business.`} className="lg:flex-col" />
-            <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-espresso/60 lg:justify-center">
-              <a href={`mailto:${FOUNDER.email}`} className="break-all hover:text-espresso hover:underline">
-                {FOUNDER.email}
+            <div className="flex shrink-0 flex-wrap gap-3">
+              <a href={whatsapp(FOUNDER.phone, `Hi ${FOUNDER.first}, I'd like to talk about my business.`)} target="_blank" rel="noreferrer" className="ms-btn bg-white text-[var(--ms-ink)] hover:bg-[#e6e6e6]">
+                <MessageCircle className="h-4 w-4" /> WhatsApp {FOUNDER.phone}
               </a>
-              <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#2357F5] hover:underline">
-                LinkedIn
+              <a href={`mailto:${FOUNDER.email}`} className="ms-btn border border-white/60 text-white hover:bg-white/10">
+                Email us <ArrowRight className="h-4 w-4" />
               </a>
-            </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      <SiteFooter info={info} />
-    </>
+      <Footer />
+    </div>
   );
 }
+
