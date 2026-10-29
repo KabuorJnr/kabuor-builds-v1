@@ -5,20 +5,17 @@ import { Link, NavLink } from 'react-router';
 import { Mail, MessageCircle, Phone } from 'lucide-react';
 import { cn } from '../lib/format';
 
-/** The Kabuor Technologies lockup: the price-tag K and the name in sapphire indigo. */
+/** The Kabuor logo (brand v2): KABUOR with its cut O, drawn as one file per brand, white on dark, blue on light.
+ * Which brand comes from the name, so "Kabuor Builds" (PLATFORM_NAME) and "Kabuor ERP" get their own O. */
 export function Wordmark({ name = 'Kabuor Technologies', light = false, stacked = false, tagline, className = '' }) {
-  const [first, ...rest] = name.split(' ');
+  const brand = /erp/i.test(name ?? '') ? 'erp' : /builds|shops/i.test(name ?? '') ? 'builds' : 'technologies';
+  const src = `/brand/kabuor-${brand}-logo-${light ? 'white' : 'blue'}.svg`;
+  // Technologies carries TECHNOLOGIES under it, so it's taller; the product lockups are one line.
+  const size = brand === 'technologies' ? (stacked ? 'h-14 sm:h-16' : 'h-9 sm:h-10') : stacked ? 'h-8 sm:h-10' : 'h-5 sm:h-6';
   return (
-    <span className={`inline-flex items-center whitespace-nowrap ${stacked ? 'gap-4' : 'gap-2.5'} ${className}`}>
-      <img src="/brand/mark.svg" alt="" className={stacked ? 'w-14 shrink-0 sm:w-20' : 'w-9 shrink-0 sm:w-11'} />
-      <span className={stacked ? 'block' : 'inline-flex items-baseline gap-1.5'}>
-        {/* Stacked, "Technologies" is wider than a phone at 5xl, so it steps down there. */}
-        <span className={`kb-display ${stacked ? 'block text-[2rem] sm:text-5xl' : 'text-[1.15rem] sm:text-[1.45rem]'} ${light ? 'text-cream' : 'text-espresso'}`}>
-          {first}
-          {stacked ? <span className="block text-[#2357F5]">{rest.join(' ')}</span> : <span className="text-[#2357F5]"> {rest.join(' ')}</span>}
-        </span>
-        {stacked && tagline && <span className={`kb-serif mt-2 block text-xl whitespace-normal ${light ? 'text-[#F2C14E]' : 'text-cocoa'}`}>{tagline}</span>}
-      </span>
+    <span className={`inline-flex flex-col items-start ${className}`}>
+      <img src={src} alt={name ?? 'Kabuor Technologies'} className={`${size} w-auto max-w-full shrink-0`} />
+      {stacked && tagline && <span className={`kb-serif mt-3 block text-xl whitespace-normal ${light ? 'text-cream/80' : 'text-cocoa'}`}>{tagline}</span>}
     </span>
   );
 }
