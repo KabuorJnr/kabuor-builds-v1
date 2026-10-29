@@ -75,7 +75,9 @@
   --ms-blue: #1f4ae0;
   --ms-blue-hover: #173bb5;
   --color-caramel: var(--ms-blue); /* section labels inside shared components */
-  font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Microsoft's own stack: Segoe UI where it's installed (every Windows computer; its licence doesn't allow serving it
+     from our site), else the device's own system font: San Francisco on Apple, Roboto on Android. */
+  font-family: 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
   color: var(--ms-ink);
   background: #fff;
   -webkit-font-smoothing: antialiased;

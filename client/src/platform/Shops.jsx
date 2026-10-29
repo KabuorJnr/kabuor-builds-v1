@@ -4,13 +4,13 @@
 // one price, questions, and a person who'll build it for you.
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Check, ChevronRight, Eye, Mail, MessageCircle, Palette, Phone, Plus, ShoppingBag, Store, Wallet } from 'lucide-react';
+import { Check, ChevronRight, Eye, Mail, MessageCircle, Palette, Phone, Plus, Store, Wallet } from 'lucide-react';
 import { cn } from '../lib/format';
 import { family, loadFonts } from '../lib/fonts';
 import { linkLabel, linkParts } from '../lib/base';
 import { ksh, papi } from './shared';
 import { tel, whatsapp } from './Site';
-import { CorporatePage, SectionHead } from './Corporate';
+import { BrowserShot, CorporatePage, PhoneShot, SectionHead } from './Corporate';
 
 const STEPS = [
   { icon: Store, title: 'Tell us about your brand', text: 'Your name, what you sell, and the link you want.' },
@@ -75,35 +75,6 @@ function ClaimLink() {
   );
 }
 
-/** A real shop on a phone, with the M-Pesa prompt the customer sees and the order alert the owner gets. */
-function HeroPhone() {
-  return (
-    <div className="relative mx-auto h-[28rem] w-full max-w-[26rem] sm:h-[32rem]" aria-label="A Kabuor Shops shop on a phone">
-      <div className="absolute top-0 left-1/2 w-[60%] -translate-x-1/2 rounded-[2rem] bg-[#1b1b1b] p-2 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.45)]">
-        <div className="overflow-hidden rounded-[1.6rem] bg-white">
-          <div className="bg-[#FAFAFA] py-1.5 text-center text-[10px] text-[var(--ms-muted)]">{linkLabel('anjugu')}</div>
-          <img src="/brand/work-anjugu-shop-phone.webp" alt="The Anjugu Peanut Butter shop" className="aspect-[9/17] w-full object-cover object-top" />
-        </div>
-      </div>
-      <div className="absolute top-[38%] left-0 w-[56%] rounded-lg border border-[var(--ms-line)] bg-white p-4 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.35)]">
-        <p className="text-[11px] font-semibold text-[#0F7A3D]">M-Pesa</p>
-        <p className="mt-1 text-[13px] leading-snug">
-          Pay <b>KSh 650</b> to <b>ANJUGU PEANUT BUTTER</b>? Enter M-PESA PIN
-        </p>
-      </div>
-      <div className="absolute right-0 bottom-[8%] flex w-[60%] items-center gap-3 rounded-lg border border-[var(--ms-line)] bg-white p-3 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.35)]">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded bg-[var(--ms-blue)]">
-          <ShoppingBag className="h-4 w-4 text-white" />
-        </span>
-        <span className="min-w-0 text-[12px] leading-snug">
-          <b className="block text-[13px]">New order · KSh 1,300</b>
-          <span className="text-[var(--ms-muted)]">Achieng, Nairobi · paid by M-Pesa</span>
-        </span>
-      </div>
-    </div>
-  );
-}
-
 /** The 10 styles as small specimens, each in its own fonts, light or dark. */
 function StyleStrip({ styles }) {
   useEffect(() => {
@@ -147,7 +118,11 @@ export default function Shops({ info }) {
               {info && <p className="text-sm text-[var(--ms-muted)]">From {ksh(info.prices.monthly)} a month. No commission on your sales.</p>}
             </div>
           </div>
-          <HeroPhone />
+          {/* A real shop made on Kabuor Shops, on a computer and a phone. */}
+          <div className="relative mx-auto w-full max-w-xl sm:pr-[14%] sm:pb-8">
+            <BrowserShot src="/brand/shop-mamapili-desk.webp" alt="A shop made on Kabuor Shops: Mama Pili Sauces" address="A shop made on Kabuor Shops" />
+            <PhoneShot src="/brand/shop-mamapili-phone.webp" alt="The same shop on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
+          </div>
         </div>
         <div className="border-t border-[var(--ms-line)] bg-white">
           <ul className="container-x grid gap-4 py-6 sm:grid-cols-3">
@@ -165,10 +140,10 @@ export default function Shops({ info }) {
       </section>
 
       {/* How it works */}
-      <section id="how" aria-labelledby="how-title" className="scroll-mt-20 py-14 sm:py-20">
+      <section id="how" aria-labelledby="how-title" className="scroll-mt-20 py-10 sm:py-12">
         <div className="container-x">
           <SectionHead id="how-title" title="Live in four steps" text="From your brand’s name to taking orders, in one sitting." />
-          <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s, i) => (
               <li key={s.title} className="border-t-2 border-[var(--ms-ink)] pt-5">
                 <p className="text-sm font-semibold text-[var(--ms-muted)]">Step {i + 1}</p>
@@ -182,7 +157,7 @@ export default function Shops({ info }) {
       </section>
 
       {info?.styles?.length > 0 && (
-        <section aria-labelledby="styles-title" className="border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-14 sm:py-20">
+        <section aria-labelledby="styles-title" className="border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-10 sm:py-12">
           <div className="container-x">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <SectionHead id="styles-title" title={`${info.styles.length} styles, your colours`} text="Pick a style; the colours come from your own logo and product photos. Switch any time, even after you go live." />
@@ -198,7 +173,7 @@ export default function Shops({ info }) {
       )}
 
       {/* Real work */}
-      <section id="work" aria-labelledby="work-title" className="scroll-mt-20 py-14 sm:py-20">
+      <section id="work" aria-labelledby="work-title" className="scroll-mt-20 py-10 sm:py-12">
         <div className="container-x grid items-center gap-10 lg:grid-cols-2">
           <div className="overflow-hidden rounded-lg border border-[var(--ms-line)]">
             <img src="/brand/work-anjugu-desk.webp" alt="The Anjugu Peanut Butter website" loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
@@ -224,11 +199,11 @@ export default function Shops({ info }) {
       </section>
 
       {/* What you get and the price */}
-      <section id="pricing" aria-labelledby="pricing-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-14 sm:py-20">
+      <section id="pricing" aria-labelledby="pricing-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-10 sm:py-12">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_26rem] lg:items-center">
           <div>
             <SectionHead id="pricing-title" title="Everything a shop needs, one price" />
-            <ul className="mt-8 grid gap-x-6 sm:grid-cols-2">
+            <ul className="mt-6 grid gap-x-6 sm:grid-cols-2">
               {INCLUDED.map((x) => (
                 <li key={x} className="flex gap-2 border-b border-[#d6d6d6] py-3">
                   <Check className="mt-0.5 h-5 w-5 shrink-0 text-[var(--ms-blue)]" strokeWidth={2.5} />
@@ -261,7 +236,7 @@ export default function Shops({ info }) {
       </section>
 
       {/* Questions */}
-      <section id="faq" aria-labelledby="faq-title" className="scroll-mt-20 py-14 sm:py-20">
+      <section id="faq" aria-labelledby="faq-title" className="scroll-mt-20 py-10 sm:py-12">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_1.6fr]">
           <SectionHead id="faq-title" title="Frequently asked questions" text={`Anything else? WhatsApp us${phone ? ` on ${phone}` : ''}.`} />
           <div className="divide-y divide-[var(--ms-line)] border-y border-[var(--ms-line)]">
@@ -280,7 +255,7 @@ export default function Shops({ info }) {
 
       {/* Done for you */}
       {phone && (
-        <section aria-labelledby="built-for-you" className="bg-[var(--ms-ink)] py-14 text-white sm:py-16">
+        <section aria-labelledby="built-for-you" className="bg-[var(--ms-ink)] py-10 text-white sm:py-12">
           <div className="container-x flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h2 id="built-for-you" className="text-2xl font-semibold sm:text-3xl">

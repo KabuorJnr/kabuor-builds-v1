@@ -7,7 +7,7 @@ import { BarChart3, Boxes, Check, ChevronRight, FileText, Minus, Plus, Sparkles,
 import { cn } from '../lib/format';
 import DemoRequest from './DemoRequest';
 import { ERP_RAILWAY_URL } from './Site';
-import { CorporatePage, SectionHead } from './Corporate';
+import { BrowserShot, CorporatePage, PhoneShot, SectionHead } from './Corporate';
 
 const SIGNUP = `${ERP_RAILWAY_URL}/signup`;
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
@@ -65,82 +65,6 @@ function Mark({ v }) {
   return <span className="text-xs text-[var(--ms-muted)]">{v === 'add-on' ? 'Through add-ons' : 'Sometimes'}</span>;
 }
 
-/** A drawing of the real Today screen, so people see what they'd open each morning. */
-function TodayScreen() {
-  const jobs = [
-    ['2 invoices overdue', 'KSh 30,100', 'Follow up', 'bg-[#FDECEA] text-[#B42318]'],
-    ['1 payment to match', 'KSh 1,250', 'Match', 'bg-[#FFF4E0] text-[#A15C00]'],
-    ['Hot Pepper 500g running low', '18 left', 'Order', 'bg-[#FFF4E0] text-[#A15C00]'],
-  ];
-  return (
-    <div className="relative mx-auto w-full max-w-xl pb-8" aria-label="The Kabuor ERP Today screen">
-      <div className="overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white shadow-[0_16px_40px_-20px_rgba(0,0,0,0.3)]">
-        <div className="flex items-center gap-1.5 border-b border-[var(--ms-line)] bg-[#FAFAFA] px-3 py-2">
-          <i className="h-2.5 w-2.5 rounded-full bg-[#d6d6d6]" />
-          <i className="h-2.5 w-2.5 rounded-full bg-[#d6d6d6]" />
-          <i className="h-2.5 w-2.5 rounded-full bg-[#d6d6d6]" />
-          <span className="ml-2 text-xs text-[var(--ms-muted)]">Kabuor ERP · Mama Pili Sauces</span>
-        </div>
-        <div className="p-5">
-          <p className="text-xs text-[var(--ms-muted)]">Tuesday 20 October</p>
-          <p className="text-xl font-semibold">Good morning, Akinyi</p>
-          <div className="mt-4 rounded border border-[var(--ms-line)] p-3">
-            <p className="text-xs font-semibold text-[var(--ms-muted)]">Needs you today</p>
-            {jobs.map(([t, m, a, tone]) => (
-              <div key={t} className="mt-2 flex items-center gap-3">
-                <span className={cn('grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold', tone)}>!</span>
-                <span className="min-w-0 flex-1">
-                  <b className="block truncate text-[13px] font-semibold">{t}</b>
-                  <span className="text-[11px] text-[var(--ms-muted)]">{m}</span>
-                </span>
-                <span className="text-xs font-semibold text-[var(--ms-blue)]">{a}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            {[
-              ['Money in, 7 days', 'KSh 28,750', '▲ 71%'],
-              ['Customers owe you', 'KSh 95,500', '5 invoices'],
-            ].map(([l, v, c]) => (
-              <div key={l} className="rounded border border-[var(--ms-line)] p-3">
-                <p className="text-[11px] text-[var(--ms-muted)]">{l}</p>
-                <p className="text-lg font-semibold">{v}</p>
-                <p className="text-[11px] text-[#0F7A3D]">{c}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="absolute right-2 bottom-0 w-[62%] rounded-lg border border-[var(--ms-line)] bg-white p-3.5 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.35)] sm:-right-6">
-        <p className="text-[11px] font-semibold text-[#0F7A3D]">M-Pesa · matched</p>
-        <p className="mt-1 text-[13px] leading-snug">
-          <b>KSh 16,800</b> from JAVA HOUSE paid <b>INV-0002</b>
-        </p>
-        <p className="mt-0.5 text-[11px] text-[var(--ms-muted)]">The account number was the invoice number</p>
-      </div>
-    </div>
-  );
-}
-
-function AssistantDemo() {
-  return (
-    <div className="rounded-lg border border-[var(--ms-line)] bg-white p-5 sm:p-6">
-      <div className="ml-auto max-w-[80%] rounded-lg bg-[var(--ms-blue)] px-4 py-2.5 text-[15px] text-white">Nani hajalipa mwezi huu?</div>
-      <div className="mt-3 max-w-[90%] rounded-lg bg-[var(--ms-soft)] px-4 py-3 text-[15px]">
-        Wateja wawili wamechelewa: <b>Naivas Westlands</b> anadaiwa KSh 21,100 (siku 26) na <b>Wanjiku Stores</b> KSh 6,000 (siku 5). Nimekuandalia ujumbe wa kuwakumbusha kwenye WhatsApp.
-      </div>
-      <div className="mt-3 rounded border border-[var(--ms-line)] p-3">
-        <p className="text-xs font-semibold text-[var(--ms-muted)]">Waiting for your OK</p>
-        <p className="mt-1 text-sm">Remind Naivas Westlands about INV-0001 (KSh 21,100) on WhatsApp</p>
-        <div className="mt-2 flex gap-2">
-          <span className="rounded border border-[var(--ms-line)] px-3 py-1.5 text-xs font-semibold">No</span>
-          <span className="rounded bg-[#107C10] px-3 py-1.5 text-xs font-semibold text-white">Approve and open WhatsApp</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Erp({ info }) {
   useEffect(() => {
     document.title = 'Kabuor ERP · Run the whole business from one place';
@@ -172,15 +96,19 @@ export default function Erp({ info }) {
               </a>
             </p>
           </div>
-          <TodayScreen />
+          {/* The real thing: the dashboards on a computer, invoices on a phone. */}
+          <div className="relative mx-auto w-full max-w-xl sm:pr-[14%] sm:pb-8">
+            <BrowserShot src="/brand/erp-dashboards.webp" alt="Kabuor ERP dashboards: sales, profit, cash and who owes you, live from the books" address="erp.kabuor-technologies.company" />
+            <PhoneShot src="/brand/erp-invoices-phone.webp" alt="Kabuor ERP invoices on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
+          </div>
         </div>
       </section>
 
       {/* What it fixes */}
-      <section aria-labelledby="fixes" className="py-14 sm:py-20">
+      <section aria-labelledby="fixes" className="py-10 sm:py-12">
         <div className="container-x">
           <SectionHead id="fixes" title="The hours that go into keeping track" text="What changes on the first day." />
-          <ul className="mt-10 grid gap-6 lg:grid-cols-2">
+          <ul className="mt-7 grid gap-6 lg:grid-cols-2">
             {FIXES.map(([before, after]) => (
               <li key={before} className="rounded-lg border border-[var(--ms-line)] p-6">
                 <p className="flex items-start gap-2.5 text-[var(--ms-muted)] line-through decoration-[#a19f9d]">
@@ -196,10 +124,11 @@ export default function Erp({ info }) {
       </section>
 
       {/* What it does */}
-      <section id="features" aria-labelledby="features-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-14 sm:py-20">
+      <section id="features" aria-labelledby="features-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-10 sm:py-12">
         <div className="container-x">
           <SectionHead id="features-title" title="Everything behind the sale" text="What Kabuor ERP does today." />
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <BrowserShot src="/brand/erp-invoices.webp" alt="Kabuor ERP invoices: who owes what, which are paid, part paid or late" address="erp.kabuor-technologies.company/invoices" className="mt-7" />
+          <ul className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
               <li key={f.title} className="rounded-lg bg-white p-6">
                 <f.icon className="h-6 w-6 text-[var(--ms-blue)]" strokeWidth={1.75} />
@@ -212,7 +141,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* The assistant */}
-      <section aria-labelledby="msaidizi" className="py-14 sm:py-20">
+      <section aria-labelledby="msaidizi" className="py-10 sm:py-12">
         <div className="container-x grid items-center gap-10 lg:grid-cols-2">
           <div>
             <p className="text-sm font-semibold text-[var(--ms-blue)]">Msaidizi</p>
@@ -220,20 +149,22 @@ export default function Erp({ info }) {
               An assistant that does the work, with your OK
             </h2>
             <p className="mt-4 max-w-lg text-lg leading-relaxed text-[var(--ms-muted)]">Ask in English, Kiswahili or Sheng. It answers from your own numbers, then offers to do the job: match a payment, remind a customer. Nothing changes until you approve it, and it only sees what your role allows.</p>
-            <ul className="mt-6 space-y-2">
-              {['“How much came in this week?”', '“Match my unmatched M-Pesa payments”', '“Mkumbushe mteja aliyechelewa zaidi”'].map((q) => (
-                <li key={q} className="flex gap-2">
-                  <ChevronRight className="mt-0.5 h-5 w-5 shrink-0 text-[var(--ms-blue)]" /> {q}
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-[var(--ms-muted)]">Things people ask it</p>
+            <ul className="mt-3 divide-y divide-[var(--ms-line)] border-y border-[var(--ms-line)]">
+              {['“How much came in this week?”', '“Nani hajalipa mwezi huu?”', '“Match my unmatched M-Pesa payments”', '“Mkumbushe mteja aliyechelewa zaidi”', '“What’s running low in the Kisumu store?”'].map((q) => (
+                <li key={q} className="flex gap-2 py-3 text-lg">
+                  <ChevronRight className="mt-1 h-5 w-5 shrink-0 text-[var(--ms-blue)]" /> {q}
                 </li>
               ))}
             </ul>
           </div>
-          <AssistantDemo />
         </div>
       </section>
 
       {/* Who it's for, and what's coming */}
-      <section aria-labelledby="who" className="border-t border-[var(--ms-line)] py-14 sm:py-20">
+      <section aria-labelledby="who" className="border-t border-[var(--ms-line)] py-10 sm:py-12">
         <div className="container-x grid gap-12 lg:grid-cols-[1fr_1.3fr]">
           <div>
             <SectionHead id="who" title="Businesses that sell on credit and get paid by M-Pesa" text="Usually 5 to 200 people, VAT-registered, running today on Excel, an accounting package and the M-Pesa statement." />
@@ -266,10 +197,10 @@ export default function Erp({ info }) {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" aria-labelledby="pricing-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-14 sm:py-20">
+      <section id="pricing" aria-labelledby="pricing-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-10 sm:py-12">
         <div className="container-x">
           <SectionHead id="pricing-title" title="Priced per business, in shillings" text="Every plan starts with 30 days free, with everything switched on and no payment details. Pay monthly or yearly by M-Pesa; a year costs ten months." />
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-7 grid gap-6 md:grid-cols-3">
             {PLANS.map((p) => (
               <div key={p.name} className={cn('relative flex flex-col rounded-lg bg-white p-6 sm:p-8', p.best ? 'border-2 border-[var(--ms-blue)]' : 'border border-[var(--ms-line)]')}>
                 {p.best && <span className="absolute -top-3 left-6 rounded bg-[var(--ms-blue)] px-2.5 py-0.5 text-xs font-semibold text-white">Most businesses</span>}
@@ -298,7 +229,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* How it compares */}
-      <section aria-labelledby="compare" className="py-14 sm:py-20">
+      <section aria-labelledby="compare" className="py-10 sm:py-12">
         <div className="container-x">
           <SectionHead id="compare" title="Local where it matters" text="How Kabuor ERP compares with the alternatives Kenyan businesses use." />
           <div className="mt-8 overflow-x-auto rounded-lg border border-[var(--ms-line)]">
@@ -335,7 +266,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* Questions */}
-      <section aria-labelledby="faq" className="border-t border-[var(--ms-line)] py-14 sm:py-20">
+      <section aria-labelledby="faq" className="border-t border-[var(--ms-line)] py-10 sm:py-12">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_1.6fr]">
           <SectionHead id="faq" title="Frequently asked questions" />
           <div className="divide-y divide-[var(--ms-line)] border-y border-[var(--ms-line)]">
@@ -352,7 +283,7 @@ export default function Erp({ info }) {
         </div>
       </section>
 
-      <div className="container-x pb-14 sm:pb-20">
+      <div className="container-x pb-10 sm:pb-12">
         <DemoRequest info={info} product="erp" className="[&>div]:rounded-lg [&>div]:ring-[var(--ms-line)]" />
       </div>
     </CorporatePage>

@@ -4,7 +4,7 @@
 // (platform.css); wrap a page in <CorporatePage> to get them.
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Menu, Sparkles, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { ERP_RAILWAY_URL, Go, tel, whatsapp } from './Site';
 import { CONTACT_EMAIL } from './contact';
 
@@ -86,27 +86,26 @@ function Header({ cta = { href: '/#demo', label: 'Request a demo' } }) {
   );
 }
 
-/** The ERP's home screen, drawn small and honestly (no stock photo). */
-export function ErpPicture() {
+/** A real screenshot in a plain browser window (screenshots of the running systems, in /brand). */
+export function BrowserShot({ src, alt, address, className = '' }) {
   return (
-    <div className="rounded-lg border border-[var(--ms-line)] bg-white p-4 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.25)]">
-      <p className="text-xs font-semibold text-[var(--ms-muted)]">Needs you today</p>
-      {[
-        ['2 invoices overdue', 'KSh 30,100', '#B42318', '#FDECEA'],
-        ['3 M-Pesa payments', 'matched', '#0F7A3D', '#E6F6EC'],
-        ['Hot Pepper 500g running low', '18 left', '#A15C00', '#FFF4E0'],
-      ].map(([t, m, c, bg]) => (
-        <div key={t} className="mt-2 flex items-center gap-2.5 rounded px-2.5 py-2" style={{ background: bg }}>
-          <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c }} />
-          <span className="flex-1 truncate text-[13px] font-semibold">{t}</span>
-          <span className="text-xs font-semibold" style={{ color: c }}>
-            {m}
-          </span>
-        </div>
-      ))}
-      <div className="mt-3 flex items-center gap-2 rounded bg-[var(--ms-ink)] px-3 py-2 text-xs text-white">
-        <Sparkles className="h-3.5 w-3.5" /> “Nani hajalipa mwezi huu?”
+    <div className={`overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white shadow-[0_16px_40px_-20px_rgba(0,0,0,0.3)] ${className}`}>
+      <div className="flex items-center gap-1.5 border-b border-[var(--ms-line)] bg-[#FAFAFA] px-3 py-2">
+        <i className="h-2.5 w-2.5 rounded-full bg-[#d6d6d6]" />
+        <i className="h-2.5 w-2.5 rounded-full bg-[#d6d6d6]" />
+        <i className="h-2.5 w-2.5 rounded-full bg-[#d6d6d6]" />
+        {address && <span className="ml-2 min-w-0 flex-1 truncate rounded bg-white px-2 py-0.5 text-[11px] text-[var(--ms-muted)]">{address}</span>}
       </div>
+      <img src={src} alt={alt} width="1600" height="1000" loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
+    </div>
+  );
+}
+
+/** A real phone screenshot in a plain phone frame. */
+export function PhoneShot({ src, alt, className = '' }) {
+  return (
+    <div className={`rounded-[1.6rem] bg-[#1b1b1b] p-1.5 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.45)] ${className}`}>
+      <img src={src} alt={alt} width="540" height="1169" loading="lazy" className="aspect-[9/17] w-full rounded-[1.25rem] object-cover object-top" />
     </div>
   );
 }
@@ -146,7 +145,7 @@ export function Footer() {
   ];
   return (
     <footer className="bg-[var(--ms-soft)] text-[0.8125rem] text-[#616161]">
-      <div className="container-x grid grid-cols-2 gap-8 py-12 sm:grid-cols-4">
+      <div className="container-x grid grid-cols-2 gap-8 py-10 sm:grid-cols-4">
         {cols.map(([title, links]) => (
           <nav key={title} aria-label={title}>
             <p className="mb-3 text-[0.9375rem] font-semibold text-[var(--ms-ink)]">{title}</p>

@@ -9,7 +9,7 @@ import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCi
 import { ksh } from './shared';
 import DemoRequest from './DemoRequest';
 import { Go, whatsapp } from './Site';
-import { CorporatePage, ErpPicture, FOUNDER, SectionHead } from './Corporate';
+import { BrowserShot, CorporatePage, FOUNDER, PhoneShot, SectionHead } from './Corporate';
 
 
 const SHARED = [
@@ -78,24 +78,24 @@ export default function Company({ info }) {
                 </a>
               </div>
             </div>
-            {/* Both products at a glance: the ERP's home screen and a shop on a phone. */}
-            <div className="relative mx-auto w-full max-w-lg py-2 sm:py-6 sm:pr-[30%]">
-              <ErpPicture />
-              <img src="/brand/work-anjugu-shop-phone.webp" alt="A Kabuor Shops online shop on a phone" className="absolute top-1/2 right-0 hidden aspect-[9/18] sm:block w-[30%] -translate-y-1/2 rounded-[1.4rem] border-[5px] border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top shadow-[0_16px_40px_-16px_rgba(0,0,0,0.45)]" />
+            {/* Both products, as they really look: Kabuor ERP's dashboards, and a shop made on Kabuor Shops. */}
+            <div className="relative mx-auto w-full max-w-xl sm:pr-[14%] sm:pb-8">
+              <BrowserShot src="/brand/erp-dashboards.webp" alt="Kabuor ERP dashboards: sales, profit, cash and who owes you, live from the books" address="erp.kabuor-technologies.company" />
+              <PhoneShot src="/brand/shop-mamapili-phone.webp" alt="A shop made on Kabuor Shops, on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
             </div>
           </div>
         </section>
 
         {/* Products */}
-        <section id="products" aria-labelledby="products-title" className="scroll-mt-20 py-14 sm:py-20">
+        <section id="products" aria-labelledby="products-title" className="scroll-mt-20 py-10 sm:py-12">
           <div className="container-x">
             <SectionHead id="products-title" title="Our products" text="Two products, one way of working: M-Pesa first, KRA-ready, priced in shillings." />
-            <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            <div className="mt-7 grid gap-6 lg:grid-cols-2">
               <ProductTile
                 picture={
                   <>
-                    <img src="/brand/work-anjugu-desk.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-top" />
-                    <img src="/brand/work-anjugu-shop-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
+                    <img src="/brand/shop-mamapili-desk.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-top" />
+                    <img src="/brand/shop-mamapili-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
                   </>
                 }
                 status={['Available now', price].filter(Boolean).join(' · ')}
@@ -115,11 +115,10 @@ export default function Company({ info }) {
               />
               <ProductTile
                 picture={
-                  <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-10">
-                    <div className="w-full max-w-sm">
-                      <ErpPicture />
-                    </div>
-                  </div>
+                  <>
+                    <img src="/brand/erp-invoices.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-left-top" />
+                    <img src="/brand/erp-invoices-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
+                  </>
                 }
                 status="Early access · Priced per business, in shillings"
                 name="Kabuor ERP"
@@ -141,10 +140,10 @@ export default function Company({ info }) {
         </section>
 
         {/* Choosing */}
-        <section id="choose" aria-labelledby="choose-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-14 sm:py-20">
+        <section id="choose" aria-labelledby="choose-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-10 sm:py-12">
           <div className="container-x">
             <SectionHead id="choose-title" title="Which one is right for you?" text="Start from what you want to fix." />
-            <ul className="mt-10 grid gap-6 md:grid-cols-3">
+            <ul className="mt-7 grid gap-6 md:grid-cols-3">
               {CHOOSE.map((c) => (
                 <li key={c.need} className="flex flex-col rounded-lg bg-white p-6 sm:p-8">
                   <p className="text-lg font-semibold leading-snug">“{c.need}”</p>
@@ -160,10 +159,10 @@ export default function Company({ info }) {
         </section>
 
         {/* What both are built on */}
-        <section aria-labelledby="built-title" className="py-14 sm:py-20">
+        <section aria-labelledby="built-title" className="py-10 sm:py-12">
           <div className="container-x">
             <SectionHead id="built-title" title="Made for how business works in Kenya" />
-            <ul className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-7 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
               {SHARED.map((s) => (
                 <li key={s.title} className="border-t border-[var(--ms-line)] pt-6">
                   <s.icon className="h-6 w-6 text-[var(--ms-blue)]" strokeWidth={1.75} />
@@ -176,7 +175,7 @@ export default function Company({ info }) {
         </section>
 
         {/* Customer story */}
-        <section id="work" aria-labelledby="work-title" className="scroll-mt-20 bg-[#F5F7FC] py-14 sm:py-20">
+        <section id="work" aria-labelledby="work-title" className="scroll-mt-20 bg-[#F5F7FC] py-10 sm:py-12">
           <div className="container-x grid items-center gap-10 lg:grid-cols-2">
             <div className="overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white">
               <img src="/brand/work-anjugu-desk.webp" alt="The Anjugu Peanut Butter website" loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
@@ -199,12 +198,12 @@ export default function Company({ info }) {
           </div>
         </section>
 
-        <div className="container-x py-14 sm:py-20">
+        <div className="container-x py-10 sm:py-12">
           <DemoRequest info={info} product="erp" className="[&>div]:rounded-lg [&>div]:ring-[var(--ms-line)]" />
         </div>
 
         {/* Who we are */}
-        <section id="about" aria-labelledby="about-title" className="scroll-mt-20 border-t border-[var(--ms-line)] py-14 sm:py-20">
+        <section id="about" aria-labelledby="about-title" className="scroll-mt-20 border-t border-[var(--ms-line)] py-10 sm:py-12">
           <div className="container-x grid gap-10 lg:grid-cols-[1.4fr_1fr]">
             <div>
               <SectionHead id="about-title" title="About Kabuor Technologies" />
@@ -212,7 +211,7 @@ export default function Company({ info }) {
                 <p>We build the software Kenyan businesses run on, starting from how they really work: collecting payments by M-Pesa, staying right with KRA, and talking to customers on WhatsApp.</p>
                 <p>We’re a fully remote team based on Ngong Road, Nairobi. Kabuor Technologies Ltd is being incorporated.</p>
               </div>
-              <dl className="mt-8 grid max-w-2xl gap-6 border-t border-[var(--ms-line)] pt-6 sm:grid-cols-3">
+              <dl className="mt-6 grid max-w-2xl gap-6 border-t border-[var(--ms-line)] pt-6 sm:grid-cols-3">
                 {[
                   ['Kabuor ERP', 'The whole business in one place'],
                   ['Kabuor Shops', 'Online shops for Kenyan brands'],
@@ -224,7 +223,7 @@ export default function Company({ info }) {
                   </div>
                 ))}
               </dl>
-              <div className="mt-10 flex flex-col items-start gap-4 rounded-lg bg-[var(--ms-soft)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+              <div className="mt-7 flex flex-col items-start gap-4 rounded-lg bg-[var(--ms-soft)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
                 <div>
                   <h3 className="text-xl font-semibold">We’re hiring</h3>
                   <p className="mt-1 text-[0.9375rem] text-[var(--ms-muted)]">Engineers, designers and young builders who want to make software for African businesses.</p>
@@ -249,7 +248,7 @@ export default function Company({ info }) {
         </section>
 
         {/* A person to talk to */}
-        <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 bg-[var(--ms-ink)] py-14 text-white sm:py-16">
+        <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 bg-[var(--ms-ink)] py-10 text-white sm:py-12">
           <div className="container-x flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-5">
               <img src="/brand/founder-rooney-headshot.webp" alt="" width="320" height="320" loading="lazy" className="h-20 w-20 shrink-0 rounded-full object-cover" />

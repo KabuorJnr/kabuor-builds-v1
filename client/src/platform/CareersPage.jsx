@@ -262,7 +262,7 @@ export default function CareersPage({ info }) {
     <CorporatePage cta={{ href: '#open-roles', label: `See ${openRoles.length} open roles` }}>
       {/* Hero */}
       <section className="border-b border-[var(--ms-line)] bg-[#F5F7FC]">
-        <div className="container-x py-12 sm:py-16 lg:py-20">
+        <div className="container-x py-10 sm:py-12 lg:py-14">
           <p className="text-sm font-semibold text-[var(--ms-blue)]">Careers at Kabuor Technologies</p>
           <h1 className="mt-3 max-w-3xl text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">Build the software Kenyan businesses run on</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--ms-muted)]">
@@ -280,7 +280,7 @@ export default function CareersPage({ info }) {
       </section>
 
       {/* Open roles first: it's what most people came for. */}
-      <section id="open-roles" aria-labelledby="roles-title" className="scroll-mt-20 py-14 sm:py-20">
+      <section id="open-roles" aria-labelledby="roles-title" className="scroll-mt-20 py-10 sm:py-12">
         <div className="container-x">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <SectionHead
@@ -358,10 +358,10 @@ export default function CareersPage({ info }) {
       </section>
 
       {/* How we work */}
-      <section id="why-kabuor" aria-labelledby="why-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-14 sm:py-20">
+      <section id="why-kabuor" aria-labelledby="why-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-10 sm:py-12">
         <div className="container-x">
           <SectionHead id="why-title" title="How we work" text="Our software runs in wholesale warehouses in Industrial Area, shops in Eastleigh and Gikomba, and distributors’ fleets across Kenya." />
-          <ul className="mt-10 grid gap-6 md:grid-cols-3">
+          <ul className="mt-7 grid gap-6 md:grid-cols-3">
             {PRINCIPLES.map((p) => (
               <li key={p.title} className="rounded-lg bg-white p-6">
                 <h3 className="text-lg font-semibold">{p.title}</h3>
@@ -373,14 +373,14 @@ export default function CareersPage({ info }) {
       </section>
 
       {/* What you get */}
-      <section aria-labelledby="perks-title" className="py-14 sm:py-20">
+      <section aria-labelledby="perks-title" className="py-10 sm:py-12">
         <div className="container-x">
           <SectionHead
             id="perks-title"
             title="Equity now, salaries from our funding round"
             text="We’re open about where we are: bootstrapping, before funding. People who join now get founding equity, with competitive salaries agreed in advance that start when the round closes."
           />
-          <ul className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-7 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
             {PERKS.map((perk) => (
               <li key={perk.title} className="border-t border-[var(--ms-line)] pt-6">
                 <h3 className="text-lg font-semibold">{perk.title}</h3>
@@ -392,7 +392,7 @@ export default function CareersPage({ info }) {
       </section>
 
       {/* Young builders */}
-      <section id="young-builders" aria-labelledby="builders-title" className="scroll-mt-20 border-t border-[var(--ms-line)] bg-[#F5F7FC] py-14 sm:py-20">
+      <section id="young-builders" aria-labelledby="builders-title" className="scroll-mt-20 border-t border-[var(--ms-line)] bg-[#F5F7FC] py-10 sm:py-12">
         <div className="container-x grid gap-10 lg:grid-cols-2 lg:items-start">
           <div>
             <p className="text-sm font-semibold text-[var(--ms-blue)]">For students, self-taught developers and volunteers</p>
