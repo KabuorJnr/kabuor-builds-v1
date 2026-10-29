@@ -11,7 +11,7 @@ export function Wordmark({ name = 'Kabuor Technologies', light = false, stacked 
   const brand = /erp/i.test(name ?? '') ? 'erp' : /builds|shops/i.test(name ?? '') ? 'builds' : 'technologies';
   const src = `/brand/kabuor-${brand}-logo-${light ? 'white' : 'blue'}.svg`;
   // Technologies carries TECHNOLOGIES under it, so it's taller; the product lockups are one line.
-  const size = brand === 'technologies' ? (stacked ? 'h-14 sm:h-16' : 'h-9 sm:h-10') : stacked ? 'h-8 sm:h-10' : 'h-5 sm:h-6';
+  const size = brand === 'technologies' ? (stacked ? 'h-16 sm:h-20' : 'h-11 sm:h-13') : stacked ? 'h-9 sm:h-11' : 'h-7 sm:h-8';
   return (
     <span className={`inline-flex flex-col items-start ${className}`}>
       <img src={src} alt={name ?? 'Kabuor Technologies'} className={`${size} w-auto max-w-full shrink-0`} />
@@ -57,7 +57,8 @@ export const PRODUCTS = [
 
 /** On ink (light text) over the dark heroes. `cta` is this page's main action: { to | href, label }. */
 export function SiteHeader({ info, cta }) {
-  const name = info?.name ?? 'Kabuor Technologies';
+  const isCompany = typeof window !== 'undefined' && (/kabuor-technologies/i.test(window.location.hostname) || window.location.pathname === '/' || window.location.pathname === '/careers' || !info?.name || /technologies/i.test(info?.name));
+  const name = isCompany ? 'Kabuor Technologies' : (info?.name ?? 'Kabuor Technologies');
   const link = ({ isActive }) => cn('rounded-full px-2.5 py-2 transition sm:px-3', isActive ? 'bg-white/10 text-cream' : 'text-cream/70 hover:text-cream');
   return (
     <header className="container-x relative flex items-center justify-between gap-3 py-5">
@@ -187,7 +188,7 @@ export function SiteFooter({ info, children }) {
         </div>
       </div>
       <p className="container-x relative mt-10 border-t border-white/10 pt-6 text-xs text-cream/45">
-        © {new Date().getFullYear()} {name} · Ngong Road, Nairobi · Fully Remote · Made in Kenya
+        © {new Date().getFullYear()} {name} · Ngong Road, Nairobi · Fully Remote
       </p>
     </footer>
   );

@@ -121,11 +121,9 @@ export default function Company({ info }) {
   return (
     <>
       <div className="kb-ink relative overflow-hidden">
-        <SiteHeader info={info} cta={talk} />
+        <SiteHeader info={{ ...info, name: "Kabuor Technologies" }} cta={talk} />
         <section className="container-x relative pt-8 pb-16 sm:pt-14 sm:pb-20">
-          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: EASE }} className="kb-kicker text-[#9DB6FF]">
-            Kabuor Technologies · Made in Kenya
-          </motion.p>
+          
           <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.05, ease: EASE }} className="kb-display mt-4 max-w-4xl text-[2.9rem] sm:text-[5rem]">
             Software Kenyan businesses <span className="text-[#F2C14E]">actually run on.</span>
           </motion.h1>
