@@ -54,7 +54,7 @@ function ProductTile({ picture, status, name, text, points, primary, more }) {
 
 export default function Company({ info }) {
   useEffect(() => {
-    document.title = 'Kabuor Technologies · ERP and online shops for Kenyan businesses'; // not the platform's name (Kabuor Builds)
+    document.title = 'Kabuor Technologies · Software for Kenyan businesses'; // not the platform's name (Kabuor Builds)
   }, [info]);
   const price = info?.prices?.monthly ? `From ${ksh(info.prices.monthly)} a month` : null;
 
@@ -233,15 +233,21 @@ export default function Company({ info }) {
                 </Link>
               </div>
             </div>
+            {/* The founder's photo lives on /about-founder only, so this page (and its search listing) is about the company. */}
             <figure className="h-fit overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white lg:max-w-sm lg:justify-self-end">
-              <img src="/brand/founder-rooney-portrait.webp" alt={`${FOUNDER.name}, ${FOUNDER.title} of Kabuor Technologies`} width="720" height="900" loading="lazy" className="aspect-[4/5] w-full object-cover object-top" />
               <figcaption className="p-6">
+                <p className="text-sm font-semibold text-[var(--ms-blue)]">Leadership</p>
                 <p className="text-lg font-semibold">{FOUNDER.name}</p>
                 <p className="text-sm text-[var(--ms-muted)]">{FOUNDER.title}</p>
                 <p className="mt-3 text-[0.9375rem] leading-relaxed text-[var(--ms-muted)]">Built Kabuor ERP end to end: the .NET API, the React app, the KRA eTIMS and M-Pesa integrations, and Kenyan payroll.</p>
-                <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="ms-link mt-3">
-                  {FOUNDER.first} on LinkedIn <ExternalLink className="h-4 w-4" />
-                </a>
+                <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[var(--ms-line)] pt-5">
+                  <Link to="/about-founder" className="ms-btn ms-btn-secondary">
+                    About the founder
+                  </Link>
+                  <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="ms-link">
+                    LinkedIn <ExternalLink className="h-4 w-4" />
+                  </a>
+                </div>
               </figcaption>
             </figure>
           </div>
@@ -250,8 +256,7 @@ export default function Company({ info }) {
         {/* A person to talk to */}
         <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 bg-[var(--ms-ink)] py-10 text-white sm:py-12">
           <div className="container-x flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-5">
-              <img src="/brand/founder-rooney-headshot.webp" alt="" width="320" height="320" loading="lazy" className="h-20 w-20 shrink-0 rounded-full object-cover" />
+            <div>
               <div>
                 <h2 id="contact-title" className="text-2xl font-semibold sm:text-3xl">
                   Not sure where to start?

@@ -69,7 +69,7 @@ if (site.kind === 'offline') {
   if (site.kind === 'missing') head({ title: `${linkLabel(site.link)} is available` });
   // The company's address is Kabuor Technologies (the server's platform name is Kabuor Builds, which Google then
   // showed as the company's name); the platform's own address is the shops page.
-  else head({ title: BUILDS_HOST ? 'Kabuor Shops · Online shops for Kenyan brands' : 'Kabuor Technologies · ERP and online shops for Kenyan businesses' });
+  else head({ title: BUILDS_HOST ? 'Kabuor Shops · Online shops for Kenyan brands' : 'Kabuor Technologies · Software for Kenyan businesses' });
   const { default: PlatformApp } = await import('./platform/PlatformApp');
   Root = () => <PlatformApp site={site} />;
 }

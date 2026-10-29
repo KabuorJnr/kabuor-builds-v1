@@ -11,6 +11,7 @@ import Company from './Company';
 import Shops from './Shops';
 import Erp from './Erp';
 import CareersPage from './CareersPage';
+import AboutFounder from './AboutFounder';
 import { linkLabel, platformOrigin } from '../lib/base';
 import { BUILDS_HOST } from './contact';
 
@@ -78,6 +79,8 @@ export default function PlatformApp({ site }) {
         <Route path="/shops" element={<Shops info={info} />} />
         <Route path="/erp" element={<Erp info={info} />} />
         <Route path="/careers" element={<CareersPage info={info} />} />
+        <Route path="/about-founder" element={<AboutFounder info={info} />} />
+        <Route path="/founder" element={<AboutFounder info={info} />} />
         {/* "Launch Shop" opens the platform's own address: there the home page is the shops page. */}
         <Route path="/" element={BUILDS_HOST ? <Shops info={info} /> : <Company info={info} />} />
         <Route path="*" element={<Company info={info} />} />
