@@ -114,7 +114,7 @@ function ErpVisual() {
 
 export default function Company({ info }) {
   useEffect(() => {
-    document.title = `${info?.name ?? 'Kabuor Technologies'} · Software for Kenyan businesses`;
+    document.title = 'Kabuor Technologies · Software for Kenyan businesses';
   }, [info]);
   const talk = { href: '#demo', label: 'Request a demo' };
 
@@ -322,27 +322,38 @@ export default function Company({ info }) {
             <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Kabuor Technologies Ltd.</h2>
             <p className="mt-2 text-sm font-semibold text-espresso/50">Parent holding & software engineering company</p>
 
-            {/* The photo is there to be trusted, so it gets real space; the name and role sit under it, never on it. */}
-            <figure className="mt-8 max-w-sm overflow-hidden rounded-[var(--r-xl)] bg-white shadow-sm ring-1 ring-espresso/10">
-              <img
-                src="/brand/founder-rooney-portrait.webp"
-                alt={`${FOUNDER.name}, ${FOUNDER.title} of Kabuor Technologies`}
-                width="720"
-                height="900"
-                loading="lazy"
-                className="aspect-[4/5] w-full object-cover object-top"
-              />
-              <figcaption className="p-5 sm:p-6">
-                <p className="kb-display text-2xl text-espresso">{FOUNDER.name}</p>
-                <p className="mt-1 text-sm font-semibold text-[#3A2BC9]">{FOUNDER.title}</p>
-                <p className="mt-3 text-[15px] leading-relaxed text-espresso/70">
-                  Built Kabuor ERP end to end: the .NET API, the React app, the KRA eTIMS and M-Pesa (Daraja) integrations, and Kenyan payroll.
-                </p>
-                <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#2357F5] hover:underline">
-                  {FOUNDER.first} on LinkedIn <ExternalLink className="h-3.5 w-3.5" />
+            {/* Executive Leadership card - personal photo lives exclusively on /about-founder */}
+            <div className="mt-8 max-w-sm overflow-hidden rounded-[var(--r-xl)] bg-white p-6 shadow-sm ring-1 ring-espresso/10">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EEF2FF] text-[#2357F5]">
+                  <img src="/brand/icon.svg" alt="Kabuor icon" className="h-7 w-7" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#2357F5]">Executive Leadership</p>
+                  <p className="kb-display text-xl text-espresso">{FOUNDER.name}</p>
+                </div>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-[#3A2BC9]">{FOUNDER.title}</p>
+              <p className="mt-3 text-[14px] leading-relaxed text-espresso/70">
+                Built Kabuor ERP end to end: the .NET API, the React app, the KRA eTIMS and M-Pesa (Daraja) integrations, and Kenyan payroll.
+              </p>
+              <div className="mt-5 flex flex-col gap-2.5 pt-4 border-t border-espresso/10">
+                <Link
+                  to="/about-founder"
+                  className="btn bg-[#2357F5] px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-[#3A6BFF] inline-flex items-center justify-center gap-2"
+                >
+                  Read Founder Story & Background <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+                <a
+                  href={FOUNDER.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-[#2357F5] hover:underline"
+                >
+                  {FOUNDER.first} on LinkedIn <ExternalLink className="h-3 w-3" />
                 </a>
-              </figcaption>
-            </figure>
+              </div>
+            </div>
           </div>
           <div className="space-y-4 text-lg leading-relaxed text-espresso/75">
             <p>
@@ -379,11 +390,13 @@ export default function Company({ info }) {
             <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Not sure where to start?</h2>
             <p className="mt-3 max-w-lg text-espresso/65">Tell us about your business. We’ll tell you honestly which product fits, or build it for you.</p>
             <div className="mt-6 flex items-center gap-4">
-              <img src="/brand/founder-rooney-headshot.webp" alt="" width="320" height="320" loading="lazy" className="h-20 w-20 shrink-0 rounded-full object-cover ring-4 ring-white" />
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#0A0B1E] text-white shadow-md ring-4 ring-white">
+                <img src="/brand/icon-64.png" alt="Kabuor" className="h-9 w-9 rounded-full" />
+              </div>
               <div className="min-w-0">
                 <p className="text-lg font-bold text-espresso">You’ll reach {FOUNDER.first} directly</p>
                 <p className="text-[15px] text-espresso/65">
-                  {FOUNDER.name}, {FOUNDER.title}
+                  {FOUNDER.name}, {FOUNDER.title} · <Link to="/about-founder" className="text-[#2357F5] font-semibold hover:underline">About Founder</Link>
                 </p>
               </div>
             </div>
