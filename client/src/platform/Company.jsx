@@ -122,16 +122,16 @@ export default function Company({ info }) {
     <>
       <div className="kb-ink relative overflow-hidden">
         <SiteHeader info={{ ...info, name: "Kabuor Technologies" }} cta={talk} />
-        <section className="container-x relative pt-8 pb-16 sm:pt-14 sm:pb-20">
+        <section className="container-x relative pt-3 pb-8 sm:pt-5 sm:pb-10">
           
-          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.05, ease: EASE }} className="kb-display mt-4 max-w-4xl text-[2.9rem] sm:text-[5rem]">
+          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.05, ease: EASE }} className="kb-display mt-4 max-w-4xl text-[2.5rem] sm:text-[4.2rem] leading-[1.08] tracking-tight">
             Software Kenyan businesses <span className="text-[#F2C14E]">actually run on.</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15, ease: EASE }} className="mt-6 max-w-2xl text-lg leading-relaxed text-cream/75">
             Two enterprise-grade systems by Kabuor Technologies built around M-Pesa, KRA eTIMS, and African commerce: Kabuor Builds for online shops & websites, and Kabuor ERP for commercial operating systems.
           </motion.p>
 
-          <div id="products" className="mt-12 grid scroll-mt-6 gap-5 lg:grid-cols-2">
+          <div id="products" className="mt-7 grid scroll-mt-6 gap-5 lg:grid-cols-2">
             <ProductCard
               delay={0.25}
               tag="Websites & Online Stores"
@@ -197,7 +197,7 @@ export default function Company({ info }) {
       </div>
 
       {/* which one do I need */}
-      <section className="bg-white py-16 sm:py-24">
+      <section className="bg-white py-10 sm:py-14">
         <div className="container-x">
           <p className="kb-kicker text-caramel">Which one do I need?</p>
           <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Start from what you want to fix.</h2>
@@ -239,7 +239,7 @@ export default function Company({ info }) {
       </section>
 
       {/* what both are built on */}
-      <section className="py-16 sm:py-24">
+      <section className="py-10 sm:py-14">
         <div className="container-x">
           <p className="kb-kicker text-caramel">What both are built on</p>
           <h2 className="kb-display mt-3 max-w-3xl text-4xl sm:text-5xl">Made for how business works here.</h2>
@@ -260,7 +260,7 @@ export default function Company({ info }) {
       </section>
 
       {/* real work */}
-      <section id="work" className="scroll-mt-6 bg-white py-16 sm:py-24">
+      <section id="work" className="scroll-mt-6 bg-white py-10 sm:py-14">
         <div className="container-x grid items-center gap-10 lg:grid-cols-[1fr_1.3fr]">
           <div>
             <p className="kb-kicker text-caramel">Our work</p>
@@ -287,7 +287,7 @@ export default function Company({ info }) {
         </div>
       </section>
 
-      <div className="container-x py-16 sm:py-24">
+      <div className="container-x py-10 sm:py-14">
         <DemoRequest info={info} product="erp" />
       </div>
 
@@ -315,7 +315,7 @@ export default function Company({ info }) {
       </section>
 
       {/* who we are */}
-      <section id="about" className="scroll-mt-6 py-16 sm:py-24">
+      <section id="about" className="scroll-mt-6 py-10 sm:py-14">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_1.2fr]">
           <div>
             <p className="kb-kicker text-caramel">About us</p>
@@ -372,7 +372,7 @@ export default function Company({ info }) {
         </div>
       </section>
 
-      <section id="talk" className="container-x scroll-mt-6 pb-16 sm:pb-24">
+      <section id="talk" className="container-x scroll-mt-6 pb-10 sm:pb-14">
         <div className="grid gap-8 rounded-[var(--r-xl)] bg-beige p-6 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
             <p className="kb-kicker text-caramel">Talk to us</p>

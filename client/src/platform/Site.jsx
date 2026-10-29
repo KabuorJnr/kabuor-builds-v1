@@ -124,15 +124,22 @@ export function ContactButtons({ info, message, className }) {
 }
 
 export function SiteFooter({ info, children }) {
-  const name = info?.name ?? 'Kabuor Technologies';
+  const isCompany = typeof window !== 'undefined' && (/kabuor-technologies/i.test(window.location.hostname) || window.location.pathname === '/' || window.location.pathname === '/careers' || !info?.name || /technologies/i.test(info?.name));
+  const name = isCompany ? 'Kabuor Technologies' : (info?.name ?? 'Kabuor Technologies');
+  const tagline = isCompany ? null : (info?.tagline ?? 'Mlete deals.');
+
   return (
-    <footer id="contact" className="kb-ink relative scroll-mt-6 overflow-hidden pt-14 pb-8">
-      <div className="container-x relative grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.2fr]">
+    <footer id="contact" className="kb-ink relative scroll-mt-6 overflow-hidden pt-10 pb-6 border-t border-white/10">
+      <div className="container-x relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.2fr]">
         <div>
-          <Wordmark name={name} light stacked tagline={info?.tagline ?? 'Mlete deals.'} />
-          <p className="mt-5 max-w-xs text-sm text-cream/60">Software for Kenyan businesses, built in Kenya: M-Pesa first, KRA-ready, in English and Kiswahili.</p>
+          <Wordmark name={name} light stacked tagline={tagline} />
+          <p className="mt-4 max-w-xs text-sm text-cream/60">
+            {isCompany 
+              ? "Enterprise software systems built around M-Pesa, KRA eTIMS, and African commerce." 
+              : "Software for Kenyan businesses: M-Pesa first, KRA-ready, in English and Kiswahili."}
+          </p>
         </div>
-        <nav className="grid content-start gap-2 text-sm" aria-label="Products">
+        <nav className="grid content-start gap-1.5 text-sm" aria-label="Products">
           <p className="mb-1 font-semibold text-cream/50">Products</p>
           {PRODUCTS.map((p) => (
             <Go key={p.to} to={p.to} className="text-cream/80 hover:text-cream">
@@ -141,7 +148,7 @@ export function SiteFooter({ info, children }) {
             </Go>
           ))}
         </nav>
-        <nav className="grid content-start gap-2 text-sm" aria-label="Company">
+        <nav className="grid content-start gap-1.5 text-sm" aria-label="Company">
           <p className="mb-1 font-semibold text-cream/50">Company</p>
           <a href="/#about" className="text-cream/80 hover:text-cream">
             About us
@@ -167,10 +174,10 @@ export function SiteFooter({ info, children }) {
         <div>
           {children ?? (
             <>
-              <p className="mb-3 text-sm font-semibold text-cream/50">Talk to us</p>
+              <p className="mb-2 text-sm font-semibold text-cream/50">Talk to us</p>
               {info?.phone && (
                 <p className="text-sm text-cream/70">
-                  <a href={tel(info.phone)} className="text-lg font-semibold text-[#9DB6FF] hover:underline">
+                  <a href={tel(info.phone)} className="text-base font-semibold text-[#9DB6FF] hover:underline">
                     {info.phone}
                   </a>
                   <a href={`mailto:${info.email}`} className="block hover:text-cream">
@@ -179,7 +186,7 @@ export function SiteFooter({ info, children }) {
                 </p>
               )}
               {info?.phone && (
-                <a href={whatsapp(info.phone, `Hi ${name}, `)} target="_blank" rel="noreferrer" className="btn mt-4 bg-[#1E8E3E] px-5 py-3 text-[#fff] hover:bg-[#176F30]">
+                <a href={whatsapp(info.phone, `Hi ${name}, `)} target="_blank" rel="noreferrer" className="btn mt-3 bg-[#1E8E3E] px-4 py-2.5 text-sm text-[#fff] hover:bg-[#176F30]">
                   <MessageCircle className="h-4 w-4" /> WhatsApp us
                 </a>
               )}
@@ -187,7 +194,7 @@ export function SiteFooter({ info, children }) {
           )}
         </div>
       </div>
-      <p className="container-x relative mt-10 border-t border-white/10 pt-6 text-xs text-cream/45">
+      <p className="container-x relative mt-8 border-t border-white/10 pt-4 text-xs text-cream/45">
         © {new Date().getFullYear()} {name} · Ngong Road, Nairobi · Fully Remote
       </p>
     </footer>

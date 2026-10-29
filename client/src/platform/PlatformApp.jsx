@@ -199,7 +199,7 @@ function Landing({ info }) {
           ))}
         </nav>
 
-        <section className="container-x relative grid items-center gap-10 pt-8 pb-16 sm:pt-14 lg:grid-cols-[1.1fr_1fr] lg:pb-24">
+        <section className="container-x relative grid items-center gap-10 pt-4 pb-10 sm:pt-6 lg:grid-cols-[1.1fr_1fr] lg:pb-14">
           <div>
             <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: EASE }} className="kb-kicker text-[#9DB6FF]">
               Websites for brands
@@ -237,7 +237,7 @@ function Landing({ info }) {
         </div>
       </div>
 
-      <section id="how" className="scroll-mt-6 bg-white py-16 sm:py-24">
+      <section id="how" className="scroll-mt-6 bg-white py-10 sm:py-14">
         <div className="container-x">
           <p className="kb-kicker text-caramel">How it works</p>
           <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Live in four steps</h2>
@@ -261,7 +261,7 @@ function Landing({ info }) {
       </section>
 
       {info?.styles?.length > 0 && (
-        <section className="py-16 sm:py-24">
+        <section className="py-10 sm:py-14">
           <div className="container-x">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -281,7 +281,7 @@ function Landing({ info }) {
       )}
 
       {/* sample work */}
-      <section id="work" className="scroll-mt-6 bg-white py-16 sm:py-24">
+      <section id="work" className="scroll-mt-6 bg-white py-10 sm:py-14">
         <div className="container-x">
           <p className="kb-kicker text-caramel">Sample work</p>
           <div className="mt-3 grid items-center gap-10 lg:grid-cols-[1fr_1.3fr]">
@@ -316,7 +316,7 @@ function Landing({ info }) {
       </section>
 
       {/* what you get + price */}
-      <section id="pricing" className="scroll-mt-6 py-16 sm:py-24">
+      <section id="pricing" className="scroll-mt-6 py-10 sm:py-14">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_26rem] lg:items-center">
           <div>
             <p className="kb-kicker text-caramel">What you get</p>
@@ -354,7 +354,7 @@ function Landing({ info }) {
       </section>
 
       {/* questions people ask before buying */}
-      <section id="faq" className="scroll-mt-6 bg-white py-16 sm:py-24">
+      <section id="faq" className="scroll-mt-6 bg-white py-10 sm:py-14">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_1.6fr]">
           <div>
             <p className="kb-kicker text-caramel">Questions</p>
@@ -377,7 +377,7 @@ function Landing({ info }) {
 
       {/* done for you */}
       {phone && (
-        <section className="container-x py-16 sm:py-24">
+        <section className="container-x py-10 sm:py-14">
           <div className="grid gap-8 rounded-[var(--r-xl)] bg-beige p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="kb-kicker text-caramel">Rather we build it?</p>

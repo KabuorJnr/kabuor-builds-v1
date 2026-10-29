@@ -172,7 +172,7 @@ export default function Erp({ info }) {
       </div>
 
       {/* problems, in the owner's words */}
-      <section className="bg-white py-16 sm:py-24">
+      <section className="bg-white py-10 sm:py-14">
         <div className="container-x">
           <p className="kb-kicker text-caramel">What it fixes</p>
           <h2 className="kb-display mt-3 max-w-3xl text-4xl sm:text-5xl">The hours that go into keeping track.</h2>
@@ -192,7 +192,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* what works today */}
-      <section id="features" className="scroll-mt-6 py-16 sm:py-24">
+      <section id="features" className="scroll-mt-6 py-10 sm:py-14">
         <div className="container-x">
           <p className="kb-kicker text-caramel">What it does today</p>
           <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Everything behind the sale.</h2>
@@ -211,7 +211,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* the assistant */}
-      <section className="kb-ink relative overflow-hidden py-16 sm:py-24">
+      <section className="kb-ink relative overflow-hidden py-10 sm:py-14">
         <div className="container-x relative grid items-center gap-10 lg:grid-cols-2">
           <div>
             <p className="kb-kicker text-[#9DB6FF]">Msaidizi</p>
@@ -230,7 +230,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* who it's for + roadmap */}
-      <section className="bg-white py-16 sm:py-24">
+      <section className="bg-white py-10 sm:py-14">
         <div className="container-x grid gap-12 lg:grid-cols-[1fr_1.3fr]">
           <div>
             <p className="kb-kicker text-caramel">Who it’s for</p>
@@ -265,7 +265,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* pricing */}
-      <section id="pricing" className="scroll-mt-6 bg-white py-16 sm:py-24">
+      <section id="pricing" className="scroll-mt-6 bg-white py-10 sm:py-14">
         <div className="container-x">
           <p className="kb-kicker text-caramel">Pricing</p>
           <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Shillings, per business. Not dollars per seat.</h2>
@@ -294,7 +294,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* how it compares */}
-      <section className="py-16 sm:py-24">
+      <section className="py-10 sm:py-14">
         <div className="container-x">
           <p className="kb-kicker text-caramel">How it compares</p>
           <h2 className="kb-display mt-3 text-4xl sm:text-5xl">Local where it matters.</h2>
@@ -330,7 +330,7 @@ export default function Erp({ info }) {
       </section>
 
       {/* questions */}
-      <section className="bg-white py-16 sm:py-24">
+      <section className="bg-white py-10 sm:py-14">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_1.6fr]">
           <div>
             <p className="kb-kicker text-caramel">Questions</p>
@@ -357,7 +357,7 @@ export default function Erp({ info }) {
         </div>
       </section>
 
-      <div className="container-x py-16 sm:py-24">
+      <div className="container-x py-10 sm:py-14">
         <DemoRequest info={info} product="erp" />
       </div>
 
