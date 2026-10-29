@@ -114,7 +114,7 @@ function ErpVisual() {
 
 export default function Company({ info }) {
   useEffect(() => {
-    document.title = `${info?.name ?? 'Kabuor Technologies'} · Software for Kenyan businesses`;
+    document.title = 'Kabuor Technologies · Software for Kenyan businesses';
   }, [info]);
   const talk = { href: '#demo', label: 'Request a demo' };
 
