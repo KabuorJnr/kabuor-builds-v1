@@ -1,5 +1,5 @@
 # Multi-stage Docker build for Kabuor Builds (Shop Platform)
-FROM node:22-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
 WORKDIR /app
 
 # Copy package manifests for workspace dependency resolution
@@ -20,7 +20,7 @@ RUN npm run build -w client
 RUN npm prune --omit=dev
 
 # Production runtime stage
-FROM node:22-bookworm-slim
+FROM node:24-bookworm-slim
 WORKDIR /app
 ENV NODE_ENV=production
 
@@ -31,7 +31,7 @@ COPY --from=build /app/client/package*.json ./client/
 COPY --from=build /app/client/dist ./client/dist
 COPY --from=build /app/server ./server
 
-# Ensure data directory exists for SQLite database and uploads
+# Ensure data directory exists for SQLite database and uploads (on Render the disk at /data is used instead)
 RUN mkdir -p server/data
 
 EXPOSE 4000

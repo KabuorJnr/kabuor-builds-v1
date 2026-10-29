@@ -3,7 +3,9 @@ import { fileURLToPath } from 'node:url';
 
 // The platform's public https address (PUBLIC_URL), e.g. https://shop.ke. Used for M-Pesa callbacks.
 export const PUBLIC_URL = (
-  process.env.PUBLIC_URL || (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : '')
+  process.env.PUBLIC_URL ||
+  process.env.RENDER_EXTERNAL_URL || // Render's own https address for the service, until the domain is set
+  (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : '')
 ).replace(/\/+$/, '');
 
 // The platform's own domain, once it and its wildcard (*.domain) point here: shops then live at <link>.<domain>.
@@ -29,6 +31,11 @@ if (process.env.VERCEL && !process.env.DATA_DIR) {
 // wiped on every deploy, so refuse to start rather than lose shops.
 if (process.env.RAILWAY_ENVIRONMENT_NAME && !process.env.RAILWAY_VOLUME_MOUNT_PATH && !process.env.DATA_DIR) {
   throw new Error('No volume attached. In Railway, add a volume to this service (mount path /data) so shops are kept.');
+}
+
+// Render: without a disk the service's files are wiped on every deploy. render.yaml attaches one at /data.
+if (process.env.RENDER && !process.env.DATA_DIR) {
+  throw new Error('No disk attached. In Render, add a disk to this service (mount path /data) and set DATA_DIR=/data, as render.yaml does.');
 }
 
 // Where every database and upload lives: DATA_DIR, the Railway volume, or server/data.

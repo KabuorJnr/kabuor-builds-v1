@@ -81,14 +81,26 @@ for the real settings.
 5. M-Pesa: apply on https://developer.safaricom.co.ke for the platform's own Paybill or Till, "Go Live",
    then set the `PLATFORM_MPESA_*` keys. Callbacks arrive at `https://shop.ke/api/platform/mpesa/callback/…`.
 
-## The company site on Vercel
+## Running it on Render
 
-The shops platform runs on Railway. Vercel (project `kabuor-builds`, https://kabuor-builds.vercel.app) serves only
-the Kabuor Builds company page: `client/vercel.json` (project root directory `client`) runs `npm run build:company` (entry `client/company.html` →
-`client/dist-company`). `VITE_PRODUCT_ORIGIN` (set in the Vercel project) is the Railway address: the Shops and
-ERP tabs and the "Start your shop" buttons open the product pages there, and the demo form and platform info
-call its API. The server allows that origin on `/api/platform/info` and `/api/platform/demo` only
-(`COMPANY_SITE_ORIGINS`, default `https://kabuor-builds.vercel.app`).
+One Render web service () serves everything: the company site (www.kabuor-technologies.company), the
+Kabuor Shops pages (builds.kabuor-technologies.company) and every shop (). The server builds
+the website into  and serves it itself. Shops' databases, photos and the nightly backups live on the
+service's disk at  (), which survives deploys and restarts; Render also snapshots it daily.
+
+1. Render → **New → Blueprint** → this repository. It reads : a Starter instance in Frankfurt with a
+   5 GB disk. Fill in  and ; leave  empty for now.
+    is generated.
+2. When the deploy is green, open the  address: the company page,  and .
+3. **Settings → Custom Domains:** add ,  and
+   . Render shows the DNS records for each; change them where the domain's DNS
+   is managed (CNAME  and  to the service's  name, and the apex to the address Render
+   gives). Then remove those domains from the Vercel project so only Render answers. Render issues the certificates.
+4. **Environment:**  (M-Pesa results come back there).
+5. When ready for real money: the  keys (production), and  for SMS.
+
+The server refuses to start on Render without the disk, and on Vercel it takes no signups (its  is wiped), so
+a shop can't be opened somewhere it would be lost.
 
 ## Traffic, latency and security
 
