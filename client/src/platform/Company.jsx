@@ -81,7 +81,7 @@ export default function Company({ info }) {
             {/* Both products, as they really look: Kabuor ERP's dashboards, and a shop made on Kabuor Shops. */}
             <div className="relative mx-auto w-full max-w-xl sm:pr-[14%] sm:pb-8">
               <BrowserShot src="/brand/erp-dashboards.webp" alt="Kabuor ERP dashboards: sales, profit, cash and who owes you, live from the books" address="erp.kabuor-technologies.company" />
-              <PhoneShot src="/brand/shop-mamapili-phone.webp" alt="A shop made on Kabuor Shops, on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
+              <PhoneShot src="/brand/work-anjugu-shop-phone.webp" alt="A shop made on Kabuor Shops, on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
             </div>
           </div>
         </section>
@@ -94,8 +94,8 @@ export default function Company({ info }) {
               <ProductTile
                 picture={
                   <>
-                    <img src="/brand/shop-mamapili-desk.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-top" />
-                    <img src="/brand/shop-mamapili-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
+                    <img src="/brand/work-anjugu-desk.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-top" />
+                    <img src="/brand/work-anjugu-shop-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
                   </>
                 }
                 status={['Available now', price].filter(Boolean).join(' · ')}

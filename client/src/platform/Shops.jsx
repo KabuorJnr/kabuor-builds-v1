@@ -120,8 +120,8 @@ export default function Shops({ info }) {
           </div>
           {/* A real shop made on Kabuor Shops, on a computer and a phone. */}
           <div className="relative mx-auto w-full max-w-xl sm:pr-[14%] sm:pb-8">
-            <BrowserShot src="/brand/shop-mamapili-desk.webp" alt="A shop made on Kabuor Shops: Mama Pili Sauces" address="A shop made on Kabuor Shops" />
-            <PhoneShot src="/brand/shop-mamapili-phone.webp" alt="The same shop on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
+            <BrowserShot src="/brand/work-anjugu-desk.webp" alt="A peanut butter shop built with Kabuor" address="A shop we built" />
+            <PhoneShot src="/brand/work-anjugu-shop-phone.webp" alt="The same shop on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
           </div>
         </div>
         <div className="border-t border-[var(--ms-line)] bg-white">
