@@ -82,6 +82,9 @@ export function SiteHeader({ info, cta }) {
         <a href="/#about" className="hidden rounded-full px-3 py-2 text-cream/70 hover:text-cream lg:block">
           About
         </a>
+        <NavLink to="/about-founder" className={({ isActive }) => cn(link({ isActive }), "hidden lg:block")}>
+          Founder
+        </NavLink>
         <NavLink to="/careers" className={({ isActive }) => cn(link({ isActive }), 'hidden lg:block')}>
           Careers <span className="rounded bg-[#2357F5]/60 px-1.5 py-0.5 text-xs font-bold tracking-wider text-white uppercase">Hiring</span>
         </NavLink>
@@ -153,6 +156,9 @@ export function SiteFooter({ info, children }) {
           <a href="/#about" className="text-cream/80 hover:text-cream">
             About us
           </a>
+          <Link to="/about-founder" className="text-cream/80 hover:text-cream">
+            About Founder
+          </Link>
           <a href="/#work" className="text-cream/80 hover:text-cream">
             Our work
           </a>
