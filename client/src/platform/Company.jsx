@@ -3,31 +3,14 @@
 // white header with text links and one blue action, product tiles on a regular grid, a grey footer of link
 // columns): the two products with their status and price, a guide to choosing, what both are built on, real
 // work, a demo request, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, Menu, MessageCircle, ReceiptText, Smartphone, Sparkles, Users, Wallet, X } from 'lucide-react';
+import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCircle, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
 import { ksh } from './shared';
 import DemoRequest from './DemoRequest';
-import { ERP_RAILWAY_URL, Go, tel, whatsapp } from './Site';
-import { CONTACT_EMAIL } from './contact';
+import { Go, whatsapp } from './Site';
+import { CorporatePage, ErpPicture, FOUNDER, SectionHead } from './Corporate';
 
-const FOUNDER = {
-  name: 'Rooney Odhiambo Kabuor',
-  first: 'Rooney',
-  title: 'Founder & CEO',
-  phone: '0705 607 954',
-  email: CONTACT_EMAIL,
-  linkedin: 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256',
-};
-const LEGAL = 'https://erp.kabuor-technologies.company';
-
-const NAV = [
-  { to: '/erp', label: 'Kabuor ERP' },
-  { to: '/shops', label: 'Kabuor Shops' },
-  { href: '#work', label: 'Customers' },
-  { href: '#about', label: 'About' },
-  { to: '/careers', label: 'Careers' },
-];
 
 const SHARED = [
   { icon: Wallet, title: 'M-Pesa first', text: 'Prompts, Paybills and Tills built in, and payments matched to invoices by themselves.' },
@@ -43,88 +26,6 @@ const CHOOSE = [
   { need: 'I invoice other businesses, buy stock, and need my books and KRA in order.', product: 'Kabuor ERP', to: '/erp', text: 'Sales, M-Pesa, stock, payroll and books in one place.' },
   { need: 'I need both.', product: 'Start with Kabuor Shops', to: '/shops', text: 'Then join the ERP early access: online orders will flow straight into your books.' },
 ];
-
-function NavItem({ item, className, onClick }) {
-  return item.to ? (
-    <Go to={item.to} className={className} onClick={onClick}>
-      {item.label}
-    </Go>
-  ) : (
-    <a href={item.href} className={className} onClick={onClick}>
-      {item.label}
-    </a>
-  );
-}
-
-/** White bar: the company's logo, the products and pages as plain text links, and one action. */
-function Header() {
-  const [open, setOpen] = useState(false);
-  const close = () => setOpen(false);
-  return (
-    <header className="sticky top-0 z-40 border-b border-[var(--ms-line)] bg-white">
-      <div className="container-x flex h-16 items-center gap-6">
-        <Link to="/" aria-label="Kabuor Technologies home" className="shrink-0">
-          <img src="/brand/kabuor-technologies-logo-blue.svg" alt="Kabuor Technologies" className="h-9 w-auto" />
-        </Link>
-        <nav className="hidden flex-1 items-center gap-1 text-[0.9375rem] lg:flex" aria-label="Main">
-          {NAV.map((item) => (
-            <NavItem key={item.label} item={item} className="rounded px-3 py-2 text-[var(--ms-ink)] hover:underline hover:underline-offset-4" />
-          ))}
-        </nav>
-        <div className="ml-auto flex items-center gap-2">
-          <a href="#contact" className="hidden px-3 py-2 text-[0.9375rem] hover:underline hover:underline-offset-4 sm:block">
-            Contact us
-          </a>
-          <a href="#demo" className="ms-btn ms-btn-primary hidden py-2 sm:inline-flex">
-            Request a demo
-          </a>
-          <button type="button" className="grid h-10 w-10 place-items-center rounded lg:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="ms-menu" onClick={() => setOpen((o) => !o)}>
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </div>
-      {open && (
-        <nav id="ms-menu" className="border-t border-[var(--ms-line)] bg-white lg:hidden" aria-label="Main">
-          <div className="container-x grid py-2">
-            {[...NAV, { href: '#contact', label: 'Contact us' }].map((item) => (
-              <NavItem key={item.label} item={item} onClick={close} className="flex items-center justify-between border-b border-[var(--ms-line)] py-3.5 text-base last:border-0">
-                {item.label}
-              </NavItem>
-            ))}
-            <a href="#demo" onClick={close} className="ms-btn ms-btn-primary my-3">
-              Request a demo
-            </a>
-          </div>
-        </nav>
-      )}
-    </header>
-  );
-}
-
-/** The ERP's home screen, drawn small and honestly (no stock photo). */
-function ErpPicture() {
-  return (
-    <div className="rounded-lg border border-[var(--ms-line)] bg-white p-4 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.25)]">
-      <p className="text-xs font-semibold text-[var(--ms-muted)]">Needs you today</p>
-      {[
-        ['2 invoices overdue', 'KSh 30,100', '#B42318', '#FDECEA'],
-        ['3 M-Pesa payments', 'matched', '#0F7A3D', '#E6F6EC'],
-        ['Hot Pepper 500g running low', '18 left', '#A15C00', '#FFF4E0'],
-      ].map(([t, m, c, bg]) => (
-        <div key={t} className="mt-2 flex items-center gap-2.5 rounded px-2.5 py-2" style={{ background: bg }}>
-          <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c }} />
-          <span className="flex-1 truncate text-[13px] font-semibold">{t}</span>
-          <span className="text-xs font-semibold" style={{ color: c }}>
-            {m}
-          </span>
-        </div>
-      ))}
-      <div className="mt-3 flex items-center gap-2 rounded bg-[var(--ms-ink)] px-3 py-2 text-xs text-white">
-        <Sparkles className="h-3.5 w-3.5" /> “Nani hajalipa mwezi huu?”
-      </div>
-    </div>
-  );
-}
 
 /** One product: picture on top, then status and price, name, what it does, and the two ways in. */
 function ProductTile({ picture, status, name, text, points, primary, more }) {
@@ -151,77 +52,6 @@ function ProductTile({ picture, status, name, text, points, primary, more }) {
   );
 }
 
-const SectionHead = ({ title, text, id }) => (
-  <div className="max-w-3xl">
-    <h2 id={id} className="text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">
-      {title}
-    </h2>
-    {text && <p className="mt-3 text-lg leading-relaxed text-[var(--ms-muted)]">{text}</p>}
-  </div>
-);
-
-function Footer() {
-  const cols = [
-    ['Products', [
-      { to: '/erp', label: 'Kabuor ERP' },
-      { to: '/shops', label: 'Kabuor Shops' },
-      { to: '/start', label: 'Start a shop' },
-      { href: ERP_RAILWAY_URL, label: 'Sign in to Kabuor ERP' },
-    ]],
-    ['For business', [
-      { href: '#demo', label: 'Request a demo' },
-      { href: '#choose', label: 'Which product fits' },
-      { href: '#work', label: 'Customer stories' },
-    ]],
-    ['Company', [
-      { href: '#about', label: 'About Kabuor Technologies' },
-      { to: '/careers', label: 'Careers' },
-      { href: FOUNDER.linkedin, label: 'Founder on LinkedIn' },
-    ]],
-    ['Contact', [
-      { href: whatsapp(FOUNDER.phone, 'Hi Kabuor Technologies, '), label: 'WhatsApp us' },
-      { href: tel(FOUNDER.phone), label: FOUNDER.phone },
-      { href: `mailto:${FOUNDER.email}`, label: 'Email us' },
-    ]],
-  ];
-  return (
-    <footer className="bg-[var(--ms-soft)] text-[0.8125rem] text-[#616161]">
-      <div className="container-x grid grid-cols-2 gap-8 py-12 sm:grid-cols-4">
-        {cols.map(([title, links]) => (
-          <nav key={title} aria-label={title}>
-            <p className="mb-3 text-[0.9375rem] font-semibold text-[var(--ms-ink)]">{title}</p>
-            <ul className="space-y-2.5">
-              {links.map((l) => (
-                <li key={l.label}>
-                  {l.to ? (
-                    <Go to={l.to} className="hover:text-[var(--ms-ink)] hover:underline">
-                      {l.label}
-                    </Go>
-                  ) : (
-                    <a href={l.href} {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="hover:text-[var(--ms-ink)] hover:underline">
-                      {l.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ))}
-      </div>
-      <div className="container-x flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[#d6d6d6] py-5">
-        <span>Nairobi, Kenya</span>
-        <a href={`${LEGAL}/privacy`} className="hover:underline">
-          Privacy
-        </a>
-        <a href={`${LEGAL}/terms`} className="hover:underline">
-          Terms of use
-        </a>
-        <span className="sm:ml-auto">© {new Date().getFullYear()} Kabuor Technologies</span>
-      </div>
-    </footer>
-  );
-}
-
 export default function Company({ info }) {
   useEffect(() => {
     document.title = 'Kabuor Technologies · ERP and online shops for Kenyan businesses'; // not the platform's name (Kabuor Builds)
@@ -229,13 +59,7 @@ export default function Company({ info }) {
   const price = info?.prices?.monthly ? `From ${ksh(info.prices.monthly)} a month` : null;
 
   return (
-    <div className="ms min-h-svh">
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded focus:bg-white focus:p-3">
-        Skip to content
-      </a>
-      <Header />
-
-      <main id="main">
+    <CorporatePage cta={{ href: '#demo', label: 'Request a demo' }}>
         {/* Hero: who we are in one line, and the two things a visitor can do next. */}
         <section className="border-b border-[var(--ms-line)] bg-[#F5F7FC]">
           <div className="container-x grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:py-20">
@@ -446,10 +270,7 @@ export default function Company({ info }) {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </CorporatePage>
   );
 }
 

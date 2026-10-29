@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { Search } from 'lucide-react';
-import { SiteHeader, SiteFooter } from './Site';
+import { CorporatePage, SectionHead } from './Corporate';
 import { DEFAULT_ROLES, fetchRoleStatuses, payLine, withStatus } from './careersStore';
 import CareersApplicationPage from './CareersApplicationPage';
 import { CONTACT_EMAIL } from './contact';
@@ -81,39 +81,37 @@ function RoleCard({ role, expanded, onToggle, onApply }) {
   return (
     <article
       id={`role-${role.id}`}
-      className={`scroll-mt-6 overflow-hidden rounded-2xl border bg-white transition ${
-        expanded ? 'border-[#2357F5] ring-1 ring-[#2357F5]' : 'border-[#E6E7F0] hover:border-[#B9BBD3]'
-      }`}
+      className={`scroll-mt-20 overflow-hidden rounded-lg border bg-white ${expanded ? 'border-[var(--ms-blue)] shadow-[0_0_0_1px_var(--ms-blue)]' : 'border-[var(--ms-line)] hover:border-[#a19f9d]'}`}
     >
       <div className="p-5 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="min-w-0">
-            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-[#2357F5]">
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-[var(--ms-blue)]">
               {role.department}
               {closed && (
-                <span className="rounded-full bg-espresso/[0.06] px-2.5 py-0.5 text-xs font-semibold text-espresso/70">Applications closed</span>
+                <span className="rounded bg-[var(--ms-soft)] px-2 py-0.5 text-xs font-semibold text-[var(--ms-muted)]">Applications closed</span>
               )}
             </p>
-            <h3 className="kb-display mt-1.5 text-2xl leading-[1.05] text-espresso">
-              <button type="button" onClick={onToggle} aria-expanded={expanded} aria-controls={detailsId} className="text-left hover:text-[#2357F5]">
+            <h3 className="mt-1 text-xl font-semibold sm:text-2xl">
+              <button type="button" onClick={onToggle} aria-expanded={expanded} aria-controls={detailsId} className="text-left hover:underline hover:underline-offset-4">
                 {role.title}
               </button>
             </h3>
-            <p className="mt-2 text-sm text-espresso/65">
+            <p className="mt-2 text-sm text-[var(--ms-muted)]">
               {role.type} · {role.experience} · {role.location}
             </p>
           </div>
           <div className="shrink-0 sm:max-w-[19rem] sm:text-right">
-            <p className="text-[15px] font-semibold text-emerald-700">{role.equity}</p>
-            <p className="mt-0.5 text-sm text-espresso/60">{payLine(role)}</p>
+            <p className="text-[15px] font-semibold text-[#0F7A3D]">{role.equity}</p>
+            <p className="mt-0.5 text-sm text-[var(--ms-muted)]">{payLine(role)}</p>
           </div>
         </div>
 
-        <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-espresso/75">{role.summary}</p>
+        <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-[var(--ms-muted)]">{role.summary}</p>
 
         <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Skills">
           {role.tags.map((tag) => (
-            <li key={tag} className="rounded-full border border-[#E6E7F0] bg-[#F7F7FB] px-2.5 py-1 text-[13px] font-medium text-[#3B3F5C]">
+            <li key={tag} className="rounded bg-[var(--ms-soft)] px-2.5 py-1 text-[13px]">
               {tag}
             </li>
           ))}
@@ -121,7 +119,7 @@ function RoleCard({ role, expanded, onToggle, onApply }) {
 
         <div className="mt-5 flex flex-wrap items-center gap-2.5">
           {!closed && (
-            <button type="button" onClick={onApply} className="btn bg-[#2357F5] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#3A6BFF]">
+            <button type="button" onClick={onApply} className="ms-btn ms-btn-primary py-2">
               Apply
             </button>
           )}
@@ -130,7 +128,7 @@ function RoleCard({ role, expanded, onToggle, onApply }) {
             onClick={onToggle}
             aria-expanded={expanded}
             aria-controls={detailsId}
-            className="btn border border-[#E6E7F0] bg-white px-5 py-2.5 text-sm font-semibold text-espresso hover:border-[#B9BBD3]"
+            className="ms-btn ms-btn-secondary py-2"
           >
             {expanded ? 'Hide details' : 'Responsibilities & requirements'}
           </button>
@@ -138,13 +136,13 @@ function RoleCard({ role, expanded, onToggle, onApply }) {
       </div>
 
       {expanded && (
-        <div id={detailsId} className="grid gap-8 border-t border-[#E6E7F0] bg-[#FAF9F5] p-5 sm:p-6 md:grid-cols-2">
+        <div id={detailsId} className="grid gap-8 border-t border-[var(--ms-line)] bg-[#FAFAFA] p-5 sm:p-6 md:grid-cols-2">
           <section>
-            <h4 className="text-[13px] font-bold tracking-[0.12em] text-espresso/60 uppercase">What you’ll do</h4>
+            <h4 className="font-semibold">What you’ll do</h4>
             <ul className="mt-3 space-y-2.5">
               {role.responsibilities.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-[15px] leading-relaxed text-[#3B3F5C]">
-                  <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#2357F5]" />
+                <li key={item} className="flex items-start gap-2.5 text-[15px] leading-relaxed text-[var(--ms-muted)]">
+                  <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--ms-ink)]" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -152,32 +150,32 @@ function RoleCard({ role, expanded, onToggle, onApply }) {
           </section>
 
           <section>
-            <h4 className="text-[13px] font-bold tracking-[0.12em] text-espresso/60 uppercase">What we’re looking for</h4>
+            <h4 className="font-semibold">What we’re looking for</h4>
             <ul className="mt-3 space-y-2.5">
               {role.requirements.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-[15px] leading-relaxed text-[#3B3F5C]">
-                  <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#2357F5]" />
+                <li key={item} className="flex items-start gap-2.5 text-[15px] leading-relaxed text-[var(--ms-muted)]">
+                  <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--ms-ink)]" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </section>
 
-          <section className="rounded-2xl border border-[#2357F5]/20 bg-[#E8EEFF]/60 p-5 md:col-span-2">
-            <h4 className="text-[13px] font-bold tracking-[0.12em] text-[#2357F5] uppercase">What you get</h4>
-            <p className="mt-2 text-[15px] leading-relaxed text-[#1E1B18]">{role.benefitsNote}</p>
-            <p className="mt-2 text-sm leading-relaxed text-espresso/65">{role.compensationNote}</p>
+          <section className="rounded-lg border border-[var(--ms-line)] bg-white p-5 md:col-span-2">
+            <h4 className="font-semibold">What you get</h4>
+            <p className="mt-2 text-[15px] leading-relaxed">{role.benefitsNote}</p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--ms-muted)]">{role.compensationNote}</p>
           </section>
 
           <div className="flex flex-wrap items-center gap-2.5 md:col-span-2">
             {closed ? (
-              <p className="text-[15px] text-espresso/70">This role isn’t taking applications right now.</p>
+              <p className="text-[15px] text-[var(--ms-muted)]">This role isn’t taking applications right now.</p>
             ) : (
-              <button type="button" onClick={onApply} className="btn bg-[#2357F5] px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-[#3A6BFF]">
+              <button type="button" onClick={onApply} className="ms-btn ms-btn-primary">
                 Apply for this role
               </button>
             )}
-            <button type="button" onClick={copyLink} className="btn px-4 py-3 text-sm font-semibold text-[#2357F5] hover:bg-[#E8EEFF]">
+            <button type="button" onClick={copyLink} className="ms-link px-2 py-2">
               {copied ? 'Link copied' : 'Copy link to this role'}
             </button>
           </div>
@@ -196,6 +194,10 @@ export default function CareersPage({ info }) {
   const [params, setParams] = useSearchParams();
   const expandedRole = params.get('role');
   const applyingRole = roles.find((r) => r.id === params.get('apply'));
+
+  useEffect(() => {
+    document.title = 'Careers · Kabuor Technologies';
+  }, []);
 
   // Which roles the hiring desk has closed. If the platform can't be reached the roles show as written; it still
   // refuses applications to a closed role, and the form says so.
@@ -257,171 +259,50 @@ export default function CareersPage({ info }) {
   const filtered = query || selectedDept !== 'All';
 
   return (
-    <div className="min-h-screen bg-[#FDFCF7] text-espresso selection:bg-[#2357F5] selection:text-white">
-      <div className="kb-ink relative overflow-hidden">
-        <SiteHeader info={info} cta={{ to: '/#contact', label: 'Contact Team' }} />
-      </div>
-
-      {/* Hero Header */}
-      <section className="kb-ink relative overflow-hidden py-16 text-cream sm:py-24">
-        <div className="container-x relative text-center">
-          <p className="kb-kicker text-[#9DB6FF]">Kabuor Technologies · Ngong Road, Nairobi · 100% Fully Remote</p>
-
-          <h1 className="kb-display mx-auto mt-4 max-w-4xl text-[2.75rem] leading-[0.95] sm:text-[4.75rem]">
-            Build the Financial Operating System for <span className="text-[#F2C14E]">African Commerce.</span>
-          </h1>
-
-          <p className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-cream/75 sm:text-xl">
-            Over 1.5 million Kenyan merchants power East Africa on M-Pesa, paper dockets, and sheer resilience. We are engineering the automated platform that handles instant KRA eTIMS, offline retail point-of-sale, and real-time cashflow reconciliation at a scale of 500,000 transactions a day.
+    <CorporatePage cta={{ href: '#open-roles', label: `See ${openRoles.length} open roles` }}>
+      {/* Hero */}
+      <section className="border-b border-[var(--ms-line)] bg-[#F5F7FC]">
+        <div className="container-x py-12 sm:py-16 lg:py-20">
+          <p className="text-sm font-semibold text-[var(--ms-blue)]">Careers at Kabuor Technologies</p>
+          <h1 className="mt-3 max-w-3xl text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">Build the software Kenyan businesses run on</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--ms-muted)]">
+            Kenyan merchants run on M-Pesa, paper dockets and resilience. We build the systems that take that work off their hands: invoicing and M-Pesa matching, KRA eTIMS, stock, payroll and online shops. We’re a fully remote team based on Ngong Road, Nairobi.
           </p>
-
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-            <a href="#open-roles" className="btn bg-[#2357F5] px-7 py-3.5 text-[15px] font-semibold text-white shadow-lg shadow-[#2357F5]/25 hover:bg-[#3A6BFF]">
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#open-roles" className="ms-btn ms-btn-primary">
               See {openRoles.length} open roles
             </a>
-            <a href="#young-builders" className="btn bg-emerald-500/20 px-6 py-3.5 text-[15px] font-semibold text-emerald-300 ring-1 ring-emerald-400/30 hover:bg-emerald-500/30">
-              Young Builders & Volunteers
-            </a>
-            <a href="#why-kabuor" className="btn bg-white/10 px-6 py-3.5 text-[15px] font-semibold text-white ring-1 ring-white/20 hover:bg-white/20">
-              Why Join Us
+            <a href="#young-builders" className="ms-btn ms-btn-secondary">
+              Young builders and volunteers
             </a>
           </div>
-
-          {/* Scale Proof Metrics */}
-          <dl className="mt-16 grid grid-cols-2 gap-3 border-t border-white/10 pt-12 text-left sm:grid-cols-4 sm:gap-4">
-            {[
-              ['500,000+', 'Load-tested daily transactions', 'text-[#F2C14E]'],
-              ['100%', 'Offline-first PWA resilience', 'text-emerald-400'],
-              ['0 Seconds', 'eTIMS & M-Pesa auto-reconcile', 'text-[#9DB6FF]'],
-              ['100% ESOP', 'Equity for all full-time hires', 'text-white'],
-            ].map(([value, label, tone]) => (
-              <div key={label} className="flex flex-col-reverse rounded-2xl border border-white/5 bg-white/[0.03] p-4">
-                <dt className="mt-1 text-sm text-cream/65">{label}</dt>
-                <dd className={`kb-display text-3xl ${tone}`}>{value}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
       </section>
 
-      {/* Culture Section */}
-      <section id="why-kabuor" className="scroll-mt-6 border-b border-espresso/10 bg-white py-16 sm:py-24">
+      {/* Open roles first: it's what most people came for. */}
+      <section id="open-roles" aria-labelledby="roles-title" className="scroll-mt-20 py-14 sm:py-20">
         <div className="container-x">
-          <div className="max-w-2xl">
-            <p className="kb-kicker text-caramel">Company Culture & Principles</p>
-            <h2 className="kb-display mt-3 text-3xl text-espresso sm:text-5xl">We build for the real trenches of commerce.</h2>
-            <p className="mt-4 text-[17px] leading-relaxed text-espresso/70">
-              Our software doesn't run in air-conditioned ivory towers. It powers wholesale warehouses in Industrial Area, retail storefronts in Eastleigh and Gikomba, and distributor fleets across Kenya.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {PRINCIPLES.map((p) => (
-              <div key={p.title} className="rounded-2xl border border-espresso/10 bg-[#FDFCF7] p-6">
-                <h3 className="kb-display text-xl text-espresso">{p.title}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-espresso/75">{p.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Rewards / Perks */}
-      <section className="scroll-mt-6 border-b border-espresso/10 bg-[#F7F7FB] py-16 sm:py-24">
-        <div className="container-x">
-          <div className="max-w-3xl">
-            <p className="kb-kicker text-caramel">Pre-Funding Commitment & Rewards</p>
-            <h2 className="kb-display mt-3 text-3xl text-espresso sm:text-5xl">Equity today, market compensation upon funding.</h2>
-            <p className="mt-4 text-[17px] leading-relaxed text-espresso/70">
-              We are transparent with our team: we are currently bootstrapping and pre-funding. We offer generous founding ESOP equity for builders and volunteers joining now, with pre-agreed competitive cash salaries activating immediately upon closing our funding round.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-            {PERKS.map((perk) => (
-              <div key={perk.title} className="rounded-2xl border border-espresso/10 bg-white p-6">
-                <h3 className="kb-display text-xl text-espresso">{perk.title}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-espresso/70">{perk.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Young Builders & Volunteers Fellowship Callout */}
-      <section id="young-builders" className="kb-ink relative scroll-mt-6 overflow-hidden py-16 text-cream sm:py-24">
-        <div className="container-x relative">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 sm:p-12 lg:p-16">
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-              <div>
-                <p className="kb-kicker text-[#F2C14E]">For Students, Self-Taught Hackers & Volunteers</p>
-                <h2 className="kb-display mt-3 text-3xl text-white sm:text-5xl">
-                  You don’t need 10 years of experience to <span className="text-[#F2C14E]">build Africa’s future.</span>
-                </h2>
-                <p className="mt-4 text-[17px] leading-relaxed text-cream/75 sm:text-lg">
-                  We are deeply committed to mentoring the next generation of African builders. If you are a young programmer, university student, or volunteer hungry to write real production code that solves real problems for Kenyan merchants, we want to build with you.
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSelectedDept('Young Builders & Volunteers');
-                      document.getElementById('open-roles')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="btn bg-[#2357F5] px-6 py-3.5 text-[15px] font-semibold text-white shadow-lg shadow-[#2357F5]/30 hover:bg-[#3A6BFF]"
-                  >
-                    See fellowship & volunteer roles
-                  </button>
-                  <a
-                    href={`mailto:${CONTACT_EMAIL}?subject=Young%20Builder%20%2F%20Volunteer%20Inquiry%20-%20Kabuor%20Technologies`}
-                    className="btn bg-white/10 px-6 py-3.5 text-[15px] font-semibold text-white ring-1 ring-white/15 hover:bg-white/20"
-                  >
-                    Email us your project
-                  </a>
-                </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                {BUILDER_POINTS.map((p) => (
-                  <div key={p.title} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                    <h3 className="kb-display text-lg text-white">{p.title}</h3>
-                    <p className="mt-2 text-[15px] leading-relaxed text-cream/70">{p.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Open Roles Directory */}
-      <section id="open-roles" className="scroll-mt-6 bg-white py-16 sm:py-24">
-        <div className="container-x">
-          <div className="flex flex-col gap-6 border-b border-espresso/10 pb-8 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
-              <p className="kb-kicker text-caramel">Open Opportunities Across Company</p>
-              <h2 className="kb-display mt-3 text-3xl text-espresso sm:text-5xl">Open positions</h2>
-              <p className="mt-3 text-[15px] leading-relaxed text-espresso/70">
-                {openRoles.length} of {roles.length} roles are taking applications. Founding roles are paid in ESOP equity now, with pre-agreed salaries from our funding round.
-              </p>
-            </div>
-
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <SectionHead
+              id="roles-title"
+              title="Open positions"
+              text={`${openRoles.length} of ${roles.length} roles are taking applications. Founding roles are paid in equity now, with salaries agreed in advance from our funding round.`}
+            />
             <label className="relative block w-full md:w-80">
               <span className="sr-only">Search roles</span>
-              <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#8A8DB0]" />
+              <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[var(--ms-muted)]" />
               <input
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search roles, skills or teams"
-                className="w-full rounded-xl border border-[#E6E7F0] bg-white py-3 pr-3 pl-10 text-[15px] focus:border-[#2357F5] focus:ring-2 focus:ring-[#2357F5]/20 focus:outline-none"
+                className="w-full rounded border border-[#8a8886] bg-white py-2.5 pr-3 pl-9 text-[15px] focus:border-[var(--ms-blue)] focus:shadow-[0_0_0_1px_var(--ms-blue)] focus:outline-none"
               />
             </label>
           </div>
 
-          {/* One swipeable row on phones (eight teams would fill the screen), wrapped from sm up. */}
-          <div className="no-scrollbar -mx-4 mt-6 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter by team">
+          {/* One swipeable row on phones, wrapped from sm up. */}
+          <div className="no-scrollbar -mx-4 mt-8 flex gap-2 overflow-x-auto border-b border-[var(--ms-line)] px-4 pb-4 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter by team">
             {['All', ...departments].map((dept) => {
               const count = dept === 'All' ? searched.length : searched.filter((r) => r.department === dept).length;
               const active = selectedDept === dept;
@@ -431,23 +312,23 @@ export default function CareersPage({ info }) {
                   type="button"
                   aria-pressed={active}
                   onClick={() => setSelectedDept(dept)}
-                  className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition ${
-                    active ? 'border-[#0A0B1E] bg-[#0A0B1E] text-white' : 'border-[#E6E7F0] bg-[#F7F7FB] text-[#3B3F5C] hover:bg-white'
+                  className={`flex shrink-0 items-center gap-1.5 rounded border px-3.5 py-1.5 text-sm whitespace-nowrap ${
+                    active ? 'border-[var(--ms-ink)] bg-[var(--ms-ink)] font-semibold text-white' : 'border-[var(--ms-line)] bg-white hover:border-[#a19f9d]'
                   } ${!count && !active ? 'opacity-50' : ''}`}
                 >
                   {dept === 'All' ? 'All teams' : dept}
-                  <span className={`tabular-nums ${active ? 'text-white/60' : 'text-[#8A8DB0]'}`}>{count}</span>
+                  <span className={`tabular-nums ${active ? 'text-white/70' : 'text-[var(--ms-muted)]'}`}>{count}</span>
                 </button>
               );
             })}
           </div>
 
-          <p className="mt-5 text-sm text-espresso/60" aria-live="polite">
+          <p className="mt-5 text-sm text-[var(--ms-muted)]" aria-live="polite">
             {filtered ? `Showing ${filteredRoles.length} of ${roles.length} roles` : `${roles.length} roles`}
             {query && <> matching “{searchQuery.trim()}”</>}
             {selectedDept !== 'All' && <> in {selectedDept}</>}
             {filtered && (
-              <button type="button" onClick={clearFilters} className="ml-2 font-semibold text-[#2357F5] hover:underline">
+              <button type="button" onClick={clearFilters} className="ms-link ml-2">
                 Clear filters
               </button>
             )}
@@ -459,16 +340,14 @@ export default function CareersPage({ info }) {
             ))}
 
             {!filteredRoles.length && (
-              <div className="rounded-2xl border border-dashed border-espresso/20 px-6 py-12 text-center">
-                <p className="kb-display text-2xl text-espresso">No roles match {query ? `“${searchQuery.trim()}”` : 'this team'}</p>
-                <p className="mx-auto mt-2 max-w-md text-[15px] text-espresso/65">
-                  Try a broader skill such as “React”, “sales” or “finance”, or see every team. Not seeing your fit? Tell us what you’d build.
-                </p>
+              <div className="rounded-lg border border-dashed border-[#a19f9d] px-6 py-12 text-center">
+                <p className="text-xl font-semibold">No roles match {query ? `“${searchQuery.trim()}”` : 'this team'}</p>
+                <p className="mx-auto mt-2 max-w-md text-[15px] text-[var(--ms-muted)]">Try a broader skill such as “React”, “sales” or “finance”, or see every team. Not seeing your fit? Tell us what you’d build.</p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3">
-                  <button type="button" onClick={clearFilters} className="btn bg-[#2357F5] px-6 py-3 text-sm font-semibold text-white hover:bg-[#3A6BFF]">
+                  <button type="button" onClick={clearFilters} className="ms-btn ms-btn-primary">
                     Show all {roles.length} roles
                   </button>
-                  <a href={`mailto:${CONTACT_EMAIL}?subject=Open%20application%20-%20Kabuor%20Technologies`} className="btn border border-espresso/15 bg-white px-6 py-3 text-sm font-semibold text-espresso hover:border-espresso/30">
+                  <a href={`mailto:${CONTACT_EMAIL}?subject=Open%20application%20-%20Kabuor%20Technologies`} className="ms-btn ms-btn-secondary">
                     Email an open application
                   </a>
                 </div>
@@ -478,7 +357,76 @@ export default function CareersPage({ info }) {
         </div>
       </section>
 
-      <SiteFooter info={info} />
-    </div>
+      {/* How we work */}
+      <section id="why-kabuor" aria-labelledby="why-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-14 sm:py-20">
+        <div className="container-x">
+          <SectionHead id="why-title" title="How we work" text="Our software runs in wholesale warehouses in Industrial Area, shops in Eastleigh and Gikomba, and distributors’ fleets across Kenya." />
+          <ul className="mt-10 grid gap-6 md:grid-cols-3">
+            {PRINCIPLES.map((p) => (
+              <li key={p.title} className="rounded-lg bg-white p-6">
+                <h3 className="text-lg font-semibold">{p.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-[var(--ms-muted)]">{p.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* What you get */}
+      <section aria-labelledby="perks-title" className="py-14 sm:py-20">
+        <div className="container-x">
+          <SectionHead
+            id="perks-title"
+            title="Equity now, salaries from our funding round"
+            text="We’re open about where we are: bootstrapping, before funding. People who join now get founding equity, with competitive salaries agreed in advance that start when the round closes."
+          />
+          <ul className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {PERKS.map((perk) => (
+              <li key={perk.title} className="border-t border-[var(--ms-line)] pt-6">
+                <h3 className="text-lg font-semibold">{perk.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-[var(--ms-muted)]">{perk.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Young builders */}
+      <section id="young-builders" aria-labelledby="builders-title" className="scroll-mt-20 border-t border-[var(--ms-line)] bg-[#F5F7FC] py-14 sm:py-20">
+        <div className="container-x grid gap-10 lg:grid-cols-2 lg:items-start">
+          <div>
+            <p className="text-sm font-semibold text-[var(--ms-blue)]">For students, self-taught developers and volunteers</p>
+            <h2 id="builders-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">
+              You don’t need ten years of experience to build with us
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-[var(--ms-muted)]">If you’re a young programmer, a university student or a volunteer who wants to write real production code for Kenyan merchants, we want to build with you.</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedDept('Young Builders & Volunteers');
+                  document.getElementById('open-roles')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="ms-btn ms-btn-primary"
+              >
+                See fellowship and volunteer roles
+              </button>
+              <a href={`mailto:${CONTACT_EMAIL}?subject=Young%20Builder%20%2F%20Volunteer%20Inquiry%20-%20Kabuor%20Technologies`} className="ms-btn ms-btn-secondary">
+                Email us your project
+              </a>
+            </div>
+          </div>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {BUILDER_POINTS.map((p) => (
+              <li key={p.title} className="rounded-lg border border-[var(--ms-line)] bg-white p-6">
+                <h3 className="font-semibold">{p.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-[var(--ms-muted)]">{p.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </CorporatePage>
   );
 }

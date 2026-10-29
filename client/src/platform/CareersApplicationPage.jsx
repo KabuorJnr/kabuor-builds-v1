@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import { ArrowLeft, Check, CheckCircle2, Copy } from 'lucide-react';
-import { SiteHeader, SiteFooter } from './Site';
+import { CorporatePage } from './Corporate';
 import { EXPERIENCE_LEVELS, START_DATES, WEEKLY_COMMITMENTS, clearDraft, loadDraft, payLine, saveDraft, sendApplication } from './careersStore';
 import { CONTACT_EMAIL } from './contact';
 
@@ -239,7 +239,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
   let body;
   if (!role) {
     body = (
-      <div className="rounded-3xl border border-espresso/10 bg-white p-8 text-center sm:p-12">
+      <div className="rounded-lg border border-espresso/10 bg-white p-8 text-center sm:p-12">
         <h1 className="kb-display text-3xl text-espresso sm:text-4xl">This role isn’t listed any more</h1>
         <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-espresso/70">
           The link you followed points to a role we’ve taken down. Have a look at what’s open now.
@@ -251,7 +251,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
     );
   } else if (role.status === 'closed') {
     body = (
-      <div className="rounded-3xl border border-espresso/10 bg-white p-8 text-center sm:p-12">
+      <div className="rounded-lg border border-espresso/10 bg-white p-8 text-center sm:p-12">
         <span className="inline-block rounded-full bg-espresso/[0.06] px-3 py-1 text-sm font-semibold text-espresso/70">Applications closed</span>
         <h1 className="kb-display mt-4 text-3xl text-espresso sm:text-4xl">{role.title} isn’t taking applications right now</h1>
         <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-espresso/70">
@@ -269,7 +269,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
     );
   } else if (submissionResult) {
     body = (
-      <div className="rounded-3xl border border-emerald-600/20 bg-white p-6 shadow-sm sm:p-12">
+      <div className="rounded-lg border border-emerald-600/20 bg-white p-6 shadow-sm sm:p-12">
         <div className="text-center">
           <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-600" strokeWidth={1.75} />
           <h1 className="kb-display mt-4 text-3xl text-espresso sm:text-4xl">Application sent</h1>
@@ -278,7 +278,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
           </p>
         </div>
 
-        <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-[#E6E7F0] bg-[#F7F7FB] p-5 sm:p-6">
+        <div className="mx-auto mt-8 max-w-xl rounded-lg border border-[#E6E7F0] bg-[#F7F7FB] p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E6E7F0] pb-4">
             <div>
               <p className="text-sm text-espresso/60">Your reference</p>
@@ -301,7 +301,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
           </dl>
         </div>
 
-        <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-[#F2C14E]/40 bg-[#FFF7EC] p-5 sm:p-6">
+        <div className="mx-auto mt-6 max-w-xl rounded-lg border border-[#F2C14E]/40 bg-[#FFF7EC] p-5 sm:p-6">
           <h2 className="kb-display text-xl text-[#1E1B18]">What happens next</h2>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-[15px] leading-relaxed text-espresso/80">
             <li>{technical ? 'Our core architects review your code, live links and answers.' : 'The founders review your links and answers.'}</li>
@@ -327,7 +327,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
     );
   } else {
     body = (
-      <div className="rounded-3xl border border-espresso/10 bg-white p-5 shadow-sm sm:p-10">
+      <div className="rounded-lg border border-espresso/10 bg-white p-5 shadow-sm sm:p-10">
         <div className="border-b border-espresso/10 pb-8">
           <p className="text-sm font-semibold text-[#2357F5]">{role.department}</p>
           <h1 className="kb-display mt-2 text-3xl leading-[1.02] text-espresso sm:text-5xl">Apply for {role.title}</h1>
@@ -335,9 +335,9 @@ export default function CareersApplicationPage({ role, onBack, info }) {
             {role.type} · {role.experience} · {role.location}
           </p>
 
-          <div className="mt-6 grid gap-5 rounded-2xl bg-[#F7F7FB] p-5 sm:grid-cols-[1.4fr_1fr]">
+          <div className="mt-6 grid gap-5 rounded-lg bg-[#F7F7FB] p-5 sm:grid-cols-[1.4fr_1fr]">
             <div>
-              <h2 className="text-[13px] font-bold tracking-[0.12em] text-espresso/60 uppercase">What we’re looking for</h2>
+              <h2 className="text-[13px] font-bold text-espresso/60">What we’re looking for</h2>
               <ul className="mt-2 space-y-1.5">
                 {role.requirements.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-[15px] leading-relaxed text-[#3B3F5C]">
@@ -348,7 +348,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
               </ul>
             </div>
             <div>
-              <h2 className="text-[13px] font-bold tracking-[0.12em] text-espresso/60 uppercase">Pay & equity</h2>
+              <h2 className="text-[13px] font-bold text-espresso/60">Pay & equity</h2>
               <p className="mt-2 text-[15px] font-semibold text-emerald-700">{role.equity}</p>
               <p className="text-[15px] text-espresso/65">{payLine(role)}</p>
             </div>
@@ -436,7 +436,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
             <SectionHeading step={4} title="Availability and terms" />
             <Choice id={id('weeklyCommitment')} legend="Time you can give each week" options={WEEKLY_COMMITMENTS} value={formData.weeklyCommitment} onChange={(v) => set('weeklyCommitment', v)} error={errors.weeklyCommitment} />
             <Choice id={id('earliestStartDate')} legend="When you could start" options={START_DATES} value={formData.earliestStartDate} onChange={(v) => set('earliestStartDate', v)} error={errors.earliestStartDate} />
-            <div className={`rounded-2xl border p-5 ${errors.equityAcknowledgment ? 'border-red-300 bg-red-50/40' : 'border-[#E6E7F0] bg-[#F7F7FB]'}`}>
+            <div className={`rounded-lg border p-5 ${errors.equityAcknowledgment ? 'border-red-300 bg-red-50/40' : 'border-[#E6E7F0] bg-[#F7F7FB]'}`}>
               <label className="flex cursor-pointer items-start gap-3">
                 <input
                   id={id('equityAcknowledgment')}
@@ -486,20 +486,16 @@ export default function CareersApplicationPage({ role, onBack, info }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFCF7] text-espresso selection:bg-[#2357F5] selection:text-white">
-      <div className="kb-ink relative overflow-hidden">
-        <SiteHeader info={info} cta={{ to: '/#contact', label: 'Contact Team' }} />
+    <CorporatePage cta={{ href: '/careers#open-roles', label: 'All open roles' }}>
+      <div className="bg-[#FAFAFA]">
+        <div className="container-x max-w-3xl py-8 sm:py-14">
+          <button type="button" onClick={onBack} className="ms-link mb-6">
+            <ArrowLeft className="h-4 w-4" />
+            All open roles
+          </button>
+          {body}
+        </div>
       </div>
-
-      <div className="container-x max-w-3xl py-8 sm:py-14">
-        <button type="button" onClick={onBack} className="group mb-6 inline-flex items-center gap-2 text-[15px] font-semibold text-espresso/65 transition hover:text-espresso">
-          <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
-          All open roles
-        </button>
-        {body}
-      </div>
-
-      <SiteFooter info={info} />
-    </div>
+    </CorporatePage>
   );
 }
