@@ -1,175 +1,117 @@
+// About the founder (/about-founder, /founder): the one page with Rooney's photo, so the company page and its
+// search listing stay about the company. In the corporate layout every Kabuor page shares (Corporate.jsx).
 import { useEffect } from 'react';
-import { ExternalLink, Mail, MessageCircle, Phone, Award, Code, Building, Cpu } from 'lucide-react';
-import { SiteHeader, SiteFooter, tel, whatsapp } from './Site';
+import { Award, Building, Code, Cpu, ExternalLink, Mail, MessageCircle, Phone } from 'lucide-react';
+import { tel, whatsapp } from './Site';
+import { CorporatePage, FOUNDER } from './Corporate';
 
-const FOUNDER = {
-  name: 'Rooney Odhiambo Kabuor',
-  first: 'Rooney',
-  title: 'Founder & CEO',
-  phone: '0705 607 954',
-  email: 'rooneykabuor2004@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256',
-  location: 'Nairobi, Kenya · Ngong Road',
-};
+const LOCATION = 'Ngong Road, Nairobi, Kenya';
 
 const ACHIEVEMENTS = [
   {
     icon: Code,
-    title: 'Full-Stack Architecture',
+    title: 'Full-stack architecture',
     text: 'Engineered Kabuor ERP end-to-end: high-performance C# .NET API, responsive React PWA, offline-first SQLite sync, and PostgreSQL enterprise data layer.',
   },
   {
     icon: Building,
-    title: 'Kenyan Fiscalization & Compliance',
+    title: 'Kenyan fiscalization and compliance',
     text: 'Designed real-time KRA eTIMS Type-C automated fiscal signature signing, QR generation, and statutory payroll processing for Kenyan tax laws.',
   },
   {
     icon: Cpu,
-    title: 'M-Pesa Ledger Automation',
+    title: 'M-Pesa ledger automation',
     text: 'Pioneered seamless Safaricom Daraja C2B and B2C integration, enabling instant till reconciliation, automated callbacks, and zero-leakage accounting.',
   },
   {
     icon: Award,
-    title: 'Multi-Tenant Commerce',
+    title: 'Multi-tenant commerce',
     text: 'Created Kabuor Shops, empowering local retail businesses to spin up digital storefronts with automated payments and order fulfillment in minutes.',
   },
 ];
 
-export default function AboutFounder({ info }) {
+export default function AboutFounder() {
   useEffect(() => {
-    document.title = 'About Founder · Rooney Odhiambo Kabuor · Kabuor Technologies';
+    document.title = 'About the founder · Rooney Odhiambo Kabuor · Kabuor Technologies';
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="min-h-svh bg-cream text-espresso">
-      {/* Dark hero */}
-      <section className="kb-ink relative overflow-hidden pt-4 pb-12 sm:pt-6 sm:pb-16 border-b border-white/10">
-        <div className="absolute -top-32 -right-24 h-96 w-96 rounded-full bg-[#2357F5]/20 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-[#3A2BC9]/20 blur-3xl pointer-events-none" />
-        <SiteHeader info={{ ...info, name: 'Kabuor Technologies' }} />
-
-        <div className="container-x relative mt-8 sm:mt-12">
-          <p className="kb-kicker text-[#9DB6FF]">Leadership & Engineering</p>
-          <h1 className="kb-display mt-3 text-4xl sm:text-6xl text-white">
-            About the Founder
-          </h1>
-          <p className="mt-3 max-w-2xl text-base sm:text-lg text-cream/70">
-            Meet the engineer and visionary building modern enterprise infrastructure and commerce software for East African businesses.
-          </p>
+    <CorporatePage cta={{ href: whatsapp(FOUNDER.phone, "Hi Rooney, I'd like to connect regarding Kabuor Technologies."), label: 'WhatsApp Rooney' }}>
+      <section className="border-b border-[var(--ms-line)] bg-[#F5F7FC]">
+        <div className="container-x py-10 sm:py-12 lg:py-14">
+          <p className="text-sm font-semibold text-[var(--ms-blue)]">Leadership</p>
+          <h1 className="mt-3 text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">About the founder</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--ms-muted)]">The engineer building enterprise software and commerce tools for East African businesses.</p>
         </div>
       </section>
 
-      {/* Main profile section */}
-      <main className="container-x py-12 sm:py-16">
-        <div className="grid gap-12 lg:grid-cols-[380px_1fr] items-start">
-          {/* Photo & quick card */}
-          <div className="space-y-6">
-            <figure className="overflow-hidden rounded-[var(--r-xl)] bg-white shadow-md ring-1 ring-espresso/10">
-              <img
-                src="/brand/founder-rooney-portrait.webp"
-                alt={`${FOUNDER.name}, ${FOUNDER.title} of Kabuor Technologies`}
-                width="720"
-                height="900"
-                className="aspect-[4/5] w-full object-cover object-top"
-              />
-              <figcaption className="p-6">
-                <h2 className="kb-display text-2xl text-espresso">{FOUNDER.name}</h2>
-                <p className="mt-1 text-sm font-semibold text-[#2357F5]">{FOUNDER.title}</p>
-                <p className="mt-1 text-xs text-espresso/50 font-medium">{FOUNDER.location}</p>
-
-                <div className="mt-6 pt-5 border-t border-espresso/10 space-y-3 text-sm">
-                  <a
-                    href={FOUNDER.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 font-semibold text-[#2357F5] hover:underline"
-                  >
+      <section className="py-10 sm:py-12">
+        <div className="container-x grid items-start gap-10 lg:grid-cols-[22rem_1fr]">
+          <figure className="overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white">
+            <img src="/brand/founder-rooney-portrait.webp" alt={`${FOUNDER.name}, ${FOUNDER.title} of Kabuor Technologies`} width="720" height="900" className="aspect-[4/5] w-full object-cover object-top" />
+            <figcaption className="p-6">
+              <h2 className="text-xl font-semibold">{FOUNDER.name}</h2>
+              <p className="text-sm text-[var(--ms-muted)]">
+                {FOUNDER.title} · {LOCATION}
+              </p>
+              <ul className="mt-5 space-y-2.5 border-t border-[var(--ms-line)] pt-5 text-[0.9375rem]">
+                <li>
+                  <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="ms-link">
                     <ExternalLink className="h-4 w-4" /> Connect on LinkedIn
                   </a>
-                  <a
-                    href={`mailto:${FOUNDER.email}`}
-                    className="flex items-center gap-2 text-espresso/70 hover:text-espresso"
-                  >
-                    <Mail className="h-4 w-4" /> {FOUNDER.email}
+                </li>
+                <li>
+                  <a href={`mailto:${FOUNDER.email}`} className="inline-flex items-center gap-2 hover:underline">
+                    <Mail className="h-4 w-4 text-[var(--ms-muted)]" /> {FOUNDER.email}
                   </a>
-                  <a
-                    href={tel(FOUNDER.phone)}
-                    className="flex items-center gap-2 text-espresso/70 hover:text-espresso"
-                  >
-                    <Phone className="h-4 w-4" /> {FOUNDER.phone}
+                </li>
+                <li>
+                  <a href={tel(FOUNDER.phone)} className="inline-flex items-center gap-2 hover:underline">
+                    <Phone className="h-4 w-4 text-[var(--ms-muted)]" /> {FOUNDER.phone}
                   </a>
-                </div>
+                </li>
+              </ul>
+              <a href={whatsapp(FOUNDER.phone, "Hi Rooney, I'd like to connect regarding Kabuor Technologies.")} target="_blank" rel="noopener noreferrer" className="ms-btn ms-btn-primary mt-6 w-full">
+                <MessageCircle className="h-4 w-4" /> WhatsApp Rooney
+              </a>
+            </figcaption>
+          </figure>
 
-                <div className="mt-6">
-                  <a
-                    href={whatsapp(FOUNDER.phone, "Hi Rooney, I'd like to connect regarding Kabuor Technologies.")}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn w-full bg-[#1E8E3E] text-white py-3 hover:bg-[#176F30] flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="h-4 w-4" /> WhatsApp Rooney
-                  </a>
-                </div>
-              </figcaption>
-            </figure>
-          </div>
-
-          {/* Detailed Biography & Vision */}
-          <div className="space-y-8">
-            <div>
-              <p className="kb-kicker text-caramel">Vision & Background</p>
-              <h2 className="kb-display mt-2 text-3xl sm:text-4xl text-espresso">
-                Engineering Software for African Counter Realities
-              </h2>
-              <div className="mt-6 space-y-4 text-base sm:text-lg leading-relaxed text-espresso/80">
-                <p>
-                  Rooney Odhiambo Kabuor is a software architect and technology entrepreneur based in Nairobi, Kenya. As the founder of <b className="text-espresso">Kabuor Technologies Ltd</b>, Rooney is dedicated to solving the structural operating challenges faced by commercial enterprises, retailers, and supply chain operators across East Africa.
-                </p>
-                <p>
-                  Observing that conventional Western enterprise software fails to handle the realities of Kenyan business—such as ubiquitous mobile money payments via M-Pesa, stringent real-time KRA eTIMS invoice fiscalization, intermittent network conditions, and counter-speed retail requirements—Rooney set out to engineer a purpose-built operating suite from scratch.
-                </p>
-                <p>
-                  The result is the Kabuor platform ecosystem: <b className="text-espresso">Kabuor ERP</b>, the comprehensive multi-tenant business operating system, and <b className="text-espresso">Kabuor Shops</b>, empowering Kenyan merchants to sell online with direct Paybill and Till automation.
-                </p>
-              </div>
+          <div>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">Engineering software for how Kenyan businesses really work</h2>
+            <div className="mt-5 space-y-4 text-lg leading-relaxed text-[var(--ms-muted)]">
+              <p>
+                Rooney Odhiambo Kabuor is a software architect and technology entrepreneur based in Nairobi, Kenya. As the founder of <b className="font-semibold text-[var(--ms-ink)]">Kabuor Technologies</b>, Rooney is dedicated to solving the operating challenges faced by businesses, retailers and supply chain operators across East Africa.
+              </p>
+              <p>
+                Conventional Western enterprise software fails to handle the realities of Kenyan business: M-Pesa payments everywhere, real-time KRA eTIMS invoicing, patchy networks and counter-speed retail. Rooney set out to build a suite for those realities from scratch.
+              </p>
+              <p>
+                The result is <b className="font-semibold text-[var(--ms-ink)]">Kabuor ERP</b>, the business operating system, and <b className="font-semibold text-[var(--ms-ink)]">Kabuor Shops</b>, which lets Kenyan merchants sell online with their own Paybill or Till.
+              </p>
             </div>
 
-            {/* Engineering Highlights */}
-            <div className="pt-6 border-t border-espresso/10">
-              <h3 className="kb-display text-2xl text-espresso">Core Architecture & Focus</h3>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {ACHIEVEMENTS.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div
-                      key={item.title}
-                      className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-espresso/10 space-y-2.5"
-                    >
-                      <div className="inline-flex p-2 rounded-xl bg-[#EEF2FF] text-[#2357F5]">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <h4 className="font-bold text-espresso text-base">{item.title}</h4>
-                      <p className="text-sm leading-relaxed text-espresso/70">{item.text}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <h3 className="mt-10 text-xl font-semibold">Focus areas</h3>
+            <ul className="mt-5 grid gap-6 sm:grid-cols-2">
+              {ACHIEVEMENTS.map((item) => (
+                <li key={item.title} className="border-t border-[var(--ms-line)] pt-5">
+                  <item.icon className="h-6 w-6 text-[var(--ms-blue)]" strokeWidth={1.75} />
+                  <h4 className="mt-3 font-semibold">{item.title}</h4>
+                  <p className="mt-1 text-[0.9375rem] leading-relaxed text-[var(--ms-muted)]">{item.text}</p>
+                </li>
+              ))}
+            </ul>
 
-            {/* Quote / Philosophy */}
-            <div className="rounded-2xl bg-[#0A0B1E] p-7 text-white shadow-md">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#9DB6FF]">Philosophy</p>
-              <blockquote className="mt-3 text-lg sm:text-xl font-medium leading-snug italic text-cream">
+            <figure className="mt-10 border-l-4 border-[var(--ms-blue)] bg-[var(--ms-soft)] p-6">
+              <blockquote className="text-xl leading-snug">
                 “African software must not be a second-thought translation of Silicon Valley tools. It must be engineered ground-up around our payment rails, our regulatory systems, and our fast-paced retail counters.”
               </blockquote>
-              <p className="mt-4 text-sm font-semibold text-cream/70">— Rooney Odhiambo Kabuor</p>
-            </div>
+              <figcaption className="mt-3 text-sm text-[var(--ms-muted)]">Rooney Odhiambo Kabuor</figcaption>
+            </figure>
           </div>
         </div>
-      </main>
-
-      <SiteFooter info={{ ...info, name: 'Kabuor Technologies' }} />
-    </div>
+      </section>
+    </CorporatePage>
   );
 }

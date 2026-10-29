@@ -11,13 +11,14 @@ import Company from './platform/Company';
 import CareersPage from './platform/CareersPage';
 import { applyPlatformLook } from './platform/look';
 import { papi } from './platform/shared';
+import { CONTACT_EMAIL } from './platform/contact';
 
 const DEFAULT_INFO = {
   name: 'Kabuor Technologies',
   tagline: 'Software African businesses actually run on.',
-  phone: '0712 345 678',
-  email: 'hello@kabuor.com',
-  prices: { monthly: 2499, yearly: 24990 },
+  phone: '0705 607 954',
+  email: CONTACT_EMAIL,
+  prices: { monthly: 1500, yearly: 15000 },
   founder: {
     name: 'Rooney Odhiambo Kabuor',
     title: 'Founder & CEO',

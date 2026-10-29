@@ -59,3 +59,100 @@
 
 /* Kabuor gold: used sparingly, for the voice ("Mlete deals.") and the hero highlight. */
 .kb-gold { color: #f2c14e; }
+
+/* The company page (/): a plain, corporate look in the manner of large software companies' sites. One system
+   font, flat colour, nearly square corners, quiet borders instead of glows, and no motion. Scoped to .ms so the
+   shops and ERP pages keep their own look; components inside (the demo form) pick it up through these variables. */
+.ms {
+  --r-btn: 4px;
+  --r-md: 4px;
+  --r-lg: 4px;
+  --r-xl: 8px;
+  --ms-ink: #1b1b1b;
+  --ms-muted: #505050;
+  --ms-line: #e1e1e1;
+  --ms-soft: #f2f2f2;
+  --ms-blue: #1f4ae0;
+  --ms-blue-hover: #173bb5;
+  --color-caramel: var(--ms-blue); /* section labels inside shared components */
+  /* Microsoft's own stack: Segoe UI where it's installed (every Windows computer; its licence doesn't allow serving it
+     from our site), else the device's own system font: San Francisco on Apple, Roboto on Android. */
+  font-family: 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+  color: var(--ms-ink);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+.ms .kb-display {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  font-variation-settings: normal;
+}
+.ms .kb-kicker {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.ms .btn {
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.ms .btn:active {
+  transform: none;
+}
+.ms .field {
+  border-color: #8a8886;
+}
+.ms .field:focus {
+  border-color: var(--ms-blue);
+  box-shadow: 0 0 0 1px var(--ms-blue);
+}
+/* In the components layer so Tailwind utilities on the same element (hidden, sm:inline-flex) still win. */
+@layer components {
+  .ms-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 4px;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+  .ms-btn-primary {
+    background: var(--ms-blue);
+    color: #fff;
+  }
+  .ms-btn-primary:hover {
+    background: var(--ms-blue-hover);
+  }
+  .ms-btn-secondary {
+    border: 1px solid var(--ms-ink);
+    color: var(--ms-ink);
+    background: #fff;
+  }
+  .ms-btn-secondary:hover {
+    background: var(--ms-soft);
+  }
+  /* "Learn more >" links: blue, underlined on hover, the chevron nudges. */
+  .ms-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 600;
+    color: var(--ms-blue);
+  }
+  .ms-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+.ms a:focus-visible,
+.ms button:focus-visible,
+.ms summary:focus-visible {
+  outline: 2px solid var(--ms-ink);
+  outline-offset: 2px;
+}

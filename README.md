@@ -81,14 +81,26 @@ for the real settings.
 5. M-Pesa: apply on https://developer.safaricom.co.ke for the platform's own Paybill or Till, "Go Live",
    then set the `PLATFORM_MPESA_*` keys. Callbacks arrive at `https://shop.ke/api/platform/mpesa/callback/…`.
 
-## The company site on Vercel
+## Running it on Render
 
-The shops platform runs on Railway. Vercel (project `kabuor-builds`, https://kabuor-builds.vercel.app) serves only
-the Kabuor Builds company page: `client/vercel.json` (project root directory `client`) runs `npm run build:company` (entry `client/company.html` →
-`client/dist-company`). `VITE_PRODUCT_ORIGIN` (set in the Vercel project) is the Railway address: the Shops and
-ERP tabs and the "Start your shop" buttons open the product pages there, and the demo form and platform info
-call its API. The server allows that origin on `/api/platform/info` and `/api/platform/demo` only
-(`COMPANY_SITE_ORIGINS`, default `https://kabuor-builds.vercel.app`).
+One Render web service (`render.yaml`) serves everything: the company site (www.kabuor-technologies.company), the
+Kabuor Shops pages (builds.kabuor-technologies.company) and every shop (`<address>/s/<link>`). The server builds
+the website into `client/dist` and serves it itself. Shops' databases, photos and the nightly backups live on the
+service's disk at `/data` (`DATA_DIR`), which survives deploys and restarts; Render also snapshots it daily.
+
+1. Render → **New → Blueprint** → this repository. It reads `render.yaml`: a Starter instance in Frankfurt with a
+   5 GB disk. Fill in `PLATFORM_ADMIN_EMAIL` and `PLATFORM_ADMIN_PASSWORD`; leave `PUBLIC_URL` empty for now.
+   `JWT_SECRET` is generated.
+2. When the deploy is green, open the `…onrender.com` address: the company page, `/shops` and `/start`.
+3. **Settings → Custom Domains:** add `www.kabuor-technologies.company`, `kabuor-technologies.company` and
+   `builds.kabuor-technologies.company`. Render shows the DNS records for each; change them where the domain's DNS
+   is managed (CNAME `www` and `builds` to the service's `onrender.com` name, and the apex to the address Render
+   gives). Then remove those domains from the Vercel project so only Render answers. Render issues the certificates.
+4. **Environment:** `PUBLIC_URL=https://builds.kabuor-technologies.company` (M-Pesa results come back there).
+5. When ready for real money: the `PLATFORM_MPESA_*` keys (production), and `AT_*` for SMS.
+
+The server refuses to start on Render without the disk, and on Vercel it takes no signups (its `/tmp` is wiped), so
+a shop can't be opened somewhere it would be lost.
 
 ## Traffic, latency and security
 

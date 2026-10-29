@@ -12,7 +12,7 @@ import { publicRouter } from './routes/public.js';
 import { platformRouter } from './platform/routes.js';
 import { clientBrand } from './platform/presets.js';
 import { getShop, isPreview, requestHost, resolveHost, shopState } from './platform/shops.js';
-import { PLATFORM_DOMAIN, PLATFORM_NAME, PLATFORM_TAGLINE } from './site.js';
+import { PLATFORM_DOMAIN, PLATFORM_EMAIL, PLATFORM_NAME, PLATFORM_TAGLINE } from './site.js';
 import { runAs } from './tenant.js';
 import { limit, securityHeaders } from './guard.js';
 import { scheduleBackups } from './backups.js';
@@ -29,7 +29,7 @@ app.use('/api/platform/signup', limit('signup', 10, 60, 'Too many signups from t
 app.use('/api/platform/check-link', limit('check', 120, 10));
 // Only real submissions count (a browser's CORS preflight is an OPTIONS request before each one).
 app.use('/api/platform/demo', (req, res, next) => (req.method === 'POST' ? limit('demo', 6, 60, 'Too many requests from this connection. WhatsApp us instead.')(req, res, next) : next()));
-app.use('/api/platform/careers/apply', (req, res, next) => (req.method === 'POST' ? limit('apply', 6, 60, 'Too many applications from this connection. Email careers@kabuor.com instead.')(req, res, next) : next()));
+app.use('/api/platform/careers/apply', (req, res, next) => (req.method === 'POST' ? limit('apply', 6, 60, `Too many applications from this connection. Email ${PLATFORM_EMAIL} instead.`)(req, res, next) : next()));
 // The standalone company site (e.g. on Vercel) reads the platform's info, sends demo requests and runs the careers
 // page from another address. Only those endpoints answer it; COMPANY_SITE_ORIGINS lists the addresses (comma-separated).
 const COMPANY_ORIGINS = (process.env.COMPANY_SITE_ORIGINS || 'https://kabuor-builds.vercel.app').split(',').map((o) => o.trim().replace(/\/+$/, '')).filter(Boolean);
@@ -181,7 +181,7 @@ if (existsSync(dist)) {
       const [title, description] = pages[req.path.replace(/\/$/, '')] ?? [`${PLATFORM_NAME} · Software for Kenyan businesses`, 'Kabuor Shops for selling online and Kabuor ERP for running the whole business. M-Pesa first, KRA-ready, in English and Kiswahili.'];
       return res.send(page({ title, description, color: '#0A0B1E', icon: '/brand/icon-64.png' }));
     }
-    if (!shop) return res.status(404).send(page({ title: `${slug}.${PLATFORM_DOMAIN} is available`, description: `Open your shop on ${PLATFORM_NAME}.`, color: '#F6F3EC' }));
+    if (!shop) return res.status(404).send(page({ title: `${PLATFORM_DOMAIN ? `${slug}.${PLATFORM_DOMAIN}` : slug} is available`, description: `Open your shop on ${PLATFORM_NAME}.`, color: '#F6F3EC' }));
     const c = shop.brand.content;
     res.send(page({ title: `${c.brand.name} · ${c.brand.tagline}`, description: c.hero.text, color: shop.brand.colors.cream, icon: shop.brand.logo.image || 'data:,' }));
   });

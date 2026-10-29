@@ -22,18 +22,20 @@ const NAMES = { erp: 'Kabuor ERP', shops: 'Kabuor Shops', both: 'Kabuor ERP and 
 
 export default function DemoRequest({ info, product: initial = 'erp', id = 'demo', className }) {
   const [f, setF] = useState({ product: initial, name: '', business: '', phone: '', email: '', staff: '', note: '', website: '' });
-  const [state, setState] = useState({ busy: false, error: '', sent: false });
+  const [state, setState] = useState({ busy: false, error: '', sent: false, saved: true });
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
-  const message = `Hi ${info?.name ?? 'Kabuor Builds'}, I'm ${f.name || '…'} from ${f.business || '…'}. I'd like a demo of ${NAMES[f.product]}.`;
+  const message = `Hi Kabuor Technologies, I'm ${f.name || '…'} from ${f.business || '…'}. I'd like a demo of ${NAMES[f.product]}.`;
+  // The full request, for when the server can't keep it (STORAGE_LASTS on the server): WhatsApp carries it to us.
+  const full = `${message}${f.staff ? ` We are ${f.staff === '1' ? 'just me' : `${f.staff} people`}.` : ''}${f.note ? ` ${f.note}` : ''} My WhatsApp: ${f.phone}${f.email ? `, email ${f.email}` : ''}.`;
 
   const submit = async (e) => {
     e.preventDefault();
-    setState({ busy: true, error: '', sent: false });
+    setState({ busy: true, error: '', sent: false, saved: true });
     try {
-      await papi('/demo', { method: 'POST', body: f });
-      setState({ busy: false, error: '', sent: true });
+      const r = await papi('/demo', { method: 'POST', body: f });
+      setState({ busy: false, error: '', sent: true, saved: r?.saved !== false });
     } catch (err) {
-      setState({ busy: false, error: err.message, sent: false });
+      setState({ busy: false, error: err.message, sent: false, saved: true });
     }
   };
 
@@ -68,9 +70,17 @@ export default function DemoRequest({ info, product: initial = 'erp', id = 'demo
               <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-100 text-emerald-700">
                 <Check className="h-7 w-7" />
               </span>
-              <h3 className="kb-display mt-4 text-3xl">Thanks, {f.name.split(' ')[0]}.</h3>
-              <p className="mx-auto mt-2 max-w-sm text-espresso/65">We’ll WhatsApp you on {f.phone} within one working day to pick a time for your {NAMES[f.product]} demo.</p>
-              {info?.phone && (
+              <h3 className="kb-display mt-4 text-3xl">{state.saved ? `Thanks, ${f.name.split(' ')[0]}.` : 'One last tap.'}</h3>
+              <p className="mx-auto mt-2 max-w-sm text-espresso/65">
+                {state.saved
+                  ? `We’ll WhatsApp you on ${f.phone} within one working day to pick a time for your ${NAMES[f.product]} demo.`
+                  : 'Send your request to us on WhatsApp so it reaches the team straight away. It’s already written for you.'}
+              </p>
+              {!state.saved && info?.phone ? (
+                <a href={whatsapp(info.phone, full)} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
+                  <MessageCircle className="h-4 w-4" /> Send it on WhatsApp
+                </a>
+              ) : info?.phone && (
                 <a href={whatsapp(info.phone, message)} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
                   <MessageCircle className="h-4 w-4" /> Want it sooner? WhatsApp us now
                 </a>

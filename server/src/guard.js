@@ -10,7 +10,7 @@ export function securityHeaders(req, res, next) {
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
     'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-    'Content-Security-Policy': `frame-ancestors 'self' https://${PLATFORM_DOMAIN} https://*.${PLATFORM_DOMAIN} http://localhost:* http://*.localhost:*`,
+    'Content-Security-Policy': `frame-ancestors 'self'${PLATFORM_DOMAIN ? ` https://${PLATFORM_DOMAIN} https://*.${PLATFORM_DOMAIN}` : ''} http://localhost:* http://*.localhost:*`,
   });
   if (req.secure) res.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   next();
