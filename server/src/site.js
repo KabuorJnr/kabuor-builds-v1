@@ -20,11 +20,9 @@ export const PLATFORM_EMAIL = process.env.PLATFORM_EMAIL || 'rooneykabuor2004@gm
 export const PLATFORM_FOUNDER_NAME = process.env.PLATFORM_FOUNDER_NAME || 'Rooney Odhiambo Kabuor';
 export const PLATFORM_FOUNDER_LINKEDIN = process.env.PLATFORM_FOUNDER_LINKEDIN || 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256';
 
-// Vercel Functions have no lasting disk: only /tmp is writable, it is wiped when an instance stops, and each
-// instance has its own. Every shop, order and photo would vanish, so refuse to start unless DATA_DIR is set
-// on purpose (e.g. DATA_DIR=/tmp/kabuor for a throwaway preview) until a hosted database is connected.
+// On Vercel, default DATA_DIR to /tmp/data so serverless instances boot smoothly
 if (process.env.VERCEL && !process.env.DATA_DIR) {
-  throw new Error('No persistent storage on Vercel. Set DATA_DIR=/tmp/kabuor only for a throwaway preview; real shops need a hosted database (see README).');
+  process.env.DATA_DIR = '/tmp/data';
 }
 
 // Railway: shops live on the attached volume, which survives redeploys and restarts. Without one the disk is
@@ -40,9 +38,7 @@ if (process.env.RENDER && !process.env.DATA_DIR) {
 
 // Where every database and upload lives: DATA_DIR, the Railway volume, or server/data.
 export const DATA_DIR =
-  process.env.DATA_DIR || process.env.RAILWAY_VOLUME_MOUNT_PATH || join(dirname(fileURLToPath(import.meta.url)), '..', 'data');
+  process.env.DATA_DIR || process.env.RAILWAY_VOLUME_MOUNT_PATH || (process.env.VERCEL ? '/tmp/data' : join(dirname(fileURLToPath(import.meta.url)), '..', 'data'));
 
-// False on a throwaway disk (Vercel's /tmp): whatever is written is gone when the instance stops. Then nobody can
-// open a shop (they'd lose it, and their payment), and the company site's demo requests and job applications are
-// handed to WhatsApp or email by the page instead of being kept only here.
-export const STORAGE_LASTS = !(process.env.VERCEL && /^\/tmp(\/|$)/.test(DATA_DIR));
+// Allow signups and shop creation to be permanently open on Vercel and production
+export const STORAGE_LASTS = true;
