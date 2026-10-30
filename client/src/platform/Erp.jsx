@@ -51,7 +51,7 @@ const PLANS = [
 ];
 
 const QUESTIONS = [
-  ['How much does it cost?', 'From KSh 1,500 a month for a shop, KSh 4,500 with payroll and the team tools, KSh 9,500 for several branches. Every business starts with 30 days free.'],
+  ['How much does it cost?', 'From KSh 1,500 a month for a shop, KSh 4,500 with payroll and the team tools, KSh 9,500 for several branches. You pay by M-Pesa when you open your account.'],
   ['Is my business data safe?', 'Each business’s records are kept completely apart, only people you add can sign in, each with the access their role needs, and every change is recorded with who made it and when.'],
   ['What about KRA eTIMS?', 'Every invoice is prepared with what eTIMS needs. Live signing with KRA switches on once KRA certifies our connection; until then invoices are marked as test signatures.'],
   ['Do I need an accountant to use it?', 'No. Sales staff invoice and record payments; the books keep themselves. Your accountant gets proper reports, VAT figures and a trial balance when they need them.'],
@@ -71,7 +71,7 @@ export default function Erp({ info }) {
   }, []);
 
   return (
-    <CorporatePage cta={{ href: SIGNUP, label: 'Start 30 days free' }}>
+    <CorporatePage cta={{ href: SIGNUP, label: 'Open your account' }}>
       {/* Hero */}
       <section className="border-b border-[var(--ms-line)] bg-[#F5F7FC]">
         <div className="container-x grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1fr_1.05fr] lg:py-20">
@@ -83,7 +83,7 @@ export default function Erp({ info }) {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href={SIGNUP} {...ext} className="ms-btn ms-btn-primary">
-                Start 30 days free
+                Open your account
               </a>
               <a href="#demo" className="ms-btn ms-btn-secondary">
                 Request a demo
@@ -199,7 +199,7 @@ export default function Erp({ info }) {
       {/* Pricing */}
       <section id="pricing" aria-labelledby="pricing-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-10 sm:py-12">
         <div className="container-x">
-          <SectionHead id="pricing-title" title="Priced per business, in shillings" text="Every plan starts with 30 days free, with everything switched on and no payment details. Pay monthly or yearly by M-Pesa; a year costs ten months." />
+          <SectionHead id="pricing-title" title="Priced per business, in shillings" text="Choose a plan and pay by M-Pesa to open your account, monthly or yearly; a year costs ten months. Everything is switched on from the first day." />
           <div className="mt-7 grid gap-6 md:grid-cols-3">
             {PLANS.map((p) => (
               <div key={p.name} className={cn('relative flex flex-col rounded-lg bg-white p-6 sm:p-8', p.best ? 'border-2 border-[var(--ms-blue)]' : 'border border-[var(--ms-line)]')}>
@@ -219,7 +219,7 @@ export default function Erp({ info }) {
                   ))}
                 </ul>
                 <a href={SIGNUP} {...ext} className={cn('ms-btn mt-6', p.best ? 'ms-btn-primary' : 'ms-btn-secondary')}>
-                  Start 30 days free
+                  Open your account
                 </a>
               </div>
             ))}

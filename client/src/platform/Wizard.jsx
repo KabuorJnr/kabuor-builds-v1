@@ -183,6 +183,17 @@ function BusinessStep({ info, onDone }) {
       <p className="text-xs text-espresso/50">
         {f.kind ? <>Nothing to pay yet: you see your finished shop first{info && <>, then pay {ksh(info.prices.monthly)} a month to go live</>}.</> : 'Choose what you sell to continue: it sets up your shop’s style.'}
       </p>
+      <p className="text-xs text-espresso/50">
+        By continuing you agree to the{' '}
+        <Link to="/shops/terms" target="_blank" className="font-semibold underline">
+          Kabuor Shops terms
+        </Link>{' '}
+        and{' '}
+        <Link to="/shops/privacy" target="_blank" className="font-semibold underline">
+          privacy notice
+        </Link>
+        .
+      </p>
     </form>
   );
 }

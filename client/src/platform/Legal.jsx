@@ -20,16 +20,16 @@ const Mail = () => (
 );
 
 /** A long document: title band, the short version, a contents list that stays in view, numbered sections. */
-function LegalPage({ title, summary, sections, other }) {
+function LegalPage({ title, summary, sections, other, product = 'Kabuor Technologies website' }) {
   useEffect(() => {
-    document.title = `${title} · Kabuor Technologies`;
+    document.title = `${title} · ${product.replace(/ website$/, '')}`;
     window.scrollTo(0, 0);
   }, [title]);
   return (
     <CorporatePage>
       <section className="border-b border-[var(--ms-line)] bg-[#F5F7FC]">
         <div className="container-x py-10 sm:py-12">
-          <p className="text-sm font-semibold text-[var(--ms-blue)]">Kabuor Technologies website</p>
+          <p className="text-sm font-semibold text-[var(--ms-blue)]">{product}</p>
           <h1 className="mt-3 text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">{title}</h1>
           <p className="mt-3 text-[var(--ms-muted)]">Last updated {UPDATED}</p>
         </div>
@@ -103,7 +103,11 @@ export function Privacy() {
             <a href={`${ERP}/privacy`} className="ms-link">
               Kabuor ERP privacy notice
             </a>
-            . Kabuor Shops shows its notice when you sign up.
+            {' '}and the{' '}
+            <Link to="/shops/privacy" className="ms-link">
+              Kabuor Shops privacy notice
+            </Link>
+            .
           </p>
           <p>
             Questions, or a request about your data: <Mail /> or {FOUNDER.phone}.
@@ -269,7 +273,11 @@ export function Terms() {
             <a href={`${ERP}/terms`} className="ms-link">
               Kabuor ERP terms of service
             </a>
-            , and the Kabuor Shops terms shown at signup. If those and these differ, the product’s terms apply to the product.
+            {' '}and the{' '}
+            <Link to="/shops/terms" className="ms-link">
+              Kabuor Shops terms
+            </Link>
+            . If those and these differ, the product’s terms apply to the product.
           </p>
         </>
       ),
@@ -385,6 +393,299 @@ export function Terms() {
           <a href={`${ERP}/terms`} className="ms-link">
             Kabuor ERP terms of service
           </a>
+          .
+        </>
+      }
+    />
+  );
+}
+
+// ---------------------------------------------------------------- Kabuor Shops ----------------------------------------
+// For shop owners (/shops/privacy, /shops/terms). Each shop also has its own short notice for the people who buy from
+// it (ShopPrivacyPage in pages/SitePages.jsx). Unpaid signups are deleted by server/src/platform/retention.js.
+
+export function ShopsPrivacy() {
+  const sections = [
+    {
+      id: 'roles',
+      title: 'Who we are, and our two roles',
+      body: (
+        <>
+          <p>Kabuor Shops is run by Kabuor Technologies, Ngong Road, Nairobi (Kabuor Technologies Ltd is being incorporated in Kenya; until then our founder, {FOUNDER.name}, is responsible for it).</p>
+          <ul>
+            <li><b className="font-semibold">Your account</b> (your business, you and the staff you add, your plan payments): we decide how this is used, so we are the <b className="font-semibold">data controller</b>.</li>
+            <li><b className="font-semibold">Your customers’ details</b> (the orders people place in your shop): your business decides what to do with them, so you are the <b className="font-semibold">controller</b> and we are your <b className="font-semibold">data processor</b>, under the processing terms in our <Link to="/shops/terms" className="ms-link">Kabuor Shops terms</Link>.</li>
+          </ul>
+          <p>Questions, or a request about your data: <Mail /> or {FOUNDER.phone}.</p>
+        </>
+      ),
+    },
+    {
+      id: 'collect',
+      title: 'What we collect',
+      body: (
+        <>
+          <p><b className="font-semibold">From you, the shop owner:</b></p>
+          <ul>
+            <li>Signup details: your business’s name, what you sell, your shop link, your town, your name, phone number and email, and a scrambled (hashed) password.</li>
+            <li>Your shop: logo, photos, products and prices, the words on your site, and the M-Pesa Till or Paybill your customers pay.</li>
+            <li>Plan payments: the phone number that paid, the amount and the M-Pesa receipt.</li>
+            <li>If you connect M-Pesa prompts: your Daraja keys, kept on our servers and never shown again in full.</li>
+            <li>Staff you add, and the devices you allow to show new-order alerts.</li>
+            <li>Technical records: the time, address and page of each request, to keep the service working and secure.</li>
+          </ul>
+          <p><b className="font-semibold">For you, about your customers:</b> each order’s name, phone number, email if given, delivery address and town, note, items, total, payment method and M-Pesa receipt; the texts sent about it; emails of people who join your newsletter; and sales you record by hand.</p>
+          <p>The service uses no advertising and no tracking tools, and we never use your customers’ details for our own marketing.</p>
+        </>
+      ),
+    },
+    {
+      id: 'why',
+      title: 'Why we use it',
+      body: (
+        <>
+          <ul>
+            <li>To build, host and run your shop, take orders and send the alerts you ask for (our contract with you).</li>
+            <li>To take your plan payments and keep business records (contract and legal obligation).</li>
+            <li>To keep accounts secure and prevent fraud (legitimate interest).</li>
+          </ul>
+          <p>We don’t sell personal data, and no decision about anyone is made by a computer alone.</p>
+        </>
+      ),
+    },
+    {
+      id: 'share',
+      title: 'Who sees it',
+      body: (
+        <ul>
+          <li>You, and the staff you give a login to your shop’s admin.</li>
+          <li>
+            {HOSTING.name}, which hosts the service in {HOSTING.where}.
+          </li>
+          <li>Safaricom (Kenya), for M-Pesa: your plan payments, and your customers’ payments when you connect prompts (the money goes straight to your Till or Paybill; we never hold it).</li>
+          <li>Africa’s Talking (Kenya), which sends the order texts.</li>
+          <li>The push services of your phone or browser (such as Google, Apple or Mozilla), which deliver new-order alerts to the devices you allow.</li>
+          <li>WhatsApp, when you or your customers choose to talk there.</li>
+          <li>Authorities, when the law requires it.</li>
+        </ul>
+      ),
+    },
+    {
+      id: 'abroad',
+      title: 'Data kept outside Kenya',
+      body: <p>Our hosting provider keeps the service and its data outside Kenya. We send personal data abroad only as sections 48 and 49 of the Data Protection Act allow: to providers bound by written terms to protect it, whose security we have considered, and only what the service needs.</p>,
+    },
+    {
+      id: 'keep',
+      title: 'How long we keep it',
+      body: (
+        <ul>
+          <li><b className="font-semibold">A signup that never paid:</b> deleted with anything it uploaded 30 days after its last step.</li>
+          <li><b className="font-semibold">Your shop and its orders:</b> while your shop exists, live or paused, so you can come back to it. Business records may need to be kept longer for tax, so download what you need.</li>
+          <li><b className="font-semibold">When you close your shop:</b> you have 30 days to download your orders; we then delete the shop and everything in it, at the latest 90 days after closing.</li>
+          <li><b className="font-semibold">Backups:</b> nightly copies are kept for 14 days, so deleted data leaves them within two weeks.</li>
+        </ul>
+      ),
+    },
+    {
+      id: 'security',
+      title: 'How we protect it',
+      body: (
+        <>
+          <ul>
+            <li>Encrypted connections (HTTPS) and scrambled passwords.</li>
+            <li>Every shop has its own database and its own sign-in keys: one shop can never see another’s orders.</li>
+            <li>M-Pesa secrets stay on our servers and are never sent back to a browser; uploads are re-encoded so only real pictures are kept.</li>
+            <li>Limits on signups, uploads, sign-ins and orders against abuse.</li>
+          </ul>
+          <p>If a breach puts personal data at real risk, we tell the Office of the Data Protection Commissioner within 72 hours and the people affected without delay (section 43). For your customers’ data, we tell you within 48 hours so you can do the same.</p>
+        </>
+      ),
+    },
+    {
+      id: 'rights',
+      title: 'Your rights',
+      body: (
+        <>
+          <p>
+            You can ask us to tell you what we hold about you and send you a copy, correct it, delete it, stop using it, or move it to someone else. Write to <Mail />. We answer within the times the 2021 regulations set: a copy within 7 days, a correction or deletion within 14 days.
+          </p>
+          <p>If you bought from a shop, ask that shop first: it decides what happens to your order details, and we help it answer.</p>
+          <p>
+            You can also complain to the Office of the Data Protection Commissioner at{' '}
+            <a href="https://www.odpc.go.ke" target="_blank" rel="noopener noreferrer" className="ms-link">
+              odpc.go.ke
+            </a>
+            .
+          </p>
+        </>
+      ),
+    },
+    {
+      id: 'children',
+      title: 'Children',
+      body: <p>You must be 18 or over to open a shop.</p>,
+    },
+    {
+      id: 'changes',
+      title: 'Changes to this notice',
+      body: <p>If we change this notice in a way that matters, we’ll tell shop owners in their admin before it takes effect.</p>,
+    },
+  ];
+  return (
+    <LegalPage
+      product="Kabuor Shops"
+      title="Privacy notice"
+      summary={[
+        'Your shop’s orders are yours. For your customers’ details we are your processor and act only on your instructions.',
+        'We use data only to run your shop and take your plan payments. No advertising, no tracking, never sold.',
+        'Customers’ money goes straight to your Till or Paybill; we never hold it.',
+        'A signup that never pays is deleted after 30 days. A closed shop is deleted within 90 days, after 30 days to download.',
+        `You can see, correct or delete what we hold: write to ${FOUNDER.email}.`,
+      ]}
+      sections={sections}
+      other={
+        <>
+          See also the{' '}
+          <Link to="/shops/terms" className="ms-link">
+            Kabuor Shops terms
+          </Link>{' '}
+          and the{' '}
+          <Link to="/privacy" className="ms-link">
+            Kabuor Technologies website privacy notice
+          </Link>
+          .
+        </>
+      }
+    />
+  );
+}
+
+export function ShopsTerms() {
+  const sections = [
+    {
+      id: 'agreement',
+      title: 'This agreement',
+      body: <p>These terms are an agreement between your business and Kabuor Technologies, Ngong Road, Nairobi (Kabuor Technologies Ltd is being incorporated in Kenya), for the use of Kabuor Shops. By opening a shop you agree to them on behalf of your business, and confirm you’re 18 or over and allowed to.</p>,
+    },
+    {
+      id: 'service',
+      title: 'The service',
+      body: <p>Kabuor Shops gives your brand an online shop: its design, your link, hosting, the checkout, an admin for orders, stock and sales, and order alerts by text and on your phone. We aim to keep it available at all times but can’t promise it will never be interrupted.</p>,
+    },
+    {
+      id: 'paying',
+      title: 'Your plan',
+      body: (
+        <ul>
+          <li>You can build and preview your shop for free. It goes live when you pay for your plan by M-Pesa.</li>
+          <li>Plans are paid in Kenyan shillings, in advance: each payment adds a month or a year. Prices are shown at signup and in your admin; we give 30 days’ notice of any change.</li>
+          <li>Three days after your plan ends, your shop pauses: customers see that it’s taking a short break, and your admin keeps working. Nothing is deleted; renewing reopens it.</li>
+          <li>Paid time isn’t refunded if you stop early, except where the law requires.</li>
+        </ul>
+      ),
+    },
+    {
+      id: 'selling',
+      title: 'Selling in your shop',
+      body: (
+        <>
+          <p>You are the seller. Your customers buy from you, not from us, and pay your own Till or Paybill. We take no commission and never hold your money.</p>
+          <ul>
+            <li>You’re responsible for your products, prices, descriptions, delivery, returns and refunds, and for treating customers as the Consumer Protection Act, 2012 requires.</li>
+            <li>You’re responsible for your taxes, receipts and any KRA obligations (such as VAT and eTIMS) that apply to your sales.</li>
+            <li>Sell only what’s legal to sell in Kenya: no counterfeit goods, nothing you don’t have the right to sell, and nothing prohibited or that needs a licence you don’t hold.</li>
+            <li>If you connect M-Pesa prompts, the Daraja account and its keys are yours to keep in good standing with Safaricom.</li>
+          </ul>
+        </>
+      ),
+    },
+    {
+      id: 'content',
+      title: 'Your content and your link',
+      body: (
+        <>
+          <p>Your logo, photos, products and words stay yours. You give us permission to host and show them as your shop, and confirm you have the right to use them. We may show your shop’s design as an example of our work; tell us if you’d rather we didn’t.</p>
+          <p>Shop links are given on a first-come basis. We may change a link that misleads people or uses a name the shop has no right to.</p>
+        </>
+      ),
+    },
+    {
+      id: 'processing',
+      title: 'Processing your customers’ data',
+      body: (
+        <>
+          <p>For your customers’ details, your business is the data controller and Kabuor Technologies is your data processor. These terms are the written contract that section 42 of the Data Protection Act and regulation 24 require:</p>
+          <ul>
+            <li><b className="font-semibold">What, how long and why</b>: customers’ names, phone numbers, emails, delivery addresses, orders, payments and the texts sent to them, and newsletter emails, for as long as your shop exists, only to run your shop.</li>
+            <li><b className="font-semibold">Your instructions</b>: we act only on your instructions, given through your admin and these terms, and tell you if we think one breaks the law.</li>
+            <li>
+              <b className="font-semibold">Confidentiality and security</b>: everyone who works on the service keeps your data confidential, under the measures in the{' '}
+              <Link to="/shops/privacy" className="ms-link">
+                privacy notice
+              </Link>
+              .
+            </li>
+            <li><b className="font-semibold">Sub-processors</b>: you authorise the providers listed in the privacy notice. We give you 30 days’ notice before adding or replacing one, and stay responsible for them (regulation 25).</li>
+            <li><b className="font-semibold">Helping you</b>: we help you answer your customers’ requests and handle breaches, which we report to you within 48 hours.</li>
+            <li><b className="font-semibold">At the end</b>: you can download your orders; we delete your shop’s data at the latest 90 days after it closes, except where the law requires us to keep it.</li>
+          </ul>
+          <p>You must tell your customers how you use their details. Every shop has a short privacy page for them, linked from its footer, that says you’re responsible for their orders and we run the site for you.</p>
+        </>
+      ),
+    },
+    {
+      id: 'suspension',
+      title: 'Suspending a shop',
+      body: <p>We may pause or remove a shop that breaks these terms or the law, or that puts customers or other shops at risk. Where we can, we tell you first and give you the chance to put it right.</p>,
+    },
+    {
+      id: 'liability',
+      title: 'Liability',
+      body: <p>We run the service with reasonable care and skill. We aren’t liable for indirect losses (such as lost sales or profit), for what you sell or say in your shop, or for losses caused by Safaricom, SMS or other services being unavailable, or by events outside our control. Our total liability in any year is limited to what you paid us in the 12 months before the claim. Nothing here limits rights you have under the Consumer Protection Act, 2012, or other law that can’t be excluded.</p>,
+    },
+    {
+      id: 'ending',
+      title: 'Closing your shop',
+      body: (
+        <p>
+          You can close your shop at any time: ask us at <Mail />. You then have 30 days to download your orders before the shop and its data are deleted, as the privacy notice describes.
+        </p>
+      ),
+    },
+    {
+      id: 'law',
+      title: 'Law and disputes',
+      body: <p>These terms are governed by the laws of Kenya. We’ll first try to settle any dispute by talking; if that fails, the courts of Kenya decide.</p>,
+    },
+    {
+      id: 'changes',
+      title: 'Changes to these terms',
+      body: <p>We tell shop owners in their admin at least 30 days before a change that matters takes effect.</p>,
+    },
+  ];
+  return (
+    <LegalPage
+      product="Kabuor Shops"
+      title="Terms of service"
+      summary={[
+        'Build and preview your shop free; it goes live when you pay your plan by M-Pesa, monthly or yearly.',
+        'You are the seller: customers pay your own Till or Paybill, and we take no commission.',
+        'Your products, prices, delivery, refunds and taxes are your responsibility; sell only what’s legal.',
+        'If your plan ends, your shop pauses after 3 days; nothing is deleted, and renewing reopens it.',
+        'Close any time by asking us; you get 30 days to download your orders. Kenyan law applies.',
+      ]}
+      sections={sections}
+      other={
+        <>
+          See also the{' '}
+          <Link to="/shops/privacy" className="ms-link">
+            Kabuor Shops privacy notice
+          </Link>{' '}
+          and the{' '}
+          <Link to="/terms" className="ms-link">
+            Kabuor Technologies website terms of use
+          </Link>
           .
         </>
       }

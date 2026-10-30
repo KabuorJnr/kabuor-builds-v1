@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Link, Route, Routes } from 'react-router';
 import Store from './pages/Store';
 import ProductPage from './pages/ProductPage';
-import { AboutPage, FaqPage, HomePage, HowToOrderPage, ShopPage, UpdatesPage } from './pages/SitePages';
+import { AboutPage, FaqPage, HomePage, HowToOrderPage, ShopPage, ShopPrivacyPage, UpdatesPage } from './pages/SitePages';
 import { Logo } from './components/ui';
 
 // The dashboard (and its chart library) only loads for admins.
@@ -73,6 +73,7 @@ export default function App({ site }) {
         <Route path="how-to-order" element={<HowToOrderPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="faq" element={<FaqPage />} />
+        <Route path="privacy" element={<ShopPrivacyPage />} />
       </Route>
       <Route
         path="/admin/*"
