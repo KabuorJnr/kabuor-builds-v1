@@ -8,6 +8,7 @@ import UpdatesSection from '../components/UpdatesSection';
 import { SectionHeading } from '../components/ui';
 import { cn, money } from '../lib/format';
 import { telHref } from '../lib/branches';
+import { LOOK } from '../lib/brand';
 
 function usePageTitle(content, title) {
   useEffect(() => {
@@ -218,6 +219,48 @@ export function FaqPage() {
     <Page>
       {content.faq.enabled && <Faq data={content.faq} brand={content.brand} />}
       {content.newsletter.enabled && <JoinClub data={content.newsletter} />}
+    </Page>
+  );
+}
+
+// What happens to a shopper's details, in the shop's own look. The shop decides what to do with its orders (it's the
+// controller); the platform that runs the site is its processor (see the Kabuor Shops privacy notice for owners).
+export function ShopPrivacyPage() {
+  const { content } = useOutletContext();
+  usePageTitle(content, 'Privacy');
+  const { brand } = content;
+  const phone = (brand.branches ?? []).find((b) => b.phone)?.phone;
+  const platform = LOOK.platform?.name;
+  return (
+    <Page>
+      <section className="container-x max-w-3xl pb-14">
+        <h1 className="font-brand text-4xl text-espresso sm:text-5xl">Privacy</h1>
+        <div className="mt-6 space-y-5 leading-relaxed text-espresso/80 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-espresso [&_li]:ml-5 [&_li]:list-disc">
+          <p>
+            <b>{brand.name}</b> is responsible for the details you give when you order here{platform ? <>. The website is run for us by {platform}{/Kabuor Technologies/i.test(platform) ? '' : ' (Kabuor Technologies)'}, which keeps your details only to run this shop</> : null}.
+          </p>
+          <h2>What we keep</h2>
+          <ul>
+            <li>Your order: your name, phone number, email if you give it, delivery address and town, any note, what you bought and how you paid (with the M-Pesa receipt).</li>
+            <li>The text messages we send you about your order.</li>
+            <li>Your email, if you join our newsletter.</li>
+          </ul>
+          <p>To save typing next time, your browser remembers your checkout details on your own device. Clear your browser’s data for this site to remove them.</p>
+          <h2>Why</h2>
+          <p>To deliver your order, take payment, send you updates about it, and keep our sales records. We don’t sell your details, and we send offers only if you joined our newsletter.</p>
+          <h2>Who else sees them</h2>
+          <p>Our staff who handle orders; Safaricom, for M-Pesa payments; the SMS service that sends order texts; and {platform ? 'the company that runs this website and its hosting provider' : 'our hosting provider'}. Some of these keep data outside Kenya, protected as Kenya’s Data Protection Act requires.</p>
+          <h2>Your rights</h2>
+          <p>
+            You can ask us what we hold about you, and to correct or delete it, where the law allows (we must keep sales records for tax).{' '}
+            {brand.email ? <>Write to <a href={`mailto:${brand.email}`} className="font-semibold underline">{brand.email}</a></> : null}
+            {brand.email && phone ? ' or call ' : phone ? 'Call ' : null}
+            {phone ? <a href={telHref(phone)} className="font-semibold underline">{phone}</a> : null}
+            {brand.email || phone ? '. ' : null}
+            You can also complain to the Office of the Data Protection Commissioner at odpc.go.ke.
+          </p>
+        </div>
+      </section>
     </Page>
   );
 }

@@ -12,7 +12,7 @@ const { pruneOldRecords } = await import('../src/platform/retention.js');
 const now = Date.parse('2027-06-01T09:00:00Z');
 const ago = (days) => new Date(now - days * 864e5).toISOString();
 
-test('old demo requests and applications are deleted; recent ones are kept', () => {
+test('old demo requests, applications and unpaid signups are deleted; recent ones and live shops are kept', () => {
   const demo = pdb.prepare('INSERT INTO demo_requests (product, name, business, phone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)');
   demo.run('erp', 'Old Lead', 'Old Co', '0712345678', ago(400), ago(370));
   demo.run('erp', 'Recent Lead', 'New Co', '0712345679', ago(400), ago(30));
@@ -22,7 +22,13 @@ test('old demo requests and applications are deleted; recent ones are kept', () 
   app.run('KBR-APP-3', 'eng', 'Engineer', 'Never Touched', 'c@example.com', '0712000003', 'new', ago(400), ago(380));
   app.run('KBR-APP-4', 'eng', 'Engineer', 'Shortlisted', 'd@example.com', '0712000004', 'shortlisted', ago(100), ago(90));
 
-  assert.deepEqual(pruneOldRecords(now), { demos: 1, applications: 2 });
+  const shop = pdb.prepare("INSERT INTO shops (slug, name, kind, owner_name, phone, email, password_salt, password_hash, setup_token, status, created_at, updated_at) VALUES (?, ?, 'honey', 'Owner', '0712345678', ?, 's', 'h', ?, ?, ?, ?)");
+  shop.run('never-paid', 'Never Paid', 'np@example.com', 't1', 'pending', ago(60), ago(45));
+  shop.run('just-started', 'Just Started', 'js@example.com', 't2', 'pending', ago(5), ago(5));
+  shop.run('paid-up', 'Paid Up', 'pu@example.com', 't3', 'live', ago(400), ago(300));
+
+  assert.deepEqual(pruneOldRecords(now), { demos: 1, applications: 2, signups: 1 });
+  assert.deepEqual(pdb.prepare('SELECT slug FROM shops ORDER BY slug').all().map((r) => r.slug), ['just-started', 'paid-up']);
   assert.deepEqual(pdb.prepare('SELECT name FROM demo_requests').all().map((r) => r.name), ['Recent Lead']);
   assert.deepEqual(pdb.prepare('SELECT name FROM career_applications ORDER BY ref').all().map((r) => r.name), ['Rejected Recently', 'Shortlisted']);
 });

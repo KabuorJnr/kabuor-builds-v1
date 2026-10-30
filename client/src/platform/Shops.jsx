@@ -231,6 +231,9 @@ export default function Shops({ info }) {
               <Link to="/start" className="ms-btn ms-btn-primary mt-6 w-full">
                 Start your shop
               </Link>
+              <p className="mt-3 text-center text-sm text-[var(--ms-muted)]">
+                <Link to="/shops/terms" className="hover:underline">Terms</Link> · <Link to="/shops/privacy" className="hover:underline">Privacy</Link>
+              </p>
             </div>
           )}
         </div>

@@ -501,6 +501,9 @@ export function Footer({ content, config, products = [], links = [] }) {
                 Website by {LOOK.platform.name}
               </a>
             )}
+            <Link to="/privacy" className="text-cream/40 transition hover:text-honey">
+              Privacy
+            </Link>
             <Link to="/admin" className="text-cream/40 transition hover:text-honey">
               Staff login
             </Link>
