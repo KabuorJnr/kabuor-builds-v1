@@ -78,7 +78,7 @@ const SAMPLES = [
 
 // ---------- the link ----------
 function linkProblem(link) {
-  if (!LINK_RULE.test(link)) return 'Use 3–30 letters, numbers or dashes (no dash at the start or end).';
+  if (!LINK_RULE.test(link)) return 'Shop link must be 3–30 letters, numbers or dashes (no dash at the start or end).';
   if (RESERVED.has(link)) return 'That link is reserved. Try another.';
   const taken = getShopRecord(link);
   // A link held by a signup that never paid is released after three days.

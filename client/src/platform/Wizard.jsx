@@ -53,7 +53,8 @@ const store = {
   },
 };
 
-const toLink = (s) => s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').slice(0, 30);
+const LINK_RULE = /^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$/;
+const toLink = (s) => s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
 
 function Progress({ step }) {
   return (
@@ -101,20 +102,52 @@ function BusinessStep({ info, onDone }) {
   useEffect(() => {
     if (!linkEdited) setF((x) => ({ ...x, link: toLink(x.name) }));
   }, [f.name, linkEdited]);
-  useEffect(() => {
-    if (f.link.length < 3) return setCheck(null);
+    useEffect(() => {
+    if (!f.link) {
+      setCheck(null);
+      return;
+    }
+    if (f.link.length < 3) {
+      setCheck({ available: false, problem: 'Shop link must be at least 3 characters.', suggestions: [] });
+      return;
+    }
+    if (f.link.startsWith('-') || f.link.endsWith('-')) {
+      setCheck({ available: false, problem: 'Shop link cannot start or end with a dash.', suggestions: [] });
+      return;
+    }
+    if (!LINK_RULE.test(f.link)) {
+      setCheck({ available: false, problem: 'Shop link must be 3–30 letters, numbers or dashes.', suggestions: [] });
+      return;
+    }
     const t = setTimeout(() => papi(`/check-link?link=${encodeURIComponent(f.link)}`).then(setCheck).catch(() => {}), 300);
     return () => clearTimeout(t);
   }, [f.link]);
 
   const submit = async (e) => {
     e.preventDefault();
+    const cleanLink = f.link.replace(/^-+|-+$/g, '');
+    if (cleanLink.length < 3 || !LINK_RULE.test(cleanLink)) {
+      const msg = cleanLink.length < 3
+        ? 'Shop link must be at least 3 characters.'
+        : 'Shop link must be 3–30 letters, numbers or dashes (no dash at start or end).';
+      setCheck({ available: false, problem: msg, suggestions: [] });
+      document.getElementById('shop-link-input')?.focus();
+      document.getElementById('shop-link-input')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     setState({ busy: true, error: null });
     try {
-      const { token } = await papi('/signup', { method: 'POST', body: f });
+      const { token } = await papi('/signup', { method: 'POST', body: { ...f, link: cleanLink } });
       onDone(token);
     } catch (err) {
-      setState({ busy: false, error: err.message });
+      if (err.message && (err.message.includes('dash') || err.message.includes('link') || err.message.includes('letters'))) {
+        setCheck({ available: false, problem: err.message, suggestions: [] });
+        document.getElementById('shop-link-input')?.focus();
+        document.getElementById('shop-link-input')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setState({ busy: false, error: `Shop link error: ${err.message}` });
+      } else {
+        setState({ busy: false, error: err.message });
+      }
     }
   };
 
@@ -157,13 +190,20 @@ function BusinessStep({ info, onDone }) {
         <span className="field flex items-center gap-0 px-0! py-0! focus-within:ring-2">
           {before && <span className="hidden shrink-0 pl-4 text-espresso/45 sm:inline">{before}</span>}
           <input
+            id="shop-link-input"
             className="min-w-0 flex-1 bg-transparent px-4 py-3 font-semibold outline-none"
             value={f.link}
             onChange={(e) => {
               setLinkEdited(true);
               setF((x) => ({ ...x, link: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30) }));
             }}
+            onBlur={() => {
+              const clean = f.link.replace(/^-+|-+$/g, '');
+              if (clean !== f.link) setF((x) => ({ ...x, link: clean }));
+            }}
             placeholder="mamapili"
+            minLength={3}
+            maxLength={30}
             aria-describedby="link-status"
             required
           />
