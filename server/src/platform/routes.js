@@ -62,6 +62,8 @@ platformRouter.get('/info', (req, res) => {
 
 // Example looks for the landing page: what a sauce, candle and honey shop come out as.
 const SAMPLES = [
+  { kind: 'fashion', name: 'Styleco Modern Apparel', brand: { style: 'street', accent: '#1E1E1E', tagline: 'Fashion is a trend of modern life' }, product: { name: 'Polyester Printed Shirt', size: '1 pc', price: 16900 } },
+  { kind: 'wellness', name: 'Purelix Botanical Wellness', brand: { style: 'natural', accent: '#C89B59', tagline: 'Your Journey to Better Health Starts Here' }, product: { name: 'Citrus & Stone Botanical Cleanser', size: '200ml', price: 5200 } },
   { kind: 'sauce', name: 'Mama Pili Sauces', brand: { style: 'warm', accent: '#D9381E', tagline: 'Heat with flavour' }, product: { name: 'Garden Chilli', size: '250g', price: 400 } },
   { kind: 'candle', name: 'Glow Candle Co', brand: { style: 'luxe', accent: '#9A5BC9', tagline: 'Calm scents for slow evenings' }, product: { name: 'Lavender Candle', size: '200g', price: 600 } },
   { kind: 'honey', name: 'Kerio Honey', brand: { style: 'natural', accent: '#E3A21A', tagline: 'From the hive to your home' }, product: { name: 'Raw Honey', size: '500g', price: 650 } },

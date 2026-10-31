@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  AlertCircle, Apple, Armchair, ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
+  AlertCircle, Shirt, Apple, Armchair, ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { EASE, ksh, MpesaPay, PalettePicker, papi, PictureDrop, ShopPreview, StylePicker } from './shared';
@@ -15,6 +15,11 @@ import { whatsapp } from './Site';
 
 
 const DEFAULT_KINDS = [
+  { id: 'fashion', label: 'Fashion & apparel (Styleco shell)', accent: '#1E1E1E' },
+  { id: 'wellness', label: 'Wellness & botanicals (Purelix shell)', accent: '#C89B59' },
+  { id: 'groceries', label: 'Supermarket & groceries (Gromuse shell)', accent: '#107C41' },
+  { id: 'electronics', label: 'Electronics & tech (Nuvio shell)', accent: '#FF5722' },
+  { id: 'furniture', label: 'Furniture & living (Rova shell)', accent: '#8C6239' },
   { id: 'sauce', label: 'Sauces & condiments', accent: '#D9381E' },
   { id: 'honey', label: 'Honey & bee products', accent: '#E3A21A' },
   { id: 'skincare', label: 'Skincare & body butter', accent: '#C27C8E' },
@@ -28,7 +33,7 @@ const DEFAULT_KINDS = [
   { id: 'other', label: 'Something else', accent: '#2F6F5E' },
 ];
 
-const KIND_ICONS = { sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, groceries: Apple, electronics: Smartphone, furniture: Armchair, other: Package };
+const KIND_ICONS = { fashion: Shirt, wellness: Sparkles, sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, groceries: Apple, electronics: Smartphone, furniture: Armchair, other: Package };
 const STEP_LABELS = ['Your business', 'Make it yours', 'Products', 'Preview & pay'];
 const TOKEN_KEY = 'shop-signup-token';
 

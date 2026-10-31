@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Link } from 'react-router';
+import { useState, useMemo, useEffect } from 'react';
+import { Link, useSearchParams, useNavigate } from 'react-router';
 import {
   Heart,
   ShoppingBag,
@@ -19,6 +19,13 @@ import {
   Play,
   Sparkles,
   PhoneCall,
+  Sliders,
+  Settings,
+  Edit3,
+  RefreshCw,
+  Plus,
+  Palette,
+  ExternalLink,
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -46,7 +53,7 @@ const COLORS = [
   { id: 'crimson', name: 'Crimson', hex: '#880E4F' },
 ];
 
-const PRODUCTS = [
+const DEFAULT_PRODUCTS = [
   {
     id: 'shirt-1',
     name: 'Polyester Printed Shirt',
@@ -173,8 +180,35 @@ const AMBASSADORS = [
   'CORDOVA',
 ];
 
+const ACCENT_PRESETS = [
+  { name: 'Onyx Noir', hex: '#1E1E1E' },
+  { name: 'Electric Orange', hex: '#FF6A13' },
+  { name: 'Royal Sapphire', hex: '#2357F5' },
+  { name: 'Emerald Palm', hex: '#107C41' },
+  { name: 'Crimson Velvet', hex: '#880E4F' },
+  { name: 'Golden Honey', hex: '#C89B59' },
+];
+
 export default function StylecoDemo() {
-  // Navigation tabs: 'storefront' | 'catalog'
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+
+  // Client Shell Configurable State
+  const [shellConfig, setShellConfig] = useState({
+    storeName: params.get('name') || 'Styleco.',
+    tagline: 'Fashion is a trend of modern life',
+    heroTitle: 'Best of the week',
+    announcement: 'Now you can shopping in our mobile app, Install now',
+    accentColor: params.get('accent') || '#1E1E1E',
+    currency: 'USD', // 'USD' | 'KSH'
+    tillNumber: '345678',
+    dispatchCity: 'Nairobi',
+    deliveryPromise: 'Same-day Nairobi delivery',
+    phone: '0712345678',
+  });
+
+  const [products, setProducts] = useState(DEFAULT_PRODUCTS);
+  const [customizerOpen, setCustomizerOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('storefront');
 
   // Filter States
@@ -184,27 +218,24 @@ export default function StylecoDemo() {
   const [searchQuery, setSearchQuery] = useState('');
   const [wishlist, setWishlist] = useState(['shirt-1', 'shirt-3']);
 
-  // Product Detail Page (PDP) State
+  // PDP & Cart
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedQty, setSelectedQty] = useState(1);
-
-  // Cart Drawer State
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState([
     {
-      product: PRODUCTS[0],
+      product: DEFAULT_PRODUCTS[0],
       size: 'L',
       quantity: 1,
     },
   ]);
-  const [phone, setPhone] = useState('0712345678');
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
 
   // Filter logic
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((p) => {
+    return products.filter((p) => {
       if (activeCategory && p.category !== activeCategory) return false;
       if (p.price > priceRange) return false;
       if (selectedColor && p.color !== selectedColor) return false;
@@ -214,7 +245,7 @@ export default function StylecoDemo() {
       }
       return true;
     });
-  }, [activeCategory, priceRange, selectedColor, searchQuery]);
+  }, [products, activeCategory, priceRange, selectedColor, searchQuery]);
 
   const toggleWishlist = (id) => {
     setWishlist((prev) =>
@@ -244,17 +275,65 @@ export default function StylecoDemo() {
   const cartTotalUSD = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const cartTotalKSH = cart.reduce((sum, item) => sum + item.product.priceKsh * item.quantity, 0);
 
+  const formatPrice = (usd, ksh) => {
+    if (shellConfig.currency === 'KSH') {
+      return 'KSh ' + ksh.toLocaleString();
+    }
+    return '$' + usd;
+  };
+
+  // Launch Shop with this shell
+  const handleLaunchWithShell = () => {
+    const query = new URLSearchParams({
+      kind: 'fashion',
+      name: shellConfig.storeName,
+      accent: shellConfig.accentColor,
+    }).toString();
+    navigate('/start?' + query);
+  };
+
+  // Reset shell to default
+  const handleResetShell = () => {
+    setShellConfig({
+      storeName: 'Styleco.',
+      tagline: 'Fashion is a trend of modern life',
+      heroTitle: 'Best of the week',
+      announcement: 'Now you can shopping in our mobile app, Install now',
+      accentColor: '#1E1E1E',
+      currency: 'USD',
+      tillNumber: '345678',
+      dispatchCity: 'Nairobi',
+      deliveryPromise: 'Same-day Nairobi delivery',
+      phone: '0712345678',
+    });
+    setProducts(DEFAULT_PRODUCTS);
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1E1E1E] font-sans">
-      {/* Return to Platform Bar */}
-      <aside aria-label="Demo notice" className="border-b border-[#E5E5E5] bg-[#1A1A1A] px-4 py-2 text-xs font-medium text-white/90">
+      {/* Platform & Shell Management Bar */}
+      <aside aria-label="Shell Controls" className="sticky top-0 z-50 border-b border-white/10 bg-[#141414] px-4 py-2 text-xs font-medium text-white shadow-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-2 w-2 rounded-full bg-[#107C41] animate-pulse" />
-            <span>Kabuor Shops Concept Showcase · <b>Styleco. Modern Apparel</b></span>
+            <span>Kabuor Shell Engine · <b>Modifiable Apparel Shell</b></span>
+            <span className="hidden sm:inline-block rounded bg-white/15 px-2 py-0.5 text-[10px] text-white/90">
+              Live Customizer Active
+            </span>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex bg-white/10 rounded-full p-0.5 text-[11px]">
+
+          <div className="flex items-center gap-3">
+            {/* Customize Trigger Button */}
+            <button
+              onClick={() => setCustomizerOpen(true)}
+              className="flex items-center gap-1.5 rounded-full bg-[#FF6A13] px-3.5 py-1 text-xs font-bold text-white shadow hover:bg-[#E55A05] transition"
+            >
+              <Sliders className="h-3.5 w-3.5" />
+              <span>Customize Shell</span>
+            </button>
+
+            {/* View Switcher */}
+            <div className="hidden md:flex bg-white/10 rounded-full p-0.5 text-[11px]">
               <button
                 onClick={() => {
                   setActiveTab('storefront');
@@ -262,7 +341,7 @@ export default function StylecoDemo() {
                 }}
                 className={`px-3 py-1 rounded-full transition ${activeTab === 'storefront' ? 'bg-white text-black font-bold' : 'text-white/80 hover:text-white'}`}
               >
-                Storefront View
+                Storefront
               </button>
               <button
                 onClick={() => {
@@ -271,24 +350,26 @@ export default function StylecoDemo() {
                 }}
                 className={`px-3 py-1 rounded-full transition ${activeTab === 'catalog' ? 'bg-white text-black font-bold' : 'text-white/80 hover:text-white'}`}
               >
-                Filtered Catalog (PLP)
+                Catalog & Filters
               </button>
             </div>
+
             <Link
               to="/shops"
-              className="inline-flex items-center gap-1 rounded bg-white/15 px-2.5 py-1 text-white hover:bg-white/25 transition"
+              className="inline-flex items-center gap-1 rounded bg-white/10 px-2.5 py-1 text-white hover:bg-white/20 transition"
             >
-              <ArrowLeft className="h-3 w-3" /> Back to Shops
+              <ArrowLeft className="h-3 w-3" /> Back
             </Link>
           </div>
         </div>
       </aside>
 
-      {/* Top App Download Banner matching User Design */}
+      {/* Top App Download / Announcement Banner */}
       <div className="bg-[#1A1A1A] text-white text-xs py-2 px-4 border-b border-[#333]">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <p className="font-normal text-white/90">
-            Now you can shopping in Styleco. mobile app, Install now
+          <p className="font-normal text-white/90 flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#3DDC84]" />
+            {shellConfig.announcement}
           </p>
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1.5 rounded bg-white/10 px-2 py-0.5 text-[11px] font-medium text-white/90">
@@ -302,18 +383,18 @@ export default function StylecoDemo() {
       </div>
 
       {/* Main Header / Navigation */}
-      <header className="sticky top-0 z-40 border-b border-[#EAEAEA] bg-white/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3.5">
-          {/* Brand Wordmark */}
+      <header className="border-b border-[#EAEAEA] bg-white/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
+          {/* Brand Wordmark (Modifiable by client) */}
           <div className="flex items-center gap-8">
             <button
               onClick={() => {
                 setActiveTab('storefront');
                 setSelectedProduct(null);
               }}
-              className="text-2xl font-black tracking-tight text-[#1A1A1A] hover:opacity-80 transition cursor-pointer"
+              className="text-2xl sm:text-3xl font-black tracking-tight text-[#1A1A1A] hover:opacity-80 transition cursor-pointer flex items-center gap-1"
             >
-              Styleco.
+              <span style={{ color: shellConfig.accentColor }}>{shellConfig.storeName}</span>
             </button>
 
             {/* Nav links */}
@@ -330,7 +411,7 @@ export default function StylecoDemo() {
               <a href="#services" onClick={() => setActiveTab('storefront')} className="hover:text-black transition">Service</a>
               <a href="#ambassadors" onClick={() => setActiveTab('storefront')} className="hover:text-black transition">About</a>
               <a href="#trends" onClick={() => setActiveTab('storefront')} className="hover:text-black transition">Overview</a>
-              <a href="#custom" onClick={() => setActiveTab('storefront')} className="hover:text-black transition">Project</a>
+              <a href="#custom" onClick={() => setActiveTab('storefront')} className="hover:text-black transition">Custom Studio</a>
             </nav>
           </div>
 
@@ -341,29 +422,18 @@ export default function StylecoDemo() {
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#8E8E93]" />
               <input
                 type="text"
-                placeholder="Search style..."
+                placeholder="Search catalog..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-full bg-[#F5F5F7] py-2 pl-9 pr-4 text-xs text-[#1A1A1A] placeholder-[#8E8E93] focus:bg-white focus:outline-none focus:ring-1 focus:ring-black"
               />
             </div>
 
-            {/* Circular Search button (as in image) */}
-            <button
-              onClick={() => {
-                setActiveTab('catalog');
-                window.scrollTo({ top: 300, behavior: 'smooth' });
-              }}
-              className="flex sm:hidden h-9 w-9 items-center justify-center rounded-full bg-[#1A1A1A] text-white hover:bg-black"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
-
-            {/* Contact Us Pill button matching design */}
+            {/* Contact Us Pill */}
             <button
               onClick={() => setContactOpen(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[#1A1A1A] px-4 py-1.5 text-xs font-semibold text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold hover:bg-black hover:text-white transition"
+              style={{ borderColor: shellConfig.accentColor, color: shellConfig.accentColor }}
             >
               Contact Us
             </button>
@@ -376,7 +446,10 @@ export default function StylecoDemo() {
             >
               <ShoppingBag className="h-4 w-4" />
               {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#EF5350] text-[10px] font-bold text-white shadow-sm">
+                <span
+                  className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white shadow-sm"
+                  style={{ backgroundColor: shellConfig.accentColor }}
+                >
                   {cart.reduce((s, i) => s + i.quantity, 0)}
                 </span>
               )}
@@ -385,31 +458,32 @@ export default function StylecoDemo() {
         </div>
       </header>
 
-      {/* VIEW 1: Full Storefront Homepage (matching the newly uploaded design) */}
+      {/* VIEW 1: Storefront Homepage */}
       {activeTab === 'storefront' && !selectedProduct && (
         <main className="space-y-16 pb-24">
-          {/* 1. "Best of the week" Hero Section */}
+          {/* "Best of the week" Hero Section */}
           <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
             <div className="flex items-baseline justify-between border-b border-[#E5E5E5] pb-4">
               <div>
                 <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#1A1A1A]">
-                  Best of the week
+                  {shellConfig.heroTitle}
                 </h1>
                 <p className="mt-1 text-xs text-[#737373] flex items-center gap-1 font-medium">
-                  See all picture <span className="text-black">→</span>
+                  {shellConfig.tagline} <span className="text-black">→</span>
                 </p>
               </div>
               <button
                 onClick={() => setActiveTab('catalog')}
-                className="text-xs font-bold text-[#1A1A1A] underline hover:text-[#555] transition"
+                className="text-xs font-bold underline hover:text-[#555] transition"
+                style={{ color: shellConfig.accentColor }}
               >
-                View more
+                View all items
               </button>
             </div>
 
             {/* 3 Editorial Cards Grid */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-              {/* Card 1: Woman in Yellow Coat (Large Spotlight Card) */}
+              {/* Card 1 */}
               <div className="md:col-span-6 group relative overflow-hidden rounded-3xl bg-[#F8F9FA] p-6 border border-[#EAEAEA] shadow-sm flex flex-col justify-between">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -431,7 +505,7 @@ export default function StylecoDemo() {
                 <div className="my-6 overflow-hidden rounded-2xl aspect-[4/3] flex items-center justify-center bg-[#E6C641]/15">
                   <img
                     src="/brand/styleco/card_yellow_coat.png"
-                    alt="Fashion is a trend of modern life"
+                    alt="Fashion Drop"
                     className="h-full w-full object-cover group-hover:scale-105 transition duration-500"
                   />
                 </div>
@@ -439,12 +513,12 @@ export default function StylecoDemo() {
                 <div>
                   <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-wider">• New Drops</p>
                   <h3 className="mt-1 text-xl sm:text-2xl font-extrabold text-[#1A1A1A]">
-                    Fashion is an trend of modern life
+                    {shellConfig.tagline}
                   </h3>
                 </div>
               </div>
 
-              {/* Card 2: Orange Dress Model */}
+              {/* Card 2 */}
               <div className="md:col-span-3 group relative overflow-hidden rounded-3xl bg-[#FFF8F0] p-6 border border-[#FFE8D1] shadow-sm flex flex-col justify-between">
                 <div className="flex justify-end">
                   <button
@@ -458,7 +532,7 @@ export default function StylecoDemo() {
                 <div className="my-4 overflow-hidden rounded-2xl aspect-[3/4] flex items-center justify-center bg-[#FFA500]/10">
                   <img
                     src="/brand/styleco/card_orange_dress.png"
-                    alt="Female Cloth Fashion"
+                    alt="Female Collection"
                     className="h-full w-full object-cover group-hover:scale-105 transition duration-500"
                   />
                 </div>
@@ -471,7 +545,7 @@ export default function StylecoDemo() {
                 </div>
               </div>
 
-              {/* Card 3: Orange Blazer Back View */}
+              {/* Card 3 */}
               <div className="md:col-span-3 group relative overflow-hidden rounded-3xl bg-[#F0F8FF] p-6 border border-[#D8ECFF] shadow-sm flex flex-col justify-between">
                 <div className="flex justify-end">
                   <button
@@ -485,7 +559,7 @@ export default function StylecoDemo() {
                 <div className="my-4 overflow-hidden rounded-2xl aspect-[3/4] flex items-center justify-center bg-[#0088FF]/10">
                   <img
                     src="/brand/styleco/card_orange_blazer.png"
-                    alt="Male Cloth Tailored Blazer"
+                    alt="Tailored Blazer"
                     className="h-full w-full object-cover group-hover:scale-105 transition duration-500"
                   />
                 </div>
@@ -500,7 +574,7 @@ export default function StylecoDemo() {
             </div>
           </section>
 
-          {/* 2. Brand Ambassadors Section matching design */}
+          {/* Brand Ambassadors Section */}
           <section id="ambassadors" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between pb-6">
               <div className="flex items-center gap-2">
@@ -527,12 +601,12 @@ export default function StylecoDemo() {
             </div>
           </section>
 
-          {/* 3. "Latest collection of styleco. 2026" - 8 Shirts Grid */}
+          {/* 8-Product Collection Grid */}
           <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-baseline justify-between border-b border-[#E5E5E5] pb-4">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A1A1A]">
-                  Latest collection of styleco. 2026
+                  Latest collection of {shellConfig.storeName}
                 </h2>
                 <p className="mt-1 text-xs text-[#737373]">
                   Breathable cottons, luxury silks, and summer printed fabrics.
@@ -547,19 +621,20 @@ export default function StylecoDemo() {
               </button>
             </div>
 
-            {/* 8 Products Grid matching user image */}
             <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-              {PRODUCTS.map((p) => {
+              {products.map((p) => {
                 const isFav = wishlist.includes(p.id);
                 return (
                   <div
                     key={p.id}
                     className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-4 border border-[#F0F0F0] hover:border-[#D1D1D6] hover:shadow-lg transition duration-200"
                   >
-                    {/* Top Wishlist Heart */}
                     <div className="flex items-center justify-between">
                       {p.badge ? (
-                        <span className="rounded-full bg-[#1A1A1A] px-2 py-0.5 text-[9px] font-bold text-white uppercase">
+                        <span
+                          className="rounded-full px-2 py-0.5 text-[9px] font-bold text-white uppercase"
+                          style={{ backgroundColor: shellConfig.accentColor }}
+                        >
                           {p.badge}
                         </span>
                       ) : <span />}
@@ -572,7 +647,6 @@ export default function StylecoDemo() {
                       </button>
                     </div>
 
-                    {/* Product Image */}
                     <div
                       onClick={() => {
                         setSelectedProduct(p);
@@ -588,7 +662,6 @@ export default function StylecoDemo() {
                       />
                     </div>
 
-                    {/* Product Info */}
                     <div>
                       <h3
                         onClick={() => {
@@ -596,18 +669,18 @@ export default function StylecoDemo() {
                           setSelectedSize('M');
                           setSelectedQty(1);
                         }}
-                        className="cursor-pointer text-sm font-bold text-[#1A1A1A] hover:text-[#2357F5] truncate"
+                        className="cursor-pointer text-sm font-bold text-[#1A1A1A] hover:underline truncate"
                       >
                         {p.name}
                       </h3>
 
                       <div className="mt-2 flex items-center justify-between">
                         <span className="text-sm font-black text-[#1A1A1A]">
-                          {p.price}$
+                          {formatPrice(p.price, p.priceKsh)}
                         </span>
                         <button
                           onClick={() => addToCart(p, 'M', 1)}
-                          className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition shadow-xs"
+                          className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white text-[#1A1A1A] hover:bg-black hover:text-white transition shadow-xs"
                           aria-label="Add to Bag"
                         >
                           <ShoppingBag className="h-3.5 w-3.5" />
@@ -620,7 +693,7 @@ export default function StylecoDemo() {
             </div>
           </section>
 
-          {/* 4. "We've finally updated our store, Order three new items" */}
+          {/* Trend Cards */}
           <section id="trends" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto pb-8">
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A1A1A]">
@@ -632,7 +705,6 @@ export default function StylecoDemo() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Banner 1 */}
               <div className="group relative overflow-hidden rounded-3xl bg-[#FFF9E6] p-6 border border-[#FFE8A3] flex flex-col justify-between min-h-[220px]">
                 <div className="z-10">
                   <span className="text-[10px] font-black uppercase tracking-wider text-[#B28900]">• Featured</span>
@@ -655,7 +727,6 @@ export default function StylecoDemo() {
                 </div>
               </div>
 
-              {/* Banner 2 */}
               <div className="group relative overflow-hidden rounded-3xl bg-[#FDE8E8] p-6 border border-[#F8B4B4] flex flex-col justify-between min-h-[220px]">
                 <div className="z-10">
                   <span className="text-[10px] font-black uppercase tracking-wider text-[#C81E1E]">• Street Vibes</span>
@@ -678,7 +749,6 @@ export default function StylecoDemo() {
                 </div>
               </div>
 
-              {/* Banner 3 */}
               <div className="group relative overflow-hidden rounded-3xl bg-[#E6F4EA] p-6 border border-[#CEEAD6] flex flex-col justify-between min-h-[220px]">
                 <div className="z-10">
                   <span className="text-[10px] font-black uppercase tracking-wider text-[#137333]">• Premium Pick</span>
@@ -701,10 +771,9 @@ export default function StylecoDemo() {
             </div>
           </section>
 
-          {/* 5. Promo & Big Discount Cards matching design */}
+          {/* Promo & Big Discount Cards */}
           <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Black Promo Card with geometric line art */}
               <div className="relative overflow-hidden rounded-3xl bg-[#0F0F0F] p-8 sm:p-10 text-white flex flex-col justify-between min-h-[260px] shadow-xl">
                 <div className="relative z-10 max-w-md">
                   <span className="text-xs font-bold tracking-widest uppercase text-white/60">Limited Season Offer</span>
@@ -721,14 +790,15 @@ export default function StylecoDemo() {
                   </button>
                   <span className="text-xs text-white/70">Promo code: <b>STYLE40</b></span>
                 </div>
-                {/* Visual backdrop */}
                 <div className="absolute right-0 bottom-0 opacity-40 pointer-events-none">
                   <img src="/brand/styleco/promo_black.png" alt="Promo art" className="h-44 object-cover" />
                 </div>
               </div>
 
-              {/* Orange Promo Card with 40% OFF badge */}
-              <div className="relative overflow-hidden rounded-3xl bg-[#FF6A13] p-8 sm:p-10 text-white flex flex-col justify-between min-h-[260px] shadow-xl">
+              <div
+                className="relative overflow-hidden rounded-3xl p-8 sm:p-10 text-white flex flex-col justify-between min-h-[260px] shadow-xl"
+                style={{ backgroundColor: shellConfig.accentColor === '#1E1E1E' ? '#FF6A13' : shellConfig.accentColor }}
+              >
                 <div className="relative z-10 max-w-sm">
                   <span className="inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white mb-2">
                     Flash Clearance
@@ -745,7 +815,6 @@ export default function StylecoDemo() {
                     SHOP NOW
                   </button>
                 </div>
-                {/* Model preview */}
                 <div className="absolute right-0 bottom-0 pointer-events-none h-full flex items-end">
                   <img src="/brand/styleco/promo_orange.png" alt="Sale 40% off" className="h-full object-contain" />
                 </div>
@@ -753,7 +822,7 @@ export default function StylecoDemo() {
             </div>
           </section>
 
-          {/* 6. "WANT TO DESIGN YOUR OWN? CALM, CAN DO IT!" */}
+          {/* Atelier Studio */}
           <section id="custom" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="overflow-hidden rounded-3xl bg-[#1A1A1A] p-8 sm:p-12 text-white text-center shadow-2xl relative">
               <span className="text-xs font-bold tracking-widest uppercase text-[#FFCA28]">Custom Bespoke Studio</span>
@@ -761,10 +830,9 @@ export default function StylecoDemo() {
                 WANT TO DESIGN YOUR OWN? CALM, CAN DO IT!
               </h2>
               <p className="mt-3 max-w-xl mx-auto text-xs sm:text-sm text-white/70">
-                Choose fabrics, patterns, and button specifications. Our Nairobi atelier handles custom batches for weddings, uniforms, and capsule drops.
+                Choose fabrics, patterns, and button specifications. Our {shellConfig.dispatchCity} atelier handles custom batches for weddings, uniforms, and capsule drops.
               </p>
 
-              {/* Video Lookbook Rack */}
               <div className="mt-8 relative overflow-hidden rounded-2xl max-w-4xl mx-auto border border-white/20 aspect-[16/6] bg-black flex items-center justify-center group">
                 <img
                   src="/brand/styleco/banner_rack.png"
@@ -797,7 +865,7 @@ export default function StylecoDemo() {
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between pb-6 border-b border-[#EAEAEA]">
             <div>
-              <p className="text-xs uppercase tracking-wider font-bold text-[#8E8E93]">Apparel Catalog</p>
+              <p className="text-xs uppercase tracking-wider font-bold text-[#8E8E93]">{shellConfig.storeName} Catalog</p>
               <h1 className="mt-1 text-2xl sm:text-4xl font-extrabold text-[#1A1A1A]">Male's Clothing</h1>
             </div>
             <div className="flex items-center gap-3 text-xs text-[#737373]">
@@ -817,14 +885,12 @@ export default function StylecoDemo() {
           </div>
 
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar Filters matching User Design 2 */}
             <aside className="space-y-8 pr-4">
               <div className="flex items-center justify-between border-b border-[#EAEAEA] pb-3">
                 <h3 className="text-base font-bold text-[#1A1A1A]">Filter</h3>
                 <SlidersHorizontal className="h-4 w-4 text-[#1A1A1A]" />
               </div>
 
-              {/* Categories Accordion */}
               <div>
                 <ul className="space-y-2.5 text-sm">
                   {CATEGORIES.map((cat) => (
@@ -847,7 +913,6 @@ export default function StylecoDemo() {
                 </ul>
               </div>
 
-              {/* Price Slider */}
               <div className="border-t border-[#EAEAEA] pt-6">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-bold text-[#1A1A1A]">Price</h4>
@@ -875,7 +940,6 @@ export default function StylecoDemo() {
                 </div>
               </div>
 
-              {/* 12 Colors Swatch Grid matching design */}
               <div className="border-t border-[#EAEAEA] pt-6">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-bold text-[#1A1A1A]">Colors</h4>
@@ -916,7 +980,6 @@ export default function StylecoDemo() {
               </div>
             </aside>
 
-            {/* Products 3-Column Grid */}
             <div className="lg:col-span-3">
               {filteredProducts.length === 0 ? (
                 <div className="rounded-3xl border border-dashed border-[#D1D1D6] p-12 text-center">
@@ -941,7 +1004,6 @@ export default function StylecoDemo() {
                         key={p.id}
                         className="group relative flex flex-col justify-between overflow-hidden rounded-3xl bg-white p-5 border border-[#F0F0F0] hover:border-[#D1D1D6] hover:shadow-xl transition duration-200"
                       >
-                        {/* Wishlist toggle button */}
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-semibold text-[#8E8E93]">{p.colorName}</span>
                           <button
@@ -953,7 +1015,6 @@ export default function StylecoDemo() {
                           </button>
                         </div>
 
-                        {/* Image stage */}
                         <div
                           onClick={() => {
                             setSelectedProduct(p);
@@ -969,7 +1030,6 @@ export default function StylecoDemo() {
                           />
                         </div>
 
-                        {/* Details */}
                         <div>
                           <h3
                             onClick={() => {
@@ -977,19 +1037,20 @@ export default function StylecoDemo() {
                               setSelectedSize('M');
                               setSelectedQty(1);
                             }}
-                            className="cursor-pointer text-base font-bold text-[#1A1A1A] hover:text-[#2357F5] transition"
+                            className="cursor-pointer text-base font-bold text-[#1A1A1A] hover:underline"
                           >
                             {p.name}
                           </h3>
 
                           <div className="mt-3 flex items-center justify-between">
                             <div>
-                              <div className="text-lg font-black text-[#1A1A1A]">{p.price}$</div>
-                              <div className="text-[11px] text-[#8E8E93]">KSh {p.priceKsh.toLocaleString()}</div>
+                              <div className="text-lg font-black text-[#1A1A1A]">
+                                {formatPrice(p.price, p.priceKsh)}
+                              </div>
                             </div>
                             <button
                               onClick={() => addToCart(p, 'M', 1)}
-                              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E5E5] bg-white text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition shadow-sm"
+                              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E5E5] bg-white text-[#1A1A1A] hover:bg-black hover:text-white transition shadow-sm"
                               aria-label="Add to Bag"
                             >
                               <ShoppingBag className="h-4 w-4" />
@@ -1017,7 +1078,6 @@ export default function StylecoDemo() {
           </button>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-            {/* Left: Product Image Stage */}
             <div className="rounded-3xl bg-[#F8F9FA] p-8 border border-[#EAEAEA] flex items-center justify-center aspect-square">
               <img
                 src={selectedProduct.image}
@@ -1026,11 +1086,13 @@ export default function StylecoDemo() {
               />
             </div>
 
-            {/* Right: Info & Selectors */}
             <div className="space-y-6">
               <div>
-                <span className="text-xs uppercase tracking-wider font-bold text-[#FF6A13]">
-                  {selectedProduct.badge || 'New Season'}
+                <span
+                  className="text-xs uppercase tracking-wider font-bold"
+                  style={{ color: shellConfig.accentColor }}
+                >
+                  {selectedProduct.badge || 'New Season Drop'}
                 </span>
                 <h1 className="mt-1 text-3xl sm:text-4xl font-black text-[#1A1A1A]">
                   {selectedProduct.name}
@@ -1041,15 +1103,13 @@ export default function StylecoDemo() {
                     <span className="ml-1 font-bold text-black">{selectedProduct.rating}</span>
                   </div>
                   <span className="text-[#8E8E93]">({selectedProduct.reviews} customer reviews)</span>
-                  <span className="text-[#107C41] font-semibold ml-2">● In Stock (Nairobi)</span>
+                  <span className="text-[#107C41] font-semibold ml-2">● In Stock ({shellConfig.dispatchCity})</span>
                 </div>
               </div>
 
-              {/* Price */}
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-black text-[#1A1A1A]">${selectedProduct.price}</span>
-                <span className="text-sm font-semibold text-[#8E8E93]">
-                  (KSh {selectedProduct.priceKsh.toLocaleString()})
+                <span className="text-3xl font-black text-[#1A1A1A]">
+                  {formatPrice(selectedProduct.price, selectedProduct.priceKsh)}
                 </span>
               </div>
 
@@ -1057,7 +1117,6 @@ export default function StylecoDemo() {
                 {selectedProduct.desc}
               </p>
 
-              {/* Size Picker */}
               <div className="space-y-2">
                 <div className="flex justify-between text-xs font-bold">
                   <span>Select Size:</span>
@@ -1080,7 +1139,6 @@ export default function StylecoDemo() {
                 </div>
               </div>
 
-              {/* Quantity Stepper & Add to Bag */}
               <div className="pt-2 flex items-center gap-4">
                 <div className="flex items-center rounded-xl border border-[#E5E5E5] px-3 py-2">
                   <button
@@ -1100,18 +1158,18 @@ export default function StylecoDemo() {
 
                 <button
                   onClick={() => addToCart(selectedProduct, selectedSize, selectedQty)}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#1A1A1A] py-3.5 text-sm font-bold text-white hover:bg-black transition shadow-lg"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white transition shadow-lg"
+                  style={{ backgroundColor: shellConfig.accentColor }}
                 >
                   <ShoppingBag className="h-4 w-4" />
-                  <span>Add to Bag · ${(selectedProduct.price * selectedQty)}</span>
+                  <span>Add to Bag · {formatPrice(selectedProduct.price * selectedQty, selectedProduct.priceKsh * selectedQty)}</span>
                 </button>
               </div>
 
-              {/* Trust Badges */}
               <div className="grid grid-cols-2 gap-4 border-t border-[#EAEAEA] pt-6 text-xs text-[#555]">
                 <div className="flex items-center gap-2">
                   <Truck className="h-4 w-4 text-[#107C41]" />
-                  <span>Same-Day Nairobi Delivery</span>
+                  <span>{shellConfig.deliveryPromise}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <RotateCcw className="h-4 w-4 text-[#107C41]" />
@@ -1119,11 +1177,11 @@ export default function StylecoDemo() {
                 </div>
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4 text-[#107C41]" />
-                  <span>100% Cotton & Rayon Certified</span>
+                  <span>100% Quality Certified</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Smartphone className="h-4 w-4 text-[#107C41]" />
-                  <span>Direct M-Pesa PIN Prompt</span>
+                  <span>M-Pesa Till {shellConfig.tillNumber}</span>
                 </div>
               </div>
             </div>
@@ -1135,7 +1193,6 @@ export default function StylecoDemo() {
       {cartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs">
           <div className="h-full w-full max-w-md bg-white p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
-            {/* Header */}
             <div>
               <div className="flex items-center justify-between border-b border-[#EAEAEA] pb-4">
                 <div className="flex items-center gap-2">
@@ -1150,7 +1207,6 @@ export default function StylecoDemo() {
                 </button>
               </div>
 
-              {/* Cart Items List */}
               <div className="mt-6 space-y-4">
                 {cart.length === 0 ? (
                   <p className="text-center py-12 text-sm text-[#737373]">Your bag is empty.</p>
@@ -1168,7 +1224,9 @@ export default function StylecoDemo() {
                       <div className="flex-1 min-w-0">
                         <h4 className="text-xs font-bold text-[#1A1A1A] truncate">{product.name}</h4>
                         <p className="text-[11px] text-[#737373]">Size: <b>{size}</b> · Qty: <b>{quantity}</b></p>
-                        <p className="text-xs font-black text-[#1A1A1A] mt-1">${product.price * quantity}</p>
+                        <p className="text-xs font-black text-[#1A1A1A] mt-1">
+                          {formatPrice(product.price * quantity, product.priceKsh * quantity)}
+                        </p>
                       </div>
                       <button
                         onClick={() => removeFromCart(index)}
@@ -1182,7 +1240,6 @@ export default function StylecoDemo() {
               </div>
             </div>
 
-            {/* M-Pesa Checkout Area */}
             {cart.length > 0 && (
               <div className="border-t border-[#EAEAEA] pt-4 space-y-3">
                 <div className="flex justify-between text-sm text-[#737373]">
@@ -1190,20 +1247,20 @@ export default function StylecoDemo() {
                   <span>${cartTotalUSD}</span>
                 </div>
                 <div className="flex justify-between text-base font-black text-[#1A1A1A]">
-                  <span>Total (M-Pesa)</span>
+                  <span>Total Due</span>
                   <span>KSh {cartTotalKSH.toLocaleString()}</span>
                 </div>
 
                 <div className="pt-2">
                   <label className="block text-xs font-semibold text-[#1A1A1A] mb-1">
-                    M-Pesa Phone Number:
+                    M-Pesa Phone for PIN Prompt (Till: {shellConfig.tillNumber}):
                   </label>
                   <div className="relative">
                     <Smartphone className="absolute left-3 top-3 h-4 w-4 text-[#737373]" />
                     <input
                       type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      value={shellConfig.phone}
+                      onChange={(e) => setShellConfig({ ...shellConfig, phone: e.target.value })}
                       placeholder="0712345678"
                       className="w-full rounded-xl border border-[#D1D1D6] py-2.5 pl-10 pr-4 text-sm text-[#1A1A1A] focus:border-black focus:outline-none"
                     />
@@ -1211,10 +1268,9 @@ export default function StylecoDemo() {
                 </div>
 
                 <button
-                  onClick={() => {
-                    setCheckoutSuccess(true);
-                  }}
-                  className="w-full rounded-xl bg-[#107C41] py-3.5 text-sm font-bold text-white hover:bg-[#0D6535] transition shadow-md"
+                  onClick={() => setCheckoutSuccess(true)}
+                  className="w-full rounded-xl py-3.5 text-sm font-bold text-white transition shadow-md"
+                  style={{ backgroundColor: shellConfig.accentColor }}
                 >
                   Pay KSh {cartTotalKSH.toLocaleString()} with M-Pesa
                 </button>
@@ -1233,12 +1289,13 @@ export default function StylecoDemo() {
             </div>
             <h3 className="mt-4 text-2xl font-extrabold text-[#1A1A1A]">Order Confirmed!</h3>
             <p className="mt-2 text-sm text-[#737373]">
-              We have dispatched your order prompt to <b>{phone}</b>. Your order will be packed and delivered same-day in Nairobi.
+              Dispatched M-Pesa prompt to <b>{shellConfig.phone}</b> for Till <b>{shellConfig.tillNumber}</b>.
             </p>
             <div className="mt-6 rounded-xl bg-[#F5F5F7] p-4 text-left text-xs space-y-1">
-              <p><b>Order Reference:</b> #STY-{Math.floor(100000 + Math.random() * 900000)}</p>
+              <p><b>Store:</b> {shellConfig.storeName}</p>
+              <p><b>Order Reference:</b> #ORD-{Math.floor(100000 + Math.random() * 900000)}</p>
               <p><b>Amount:</b> KSh {cartTotalKSH.toLocaleString()} ($ {cartTotalUSD})</p>
-              <p><b>Status:</b> Ready for dispatch</p>
+              <p><b>Dispatch:</b> {shellConfig.deliveryPromise}</p>
             </div>
             <button
               onClick={() => {
@@ -1254,7 +1311,7 @@ export default function StylecoDemo() {
         </div>
       )}
 
-      {/* Contact Us Modal */}
+      {/* Concierge Modal */}
       {contactOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="max-w-md w-full rounded-3xl bg-white p-6 sm:p-8 shadow-2xl relative">
@@ -1267,13 +1324,13 @@ export default function StylecoDemo() {
             <div className="h-12 w-12 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center mb-4">
               <PhoneCall className="h-6 w-6" />
             </div>
-            <h3 className="text-xl font-black text-[#1A1A1A]">Talk with Styleco. Concierge</h3>
+            <h3 className="text-xl font-black text-[#1A1A1A]">Talk with {shellConfig.storeName} Concierge</h3>
             <p className="mt-2 text-xs text-[#737373]">
-              Need help with sizing, bespoke tailoring orders, or delivery status across Kenya?
+              Need help with sizing, bespoke tailoring orders, or delivery in {shellConfig.dispatchCity}?
             </p>
             <div className="mt-6 space-y-3">
               <a
-                href="https://wa.me/254712345678"
+                href={`https://wa.me/254${shellConfig.phone.replace(/^0/, '')}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#25D366] py-3 text-sm font-bold text-white hover:opacity-90"
@@ -1281,11 +1338,200 @@ export default function StylecoDemo() {
                 <span>Chat on WhatsApp</span>
               </a>
               <a
-                href="tel:+254712345678"
+                href={`tel:${shellConfig.phone}`}
                 className="w-full flex items-center justify-center gap-2 rounded-xl border border-[#1A1A1A] py-3 text-sm font-bold text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition"
               >
-                <span>Direct Phone Call</span>
+                <span>Direct Phone Call ({shellConfig.phone})</span>
               </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CLIENT SHELL STUDIO DRAWER (The interactive customizer) */}
+      {customizerOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs">
+          <div className="h-full w-full max-w-lg bg-white p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
+            <div>
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between border-b border-[#EAEAEA] pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FF6A13] text-white">
+                    <Sliders className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black text-[#1A1A1A]">Client Shell Studio</h3>
+                    <p className="text-[11px] text-[#737373]">Customize this apparel store shell live</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setCustomizerOpen(false)}
+                  className="rounded-full p-2 text-[#737373] hover:bg-[#F5F5F7] hover:text-black"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Form Controls */}
+              <div className="mt-6 space-y-5 text-xs">
+                {/* 1. Brand Identity */}
+                <div className="rounded-2xl bg-[#F8F9FA] p-4 border border-[#EAEAEA] space-y-3">
+                  <h4 className="font-bold text-sm text-[#1A1A1A] flex items-center gap-1.5">
+                    <Edit3 className="h-4 w-4 text-[#FF6A13]" /> Brand Identity
+                  </h4>
+
+                  <div>
+                    <label className="block font-semibold text-[#555] mb-1">Business / Brand Name:</label>
+                    <input
+                      type="text"
+                      value={shellConfig.storeName}
+                      onChange={(e) => setShellConfig({ ...shellConfig, storeName: e.target.value })}
+                      placeholder="e.g. Nairobi Drip, Styleco."
+                      className="w-full rounded-xl border border-[#D1D1D6] bg-white p-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-black font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-[#555] mb-1">Brand Tagline / Hero Subtext:</label>
+                    <input
+                      type="text"
+                      value={shellConfig.tagline}
+                      onChange={(e) => setShellConfig({ ...shellConfig, tagline: e.target.value })}
+                      placeholder="e.g. Modern streetwear for urban creators"
+                      className="w-full rounded-xl border border-[#D1D1D6] bg-white p-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-black"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-[#555] mb-1">Top Announcement Bar:</label>
+                    <input
+                      type="text"
+                      value={shellConfig.announcement}
+                      onChange={(e) => setShellConfig({ ...shellConfig, announcement: e.target.value })}
+                      placeholder="e.g. Free same-day delivery over KSh 3,000"
+                      className="w-full rounded-xl border border-[#D1D1D6] bg-white p-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-black"
+                    />
+                  </div>
+                </div>
+
+                {/* 2. Color Palette & Look */}
+                <div className="rounded-2xl bg-[#F8F9FA] p-4 border border-[#EAEAEA] space-y-3">
+                  <h4 className="font-bold text-sm text-[#1A1A1A] flex items-center gap-1.5">
+                    <Palette className="h-4 w-4 text-[#FF6A13]" /> Brand Accent Color
+                  </h4>
+
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {ACCENT_PRESETS.map((preset) => (
+                      <button
+                        key={preset.hex}
+                        onClick={() => setShellConfig({ ...shellConfig, accentColor: preset.hex })}
+                        className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 border text-[11px] font-semibold transition ${
+                          shellConfig.accentColor === preset.hex
+                            ? 'border-black bg-white shadow-sm ring-1 ring-black'
+                            : 'border-transparent bg-white/70 hover:bg-white'
+                        }`}
+                      >
+                        <span className="h-3.5 w-3.5 rounded-full border border-black/10" style={{ backgroundColor: preset.hex }} />
+                        <span>{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <span className="text-xs text-[#737373]">Custom Hex:</span>
+                    <input
+                      type="color"
+                      value={shellConfig.accentColor}
+                      onChange={(e) => setShellConfig({ ...shellConfig, accentColor: e.target.value })}
+                      className="h-8 w-12 cursor-pointer rounded border border-gray-300 p-0.5"
+                    />
+                    <span className="font-mono text-xs font-bold">{shellConfig.accentColor}</span>
+                  </div>
+
+                  <div className="pt-2 border-t border-[#EAEAEA]">
+                    <label className="block font-semibold text-[#555] mb-1">Primary Currency Display:</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setShellConfig({ ...shellConfig, currency: 'USD' })}
+                        className={`py-2 rounded-xl font-bold transition ${
+                          shellConfig.currency === 'USD'
+                            ? 'bg-[#1A1A1A] text-white'
+                            : 'bg-white border border-[#D1D1D6] text-[#555]'
+                        }`}
+                      >
+                        USD ($)
+                      </button>
+                      <button
+                        onClick={() => setShellConfig({ ...shellConfig, currency: 'KSH' })}
+                        className={`py-2 rounded-xl font-bold transition ${
+                          shellConfig.currency === 'KSH'
+                            ? 'bg-[#1A1A1A] text-white'
+                            : 'bg-white border border-[#D1D1D6] text-[#555]'
+                        }`}
+                      >
+                        Kenyan Shilling (KSh)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. M-Pesa & Dispatch Settings */}
+                <div className="rounded-2xl bg-[#F8F9FA] p-4 border border-[#EAEAEA] space-y-3">
+                  <h4 className="font-bold text-sm text-[#1A1A1A] flex items-center gap-1.5">
+                    <Smartphone className="h-4 w-4 text-[#107C41]" /> M-Pesa & Delivery
+                  </h4>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold text-[#555] mb-1">M-Pesa Till / Paybill:</label>
+                      <input
+                        type="text"
+                        value={shellConfig.tillNumber}
+                        onChange={(e) => setShellConfig({ ...shellConfig, tillNumber: e.target.value })}
+                        className="w-full rounded-xl border border-[#D1D1D6] bg-white p-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-black font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-[#555] mb-1">Base Dispatch City:</label>
+                      <input
+                        type="text"
+                        value={shellConfig.dispatchCity}
+                        onChange={(e) => setShellConfig({ ...shellConfig, dispatchCity: e.target.value })}
+                        className="w-full rounded-xl border border-[#D1D1D6] bg-white p-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-black"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-[#555] mb-1">Customer Delivery Promise:</label>
+                    <input
+                      type="text"
+                      value={shellConfig.deliveryPromise}
+                      onChange={(e) => setShellConfig({ ...shellConfig, deliveryPromise: e.target.value })}
+                      className="w-full rounded-xl border border-[#D1D1D6] bg-white p-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-black"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-6 border-t border-[#EAEAEA] pt-4 space-y-2">
+              <button
+                onClick={handleLaunchWithShell}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#2357F5] py-3.5 text-sm font-bold text-white hover:bg-[#1A45C8] transition shadow-lg"
+              >
+                <span>Launch My Shop With This Shell</span>
+                <ExternalLink className="h-4 w-4" />
+              </button>
+
+              <button
+                onClick={handleResetShell}
+                className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-[#E5E5E5] py-2.5 text-xs font-semibold text-[#737373] hover:text-black hover:bg-[#F5F5F7] transition"
+              >
+                <RefreshCw className="h-3 w-3" />
+                <span>Reset Shell to Defaults</span>
+              </button>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams, useNavigate } from 'react-router';
 import {
   ShoppingBag,
   User,
@@ -18,10 +18,14 @@ import {
   Flame,
   Award,
   Smartphone,
+  Sliders,
+  Edit3,
+  Palette,
+  RefreshCw,
+  ExternalLink,
 } from 'lucide-react';
 
-// Purelix Botanical Supplements & Wellness Catalog
-const PRODUCTS = [
+const DEFAULT_PRODUCTS = [
   {
     id: 'purelix-cleanser',
     name: 'Citrus & Stone Botanical Cleanser',
@@ -183,26 +187,54 @@ const CATEGORIES = [
   { id: 'sleep', label: 'Calm & Sleep' },
 ];
 
+const BOTANICAL_PALETTES = [
+  { name: 'Sunlit Ochre', hex: '#C89B59' },
+  { name: 'Sage Botanic', hex: '#4F8A3C' },
+  { name: 'Amber Clay', hex: '#B87333' },
+  { name: 'Rose Hibiscus', hex: '#A8576A' },
+  { name: 'Deep Olive', hex: '#556B2F' },
+];
+
 export default function PurelixDemo() {
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+
+  // Modifiable Shell Configuration State
+  const [shellConfig, setShellConfig] = useState({
+    brandName: params.get('name') || 'PURELIX',
+    heroHeading: 'Your Journey to Better Health Starts Here',
+    heroSubtext: 'Discover plant-based supplements that enhance energy, immunity, digestion, and overall wellness with reliable ingredients.',
+    ctaText: 'Buy Now',
+    bgColor: params.get('accent') || '#C89B59',
+    currency: 'USD', // 'USD' | 'KSH'
+    tillNumber: '789123',
+    dispatchCity: 'Nairobi',
+    deliveryPromise: 'Same-day Nairobi dispatch',
+    phone: '0712345678',
+    shippingThresholdUSD: 60,
+  });
+
+  const [products, setProducts] = useState(DEFAULT_PRODUCTS);
+  const [customizerOpen, setCustomizerOpen] = useState(false);
+
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState([
     {
-      product: PRODUCTS[0],
+      product: DEFAULT_PRODUCTS[0],
       quantity: 1,
     },
   ]);
   const [wishlist, setWishlist] = useState(['purelix-cleanser']);
-  const [phone, setPhone] = useState('0712345678');
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Filter products
   const filteredProducts = useMemo(() => {
-    if (activeCategory === 'all') return PRODUCTS;
-    return PRODUCTS.filter((p) => p.category === activeCategory);
-  }, [activeCategory]);
+    if (activeCategory === 'all') return products;
+    return products.filter((p) => p.category === activeCategory);
+  }, [products, activeCategory]);
 
   const toggleWishlist = (id) => {
     setWishlist((prev) =>
@@ -243,9 +275,16 @@ export default function PurelixDemo() {
   const cartTotalUSD = cart.reduce((sum, item) => sum + item.product.priceUSD * item.quantity, 0);
   const cartTotalKSH = cart.reduce((sum, item) => sum + item.product.priceKSH * item.quantity, 0);
 
+  const formatPrice = (usd, ksh) => {
+    if (shellConfig.currency === 'KSH') {
+      return 'KSh ' + ksh.toLocaleString();
+    }
+    return '$' + usd;
+  };
+
   const handleCheckout = (e) => {
     e.preventDefault();
-    if (!phone) return;
+    if (!shellConfig.phone) return;
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
@@ -253,50 +292,86 @@ export default function PurelixDemo() {
     }, 1200);
   };
 
+  const handleLaunchWithShell = () => {
+    const query = new URLSearchParams({
+      kind: 'wellness',
+      name: shellConfig.brandName,
+      accent: shellConfig.bgColor,
+    }).toString();
+    navigate('/start?' + query);
+  };
+
+  const handleResetShell = () => {
+    setShellConfig({
+      brandName: 'PURELIX',
+      heroHeading: 'Your Journey to Better Health Starts Here',
+      heroSubtext: 'Discover plant-based supplements that enhance energy, immunity, digestion, and overall wellness with reliable ingredients.',
+      ctaText: 'Buy Now',
+      bgColor: '#C89B59',
+      currency: 'USD',
+      tillNumber: '789123',
+      dispatchCity: 'Nairobi',
+      deliveryPromise: 'Same-day Nairobi dispatch',
+      phone: '0712345678',
+      shippingThresholdUSD: 60,
+    });
+    setProducts(DEFAULT_PRODUCTS);
+  };
+
   return (
-    <div className="min-h-screen bg-[#C89B59] text-white selection:bg-[#FFDE59] selection:text-black font-sans">
-      {/* Return to Platform Bar */}
-      <aside aria-label="Demo notice" className="border-b border-black/10 bg-[#B88746] px-4 py-2 text-xs font-medium text-white/90">
+    <div
+      className="min-h-screen text-white selection:bg-[#FFDE59] selection:text-black font-sans transition-colors duration-500"
+      style={{ backgroundColor: shellConfig.bgColor }}
+    >
+      {/* Shell Controls Top Bar */}
+      <aside aria-label="Shell Studio" className="border-b border-black/10 bg-black/30 backdrop-blur-md px-4 py-2 text-xs font-medium text-white shadow-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-2 w-2 rounded-full bg-[#FFDE59] animate-pulse" />
-            <span>Kabuor Shops Concept Showcase · <b>Purelix Organic Wellness</b></span>
+            <span>Kabuor Shell Engine · <b>Modifiable Botanical Wellness Shell</b></span>
           </div>
-          <Link
-            to="/shops"
-            className="inline-flex items-center gap-1 rounded bg-black/20 px-2.5 py-1 text-white hover:bg-black/30 transition"
-          >
-            <ArrowLeft className="h-3 w-3" /> Back to Shops
-          </Link>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setCustomizerOpen(true)}
+              className="flex items-center gap-1.5 rounded-full bg-[#FFDE59] px-3.5 py-1 text-xs font-bold text-black shadow hover:bg-[#FFE680] transition"
+            >
+              <Sliders className="h-3.5 w-3.5" />
+              <span>Customize Shell</span>
+            </button>
+
+            <Link
+              to="/shops"
+              className="inline-flex items-center gap-1 rounded bg-black/25 px-2.5 py-1 text-white hover:bg-black/40 transition"
+            >
+              <ArrowLeft className="h-3 w-3" /> Back
+            </Link>
+          </div>
         </div>
       </aside>
 
-      {/* Main Container mirroring User Design 1 */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-20">
-        {/* Navigation Bar matching Purelix design */}
+        {/* Navigation Bar */}
         <header className="flex items-center justify-between py-6">
-          {/* Logo */}
           <Link to="#" className="text-2xl sm:text-3xl font-black tracking-widest uppercase text-white font-serif">
-            PURELIX
+            {shellConfig.brandName}
           </Link>
 
-          {/* Center Nav Links */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/90">
             <a href="#hero" className="border-b-2 border-white pb-0.5 text-white font-semibold">Home</a>
             <a href="#shop" className="hover:text-white transition">Shop</a>
-            <a href="#shop" className="hover:text-white transition">Categories</a>
+            <a href="#shop" className="hover:text-white transition">Formulations</a>
             <a href="#benefits" className="hover:text-white transition">Benefits</a>
             <a href="#support" className="hover:text-white transition">Support</a>
           </nav>
 
-          {/* Right Action Pills */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setCartOpen(true)}
               className="flex items-center gap-2 rounded-full bg-white/20 backdrop-blur-md border border-white/25 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition shadow-sm"
             >
               <ShoppingBag className="h-4 w-4" />
-              <span className="font-semibold">${cartTotalUSD.toFixed(2)}</span>
+              <span className="font-semibold">{formatPrice(cartTotalUSD, cartTotalKSH)}</span>
               {cartCount > 0 && (
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FFDE59] text-xs font-bold text-black">
                   {cartCount}
@@ -304,21 +379,21 @@ export default function PurelixDemo() {
               )}
             </button>
             <button
-              onClick={() => alert('Purelix Customer Portal: You can login or track your order with your phone number.')}
-              className="flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/25 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition shadow-sm"
+              onClick={() => setCustomizerOpen(true)}
+              className="hidden sm:flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/25 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition shadow-sm"
             >
-              <User className="h-4 w-4" />
-              <span>Login</span>
+              <Edit3 className="h-3.5 w-3.5" />
+              <span>Edit Shell</span>
             </button>
           </div>
         </header>
 
-        {/* Hero Section matching Purelix image with 100% fidelity */}
-        <section id="hero" className="relative mt-4 overflow-hidden rounded-3xl bg-[#D2A669] pt-12 pb-16 px-6 sm:px-12 lg:px-16 shadow-2xl border border-white/15">
-          {/* Huge Architectural "PURELIX" Lettering behind the still-life */}
+        {/* Hero Section */}
+        <section id="hero" className="relative mt-4 overflow-hidden rounded-3xl bg-black/10 pt-12 pb-16 px-6 sm:px-12 lg:px-16 shadow-2xl border border-white/15">
+          {/* Huge Architectural Brand Backdrop Typography */}
           <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-[62%] flex justify-center overflow-hidden opacity-90 select-none z-0">
-            <h1 className="text-[14vw] font-black uppercase tracking-tight text-white leading-none scale-y-110 drop-shadow-sm font-serif">
-              PURELIX
+            <h1 className="text-[13vw] font-black uppercase tracking-tight text-white leading-none scale-y-110 drop-shadow-sm font-serif">
+              {shellConfig.brandName}
             </h1>
           </div>
 
@@ -326,39 +401,37 @@ export default function PurelixDemo() {
             {/* Left Headline & CTA */}
             <div className="lg:col-span-4 space-y-6">
               <h2 className="text-3xl sm:text-5xl font-serif font-medium leading-[1.15] text-white">
-                Your Journey <br />
-                to Better Health <br />
-                Starts Here
+                {shellConfig.heroHeading}
               </h2>
               <div>
                 <a
                   href="#shop"
                   className="inline-flex items-center gap-2 rounded-full bg-[#FFDE59] px-7 py-3.5 text-base font-bold text-[#1A1A1A] hover:bg-[#FFE680] hover:scale-105 transition-all shadow-lg shadow-black/15"
                 >
-                  <span>Buy Now</span>
+                  <span>{shellConfig.ctaText}</span>
                   <span className="h-2.5 w-2.5 rounded-full bg-black inline-block ml-1" />
                 </a>
               </div>
             </div>
 
-            {/* Center Still-Life (Stone, Lemons, Wildflowers, Pump Bottle, Foam) */}
+            {/* Center Still-Life */}
             <div className="lg:col-span-5 flex justify-center items-center py-4">
               <div className="relative max-w-sm sm:max-w-md w-full">
                 <img
                   src="/brand/purelix/purelix_bottle_center.png"
-                  alt="Purelix Citrus & Stone Botanical Serum on warm rock"
+                  alt="Botanical Serum"
                   className="w-full object-contain filter drop-shadow-2xl transition hover:scale-105 duration-500"
                 />
               </div>
             </div>
 
-            {/* Right Card: 100% Vegan badge card as in design */}
+            {/* Right Card */}
             <div className="lg:col-span-3 flex justify-end">
               <div className="rounded-2xl bg-white p-4 sm:p-5 shadow-2xl max-w-[190px] w-full text-center text-[#1E1E1E] border border-white/40 transform hover:-translate-y-1 transition duration-300">
                 <div className="overflow-hidden rounded-xl bg-[#F4F6F0] p-2 aspect-[4/3] flex items-center justify-center">
                   <img
                     src="/brand/purelix/purelix_vegan_badge.png"
-                    alt="100% Vegan Natural Botanicals"
+                    alt="100% Vegan"
                     className="h-full w-full object-contain"
                   />
                 </div>
@@ -375,19 +448,18 @@ export default function PurelixDemo() {
           {/* Bottom Subtext Banner */}
           <div className="relative z-10 mt-8 border-t border-white/20 pt-6 text-center">
             <p className="mx-auto max-w-2xl text-sm sm:text-base text-white/90 font-light leading-relaxed">
-              Discover plant-based supplements that enhance energy, immunity, digestion, and overall wellness with reliable ingredients.
+              {shellConfig.heroSubtext}
             </p>
           </div>
         </section>
 
-        {/* Category Pills Bar */}
+        {/* Catalog Section */}
         <section id="shop" className="mt-16">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/20 pb-6">
             <div>
               <p className="text-xs uppercase tracking-widest font-bold text-[#FFDE59]">Pure & Potent</p>
               <h3 className="mt-1 text-2xl sm:text-3xl font-serif font-bold text-white">Botanical Formulations</h3>
             </div>
-            {/* Filter Tabs */}
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((cat) => (
                 <button
@@ -396,7 +468,7 @@ export default function PurelixDemo() {
                   className={
                     "rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition " +
                     (activeCategory === cat.id
-                      ? "bg-white text-[#966B2F] shadow-md"
+                      ? "bg-white text-black shadow-md font-bold"
                       : "bg-white/15 text-white hover:bg-white/25 border border-white/20")
                   }
                 >
@@ -406,7 +478,6 @@ export default function PurelixDemo() {
             </div>
           </div>
 
-          {/* Product Listing Grid (PLP) */}
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredProducts.map((p) => {
               const isFav = wishlist.includes(p.id);
@@ -415,7 +486,6 @@ export default function PurelixDemo() {
                   key={p.id}
                   className="group relative flex flex-col justify-between overflow-hidden rounded-3xl bg-white/10 backdrop-blur-md p-6 border border-white/20 hover:border-white/40 hover:bg-white/15 transition duration-300 shadow-xl"
                 >
-                  {/* Badge & Favorite */}
                   <div className="flex items-center justify-between">
                     <span
                       className="rounded-full px-3 py-1 text-[11px] font-bold text-white tracking-wide"
@@ -432,7 +502,6 @@ export default function PurelixDemo() {
                     </button>
                   </div>
 
-                  {/* Product Image Stage */}
                   <div
                     onClick={() => setSelectedProduct(p)}
                     className="cursor-pointer my-6 flex aspect-square items-center justify-center rounded-2xl bg-gradient-to-b from-white/10 to-transparent p-6 group-hover:scale-105 transition duration-300"
@@ -444,7 +513,6 @@ export default function PurelixDemo() {
                     />
                   </div>
 
-                  {/* Product Info */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-1.5 text-xs text-[#FFDE59]">
                       <Star className="h-3.5 w-3.5 fill-[#FFDE59]" />
@@ -464,11 +532,11 @@ export default function PurelixDemo() {
                       {p.tagline}
                     </p>
 
-                    {/* Price & Add Button */}
                     <div className="pt-3 flex items-center justify-between border-t border-white/15">
                       <div>
-                        <div className="text-xl font-black text-white">${p.priceUSD}</div>
-                        <div className="text-xs text-white/70">KSh {p.priceKSH.toLocaleString()}</div>
+                        <div className="text-xl font-black text-white">
+                          {formatPrice(p.priceUSD, p.priceKSH)}
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
@@ -496,7 +564,7 @@ export default function PurelixDemo() {
         {/* Benefits Section */}
         <section id="benefits" className="mt-20 rounded-3xl bg-black/15 p-8 sm:p-12 border border-white/15">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs uppercase tracking-widest font-bold text-[#FFDE59]">Why Choose Purelix</span>
+            <span className="text-xs uppercase tracking-widest font-bold text-[#FFDE59]">Why Choose {shellConfig.brandName}</span>
             <h3 className="mt-2 text-3xl font-serif font-bold text-white">Botanical Science Meets Daily Wellness</h3>
           </div>
 
@@ -507,7 +575,7 @@ export default function PurelixDemo() {
               </div>
               <h4 className="font-bold text-lg font-serif">100% Vegan & Plant-Based</h4>
               <p className="mt-2 text-xs text-white/80 leading-relaxed">
-                Zero animal derivatives, gelatin, or artificial stabilizing agents. Safe for vegan & kosher lifestyles.
+                Zero animal derivatives, gelatin, or artificial stabilizers. Formulated with authentic herbs.
               </p>
             </div>
 
@@ -517,7 +585,7 @@ export default function PurelixDemo() {
               </div>
               <h4 className="font-bold text-lg font-serif">Cold-Pressed Potency</h4>
               <p className="mt-2 text-xs text-white/80 leading-relaxed">
-                Never heat-treated. All delicate enzymes, vitamins, and bio-flavonoids stay biologically active.
+                Gentle cold processing ensures delicate bioactive compounds remain 100% active.
               </p>
             </div>
 
@@ -525,9 +593,9 @@ export default function PurelixDemo() {
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFDE59] text-black mb-4">
                 <ShieldCheck className="h-6 w-6" />
               </div>
-              <h4 className="font-bold text-lg font-serif">3rd-Party Lab Verified</h4>
+              <h4 className="font-bold text-lg font-serif">Lab Tested Purity</h4>
               <p className="mt-2 text-xs text-white/80 leading-relaxed">
-                Every batch is tested for heavy metals, pesticides, and bacterial purity with full public lab COAs.
+                Rigorous testing for microbiological quality and heavy metal screening in Kenya.
               </p>
             </div>
 
@@ -535,9 +603,9 @@ export default function PurelixDemo() {
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFDE59] text-black mb-4">
                 <Truck className="h-6 w-6" />
               </div>
-              <h4 className="font-bold text-lg font-serif">M-Pesa Express Delivery</h4>
+              <h4 className="font-bold text-lg font-serif">{shellConfig.deliveryPromise}</h4>
               <p className="mt-2 text-xs text-white/80 leading-relaxed">
-                Instant STK prompt checkout. Same-day dispatch across Nairobi, Mombasa, Kisumu & Eldoret.
+                Direct M-Pesa prompt payment with courier delivery dispatched from {shellConfig.dispatchCity}.
               </p>
             </div>
           </div>
@@ -545,7 +613,7 @@ export default function PurelixDemo() {
 
         {/* Footer */}
         <footer id="support" className="mt-20 border-t border-white/20 pt-10 text-xs text-white/70 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© 2026 Purelix Botanicals Inc. Powered by Kabuor Shops.</p>
+          <p>© 2026 {shellConfig.brandName}. Powered by Kabuor Shell Engine.</p>
           <div className="flex gap-6">
             <a href="#hero" className="hover:text-white transition">Privacy</a>
             <a href="#hero" className="hover:text-white transition">Terms</a>
@@ -558,8 +626,7 @@ export default function PurelixDemo() {
       {/* Product Details Page (PDP) Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md overflow-y-auto">
-          <div className="relative my-8 w-full max-w-3xl rounded-3xl bg-[#C89B59] text-white p-6 sm:p-10 shadow-2xl border border-white/30 animate-scale-up">
-            {/* Close button */}
+          <div className="relative my-8 w-full max-w-3xl rounded-3xl bg-[#2A2116] text-white p-6 sm:p-10 shadow-2xl border border-white/30 animate-scale-up">
             <button
               onClick={() => setSelectedProduct(null)}
               className="absolute top-6 right-6 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/40 transition"
@@ -568,7 +635,6 @@ export default function PurelixDemo() {
             </button>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              {/* Product Visual */}
               <div className="flex aspect-square items-center justify-center rounded-2xl bg-white/10 p-8 border border-white/20">
                 <img
                   src={selectedProduct.heroImage}
@@ -577,9 +643,8 @@ export default function PurelixDemo() {
                 />
               </div>
 
-              {/* Product Details */}
               <div className="space-y-4">
-                <div className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-white text-[#966B2F]">
+                <div className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-white text-black">
                   {selectedProduct.categoryLabel}
                 </div>
 
@@ -594,19 +659,15 @@ export default function PurelixDemo() {
                 </div>
 
                 <div className="text-2xl font-black text-white">
-                  ${selectedProduct.priceUSD}{" "}
-                  <span className="text-sm font-normal text-white/80">
-                    (KSh {selectedProduct.priceKSH.toLocaleString()})
-                  </span>
+                  {formatPrice(selectedProduct.priceUSD, selectedProduct.priceKSH)}
                 </div>
 
                 <p className="text-sm text-white/90 leading-relaxed">
                   {selectedProduct.description}
                 </p>
 
-                {/* Ingredients list */}
-                <div className="rounded-xl bg-black/15 p-4 text-xs space-y-1.5">
-                  <p className="font-bold text-[#FFDE59] uppercase tracking-wider text-[10px]">Key Bio-Active Botanicals:</p>
+                <div className="rounded-xl bg-black/30 p-4 text-xs space-y-1.5">
+                  <p className="font-bold text-[#FFDE59] uppercase tracking-wider text-[10px]">Active Botanical Extract:</p>
                   {selectedProduct.ingredients.map((ing, i) => (
                     <div key={i} className="flex justify-between text-white/85">
                       <span>• {ing.name}</span>
@@ -615,7 +676,6 @@ export default function PurelixDemo() {
                   ))}
                 </div>
 
-                {/* Actions */}
                 <div className="pt-2 flex items-center gap-3">
                   <button
                     onClick={() => {
@@ -625,7 +685,7 @@ export default function PurelixDemo() {
                     className="flex-1 flex items-center justify-center gap-2 rounded-full bg-[#FFDE59] py-3 text-sm font-bold text-black hover:bg-[#FFE680] transition shadow-lg"
                   >
                     <ShoppingBag className="h-4 w-4" />
-                    <span>Add to Bag (${selectedProduct.priceUSD})</span>
+                    <span>Add to Bag ({formatPrice(selectedProduct.priceUSD, selectedProduct.priceKSH)})</span>
                   </button>
                   <button
                     onClick={() => toggleWishlist(selectedProduct.id)}
@@ -646,7 +706,6 @@ export default function PurelixDemo() {
       {cartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs">
           <div className="h-full w-full max-w-md bg-[#2B2317] text-white p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-white/20">
-            {/* Header */}
             <div>
               <div className="flex items-center justify-between border-b border-white/15 pb-4">
                 <div className="flex items-center gap-2">
@@ -677,7 +736,7 @@ export default function PurelixDemo() {
                 </div>
               </div>
 
-              {/* Cart Items */}
+              {/* Items */}
               <div className="mt-6 space-y-4">
                 {cart.length === 0 ? (
                   <p className="text-center py-12 text-sm text-white/60">Your bag is empty.</p>
@@ -695,7 +754,7 @@ export default function PurelixDemo() {
                       <div className="flex-1 min-w-0">
                         <h4 className="text-xs font-bold text-white truncate font-serif">{product.name}</h4>
                         <div className="text-xs text-[#FFDE59] font-semibold mt-0.5">
-                          ${product.priceUSD} · KSh {product.priceKSH.toLocaleString()}
+                          {formatPrice(product.priceUSD, product.priceKSH)}
                         </div>
                         <div className="mt-2 flex items-center gap-2">
                           <button
@@ -715,7 +774,7 @@ export default function PurelixDemo() {
                       </div>
                       <div className="text-right">
                         <div className="text-sm font-bold text-white">
-                          ${(product.priceUSD * quantity).toFixed(2)}
+                          {formatPrice(product.priceUSD * quantity, product.priceKSH * quantity)}
                         </div>
                       </div>
                     </div>
@@ -724,7 +783,7 @@ export default function PurelixDemo() {
               </div>
             </div>
 
-            {/* Checkout Section */}
+            {/* Checkout Area */}
             {cart.length > 0 && (
               <div className="mt-6 border-t border-white/15 pt-4 space-y-3">
                 <div className="flex justify-between text-sm text-white/80">
@@ -732,21 +791,21 @@ export default function PurelixDemo() {
                   <span>${cartTotalUSD.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-white">
-                  <span>Total Due (M-Pesa)</span>
+                  <span>Total Due (M-Pesa Till: {shellConfig.tillNumber})</span>
                   <span className="text-[#FFDE59]">KSh {cartTotalKSH.toLocaleString()}</span>
                 </div>
 
                 <form onSubmit={handleCheckout} className="space-y-3 pt-2">
                   <div>
                     <label className="block text-xs font-semibold text-white/80 mb-1">
-                      M-Pesa Phone Number for PIN Prompt:
+                      M-Pesa Phone Number:
                     </label>
                     <div className="relative">
                       <Smartphone className="absolute left-3 top-3 h-4 w-4 text-white/60" />
                       <input
                         type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        value={shellConfig.phone}
+                        onChange={(e) => setShellConfig({ ...shellConfig, phone: e.target.value })}
                         placeholder="0712345678"
                         required
                         className="w-full rounded-xl bg-white/10 border border-white/20 py-2.5 pl-10 pr-4 text-sm text-white placeholder-white/40 focus:border-[#FFDE59] focus:outline-none"
@@ -778,18 +837,18 @@ export default function PurelixDemo() {
       {/* Checkout Success Modal */}
       {checkoutSuccess && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="max-w-md rounded-3xl bg-[#D2A669] p-8 text-center shadow-2xl border border-white/30 text-white animate-scale-up">
+          <div className="max-w-md rounded-3xl bg-[#2A2116] p-8 text-center shadow-2xl border border-white/30 text-white animate-scale-up">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FFDE59] text-black">
               <Check className="h-8 w-8 stroke-[3]" />
             </div>
             <h3 className="mt-4 text-2xl font-serif font-bold text-white">Order Confirmed!</h3>
             <p className="mt-2 text-sm text-white/90">
-              An M-Pesa STK Prompt was dispatched to <b>{phone}</b>. Enter your PIN on your handset to complete your wellness order.
+              Prompt sent to <b>{shellConfig.phone}</b> for <b>{shellConfig.brandName}</b> Till <b>{shellConfig.tillNumber}</b>.
             </p>
-            <div className="mt-6 rounded-2xl bg-black/20 p-4 text-left text-xs space-y-1">
-              <p><b>Order ID:</b> #PUR-{Math.floor(100000 + Math.random() * 900000)}</p>
+            <div className="mt-6 rounded-2xl bg-black/40 p-4 text-left text-xs space-y-1">
+              <p><b>Store:</b> {shellConfig.brandName}</p>
               <p><b>Order Amount:</b> KSh {cartTotalKSH.toLocaleString()} ($ {cartTotalUSD})</p>
-              <p><b>Estimated Dispatch:</b> Today (Express Nairobi Courier)</p>
+              <p><b>Estimated Dispatch:</b> {shellConfig.deliveryPromise} from {shellConfig.dispatchCity}</p>
             </div>
             <button
               onClick={() => {
@@ -799,8 +858,194 @@ export default function PurelixDemo() {
               }}
               className="mt-6 w-full rounded-full bg-white py-3 text-sm font-bold text-black hover:bg-white/90"
             >
-              Continue Exploring Purelix
+              Continue Exploring {shellConfig.brandName}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* CLIENT SHELL STUDIO DRAWER FOR PURELIX */}
+      {customizerOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs">
+          <div className="h-full w-full max-w-lg bg-[#241B11] text-white p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-white/20">
+            <div>
+              <div className="flex items-center justify-between border-b border-white/15 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FFDE59] text-black">
+                    <Sliders className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black font-serif text-white">Botanical Shell Studio</h3>
+                    <p className="text-[11px] text-white/70">Modify this wellness store shell live</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setCustomizerOpen(false)}
+                  className="rounded-full p-2 text-white/70 hover:bg-white/10 hover:text-white"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="mt-6 space-y-5 text-xs">
+                {/* 1. Brand Identity */}
+                <div className="rounded-2xl bg-white/5 p-4 border border-white/10 space-y-3">
+                  <h4 className="font-bold text-sm text-[#FFDE59] flex items-center gap-1.5 font-serif">
+                    <Edit3 className="h-4 w-4" /> Brand & Backdrop Typography
+                  </h4>
+
+                  <div>
+                    <label className="block font-semibold text-white/80 mb-1">Brand Name (Big Backdrop):</label>
+                    <input
+                      type="text"
+                      value={shellConfig.brandName}
+                      onChange={(e) => setShellConfig({ ...shellConfig, brandName: e.target.value.toUpperCase() })}
+                      placeholder="e.g. PURELIX, AURA"
+                      className="w-full rounded-xl border border-white/20 bg-white/10 p-2.5 text-xs text-white uppercase tracking-wider font-bold focus:outline-none focus:border-[#FFDE59]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-white/80 mb-1">Hero Editorial Headline:</label>
+                    <input
+                      type="text"
+                      value={shellConfig.heroHeading}
+                      onChange={(e) => setShellConfig({ ...shellConfig, heroHeading: e.target.value })}
+                      placeholder="e.g. Your Journey to Better Health Starts Here"
+                      className="w-full rounded-xl border border-white/20 bg-white/10 p-2.5 text-xs text-white focus:outline-none focus:border-[#FFDE59]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-white/80 mb-1">Hero Subtitle / Description:</label>
+                    <textarea
+                      rows={3}
+                      value={shellConfig.heroSubtext}
+                      onChange={(e) => setShellConfig({ ...shellConfig, heroSubtext: e.target.value })}
+                      className="w-full rounded-xl border border-white/20 bg-white/10 p-2.5 text-xs text-white focus:outline-none focus:border-[#FFDE59]"
+                    />
+                  </div>
+                </div>
+
+                {/* 2. Color Palette */}
+                <div className="rounded-2xl bg-white/5 p-4 border border-white/10 space-y-3">
+                  <h4 className="font-bold text-sm text-[#FFDE59] flex items-center gap-1.5 font-serif">
+                    <Palette className="h-4 w-4" /> Earth & Botanical Palette
+                  </h4>
+
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {BOTANICAL_PALETTES.map((preset) => (
+                      <button
+                        key={preset.hex}
+                        onClick={() => setShellConfig({ ...shellConfig, bgColor: preset.hex })}
+                        className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 border text-[11px] font-semibold transition ${
+                          shellConfig.bgColor === preset.hex
+                            ? 'border-white bg-white/30 shadow-sm ring-1 ring-white'
+                            : 'border-transparent bg-white/10 hover:bg-white/20 text-white/90'
+                        }`}
+                      >
+                        <span className="h-3.5 w-3.5 rounded-full border border-black/20" style={{ backgroundColor: preset.hex }} />
+                        <span>{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <span className="text-xs text-white/70">Custom Background Tone:</span>
+                    <input
+                      type="color"
+                      value={shellConfig.bgColor}
+                      onChange={(e) => setShellConfig({ ...shellConfig, bgColor: e.target.value })}
+                      className="h-8 w-12 cursor-pointer rounded border border-white/20 p-0.5 bg-transparent"
+                    />
+                    <span className="font-mono text-xs font-bold text-[#FFDE59]">{shellConfig.bgColor}</span>
+                  </div>
+
+                  <div className="pt-2 border-t border-white/10">
+                    <label className="block font-semibold text-white/80 mb-1">Currency Display:</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setShellConfig({ ...shellConfig, currency: 'USD' })}
+                        className={`py-2 rounded-xl font-bold transition ${
+                          shellConfig.currency === 'USD'
+                            ? 'bg-[#FFDE59] text-black'
+                            : 'bg-white/10 border border-white/20 text-white'
+                        }`}
+                      >
+                        USD ($)
+                      </button>
+                      <button
+                        onClick={() => setShellConfig({ ...shellConfig, currency: 'KSH' })}
+                        className={`py-2 rounded-xl font-bold transition ${
+                          shellConfig.currency === 'KSH'
+                            ? 'bg-[#FFDE59] text-black'
+                            : 'bg-white/10 border border-white/20 text-white'
+                        }`}
+                      >
+                        Kenyan Shilling (KSh)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. M-Pesa & Shipping */}
+                <div className="rounded-2xl bg-white/5 p-4 border border-white/10 space-y-3">
+                  <h4 className="font-bold text-sm text-[#FFDE59] flex items-center gap-1.5 font-serif">
+                    <Smartphone className="h-4 w-4" /> M-Pesa & Courier Dispatch
+                  </h4>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold text-white/80 mb-1">M-Pesa Till / Paybill:</label>
+                      <input
+                        type="text"
+                        value={shellConfig.tillNumber}
+                        onChange={(e) => setShellConfig({ ...shellConfig, tillNumber: e.target.value })}
+                        className="w-full rounded-xl border border-white/20 bg-white/10 p-2.5 text-xs text-white focus:outline-none focus:border-[#FFDE59] font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-white/80 mb-1">Dispatch City:</label>
+                      <input
+                        type="text"
+                        value={shellConfig.dispatchCity}
+                        onChange={(e) => setShellConfig({ ...shellConfig, dispatchCity: e.target.value })}
+                        className="w-full rounded-xl border border-white/20 bg-white/10 p-2.5 text-xs text-white focus:outline-none focus:border-[#FFDE59]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-white/80 mb-1">Delivery Promise Tag:</label>
+                    <input
+                      type="text"
+                      value={shellConfig.deliveryPromise}
+                      onChange={(e) => setShellConfig({ ...shellConfig, deliveryPromise: e.target.value })}
+                      className="w-full rounded-xl border border-white/20 bg-white/10 p-2.5 text-xs text-white focus:outline-none focus:border-[#FFDE59]"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 border-t border-white/15 pt-4 space-y-2">
+              <button
+                onClick={handleLaunchWithShell}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#FFDE59] py-3.5 text-sm font-bold text-black hover:bg-[#FFE680] transition shadow-lg"
+              >
+                <span>Launch My Shop With This Shell</span>
+                <ExternalLink className="h-4 w-4" />
+              </button>
+
+              <button
+                onClick={handleResetShell}
+                className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-white/20 py-2.5 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/10 transition"
+              >
+                <RefreshCw className="h-3 w-3" />
+                <span>Reset Shell to Defaults</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

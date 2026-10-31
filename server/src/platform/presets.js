@@ -5,6 +5,18 @@ import { content, product, store } from './base.js';
 import { buildPalette } from './palette.js';
 
 export const KINDS = {
+  fashion: {
+    label: 'Fashion & apparel', motif: 'leaf', texture: 'dots', accent: '#1E1E1E', style: 'street',
+    shape: 'box', pack: 'Item', size: '1 pc',
+    eyebrow: 'Modern apparel', tagline: 'Fashion is a trend of modern life', shopEyebrow: "Male's & Women's Clothing", shopTitle: 'Latest Summer & Casual Drops',
+    story: (n, c) => `${n} creates contemporary apparel and streetwear in ${c || 'Kenya'}, blending premium breathable fabrics with modern runway silhouettes.`,
+  },
+  wellness: {
+    label: 'Botanical wellness & supplements', motif: 'leaf', texture: 'speckle', accent: '#C89B59', style: 'natural',
+    shape: 'squeeze', pack: 'Bottle', size: '200ml',
+    eyebrow: 'Plant-based wellness', tagline: 'Your Journey to Better Health Starts Here', shopEyebrow: 'Botanical Formulations', shopTitle: '100% Vegan & Cold-Pressed',
+    story: (n, c) => `${n} crafts cold-pressed organic botanical supplements in ${c || 'Kenya'}, enhancing vitality, digestion, and daily immunity with zero synthetic additives.`,
+  },
   sauce: {
     label: 'Sauces & condiments', motif: 'chilli', texture: 'speckle', accent: '#D9381E', style: 'warm',
     shape: 'squeeze', pack: 'Bottle', size: '250g',
