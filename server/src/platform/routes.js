@@ -104,13 +104,16 @@ platformRouter.post('/signup', (req, res) => {
   if (!STORAGE_LASTS) throw Object.assign(new HttpError(409, `New shops open soon. WhatsApp ${PLATFORM_PHONE} and we'll set yours up the day we do.`), { code: 'SIGNUPS_PAUSED' });
   const b = req.body ?? {};
   const name = text(b.name, 60);
-  const link = text(b.link, 40).toLowerCase();
+  const link = text(b.link, 40).toLowerCase().replace(/\s+/g, '-').replace(/^-+|-+$/g, '');
   const email = text(b.email, 120).toLowerCase();
-  const password = String(b.password ?? '');
+  const ownerName = text(b.ownerName, 60);
+  const city = text(b.city, 40);
+  const phone = text(b.phone, 20);
+  const password = String(b.password ?? '').trim();
   if (name.length < 2) throw new HttpError(400, 'Enter your business name');
   if (!KINDS[b.kind]) throw new HttpError(400, 'Choose what you sell');
-  if (text(b.ownerName, 60).length < 2) throw new HttpError(400, 'Enter your name');
-  if (!toMsisdn(b.phone)) throw new HttpError(400, 'Enter a Safaricom number, e.g. 0712 345 678');
+  if (ownerName.length < 2) throw new HttpError(400, 'Enter your name');
+  if (!toMsisdn(phone)) throw new HttpError(400, 'Enter a Safaricom number, e.g. 0712 345 678');
   if (!EMAIL.test(email)) throw new HttpError(400, 'Enter a valid email address');
   if (password.length < 8) throw new HttpError(400, 'Use at least 8 characters for your password');
   const problem = linkProblem(link);
@@ -124,7 +127,7 @@ platformRouter.post('/signup', (req, res) => {
   pdb
     .prepare(`INSERT INTO shops (slug, name, kind, city, owner_name, phone, email, password_salt, password_hash, setup_token, brand, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .run(link, name, b.kind, text(b.city, 40), text(b.ownerName, 60), text(b.phone, 20), email, salt, hash, token, JSON.stringify({ style: KINDS[b.kind].style }), at, at);
+    .run(link, name, b.kind, city, ownerName, phone, email, salt, hash, token, JSON.stringify({ style: KINDS[b.kind].style }), at, at);
   res.status(201).json({ token, link });
 });
 

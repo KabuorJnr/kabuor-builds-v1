@@ -125,7 +125,14 @@ function BusinessStep({ info, onDone }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    const cleanLink = f.link.replace(/^-+|-+$/g, '');
+    const cleanLink = f.link.trim().toLowerCase().replace(/\s+/g, '-').replace(/^-+|-+$/g, '');
+    const cleanName = f.name.trim();
+    const cleanOwnerName = f.ownerName.trim();
+    const cleanCity = f.city.trim();
+    const cleanPhone = f.phone.trim();
+    const cleanEmail = f.email.trim().toLowerCase();
+    const cleanPassword = f.password.trim();
+
     if (cleanLink.length < 3 || !LINK_RULE.test(cleanLink)) {
       const msg = cleanLink.length < 3
         ? 'Shop link must be at least 3 characters.'
@@ -137,7 +144,17 @@ function BusinessStep({ info, onDone }) {
     }
     setState({ busy: true, error: null });
     try {
-      const { token } = await papi('/signup', { method: 'POST', body: { ...f, link: cleanLink } });
+      const payload = {
+        ...f,
+        name: cleanName,
+        ownerName: cleanOwnerName,
+        city: cleanCity,
+        phone: cleanPhone,
+        email: cleanEmail,
+        password: cleanPassword,
+        link: cleanLink,
+      };
+      const { token } = await papi('/signup', { method: 'POST', body: payload });
       onDone(token);
     } catch (err) {
       if (err.message && (err.message.includes('dash') || err.message.includes('link') || err.message.includes('letters'))) {
@@ -179,10 +196,10 @@ function BusinessStep({ info, onDone }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Business name">
-          <input className="field" value={f.name} onChange={set('name')} placeholder="Mama Pili Sauces" maxLength={60} required />
+          <input className="field" value={f.name} onChange={set('name')} onBlur={() => setF((x) => ({ ...x, name: x.name.trim() }))} placeholder="Mama Pili Sauces" maxLength={60} required />
         </Field>
         <Field label="Town" hint="Where you deliver from">
-          <input className="field" value={f.city} onChange={set('city')} placeholder="Nairobi" maxLength={40} />
+          <input className="field" value={f.city} onChange={set('city')} onBlur={() => setF((x) => ({ ...x, city: x.city.trim() }))} placeholder="Nairobi" maxLength={40} />
         </Field>
       </div>
 
@@ -198,7 +215,7 @@ function BusinessStep({ info, onDone }) {
               setF((x) => ({ ...x, link: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30) }));
             }}
             onBlur={() => {
-              const clean = f.link.replace(/^-+|-+$/g, '');
+              const clean = f.link.trim().replace(/\s+/g, '-').replace(/^-+|-+$/g, '');
               if (clean !== f.link) setF((x) => ({ ...x, link: clean }));
             }}
             placeholder="mamapili"
@@ -222,16 +239,16 @@ function BusinessStep({ info, onDone }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Your name">
-          <input className="field" value={f.ownerName} onChange={set('ownerName')} autoComplete="name" maxLength={60} required />
+          <input className="field" value={f.ownerName} onChange={set('ownerName')} onBlur={() => setF((x) => ({ ...x, ownerName: x.ownerName.trim() }))} autoComplete="name" maxLength={60} required />
         </Field>
         <Field label="M-Pesa phone number" hint="For paying your plan and getting order alerts">
-          <input className="field" value={f.phone} onChange={set('phone')} inputMode="tel" autoComplete="tel" placeholder="0712 345 678" required />
+          <input className="field" value={f.phone} onChange={set('phone')} onBlur={() => setF((x) => ({ ...x, phone: x.phone.trim() }))} inputMode="tel" autoComplete="tel" placeholder="0712 345 678" required />
         </Field>
         <Field label="Email" hint="You sign in to your shop with this">
-          <input className="field" type="email" value={f.email} onChange={set('email')} autoComplete="email" required />
+          <input className="field" type="email" value={f.email} onChange={set('email')} onBlur={() => setF((x) => ({ ...x, email: x.email.trim().toLowerCase() }))} autoComplete="email" required />
         </Field>
         <Field label="Password" hint="At least 8 characters">
-          <input className="field" type="password" value={f.password} onChange={set('password')} autoComplete="new-password" minLength={8} required />
+          <input className="field" type="password" value={f.password} onChange={set('password')} onBlur={() => setF((x) => ({ ...x, password: x.password.trim() }))} autoComplete="new-password" minLength={8} required />
         </Field>
       </div>
 
