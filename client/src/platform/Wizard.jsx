@@ -36,6 +36,7 @@ const DEFAULT_KINDS = [
 const KIND_ICONS = { fashion: Shirt, wellness: Sparkles, sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, groceries: Apple, electronics: Smartphone, furniture: Armchair, other: Package };
 const STEP_LABELS = ['Your business', 'Make it yours', 'Products', 'Preview & pay'];
 const TOKEN_KEY = 'shop-signup-token';
+const DRAFT_KEY = 'shop-signup-draft';
 
 const store = {
   get: () => {
@@ -49,6 +50,20 @@ const store = {
     try {
       if (t) localStorage.setItem(TOKEN_KEY, t);
       else localStorage.removeItem(TOKEN_KEY);
+    } catch {}
+  },
+  getDraft: () => {
+    try {
+      const d = localStorage.getItem('shop-signup-draft');
+      return d ? JSON.parse(d) : null;
+    } catch {
+      return null;
+    }
+  },
+  setDraft: (d) => {
+    try {
+      if (d) localStorage.setItem('shop-signup-draft', JSON.stringify(d));
+      else localStorage.removeItem('shop-signup-draft');
     } catch {}
   },
 };
@@ -170,6 +185,7 @@ function BusinessStep({ info, onDone }) {
         link: cleanLink,
       };
       const { token } = await papi('/signup', { method: 'POST', body: payload });
+      store.setDraft(payload);
       onDone(token);
     } catch (err) {
       if (err.message && (err.message.includes('dash') || err.message.includes('link') || err.message.includes('letters'))) {
@@ -648,12 +664,28 @@ function PreviewPayStep({ token, signup, info, onEditLook, onEditProducts, onLiv
   const [state, setState] = useState({ error: null, launching: false });
   const paid = Boolean(signup.paidUntil);
 
+  const fallbackUrl = useMemo(() => {
+    if (signup?.kind === 'fashion') {
+      return `/demo/styleco?name=${encodeURIComponent(signup.name || 'Urban Sartorial')}&accent=${encodeURIComponent(signup.brand?.colors?.accent || '#1E1E1E')}&link=${encodeURIComponent(signup.link || '')}`;
+    }
+    if (signup?.kind === 'wellness') {
+      return `/demo/purelix?name=${encodeURIComponent(signup.name || 'Zuri Organics')}&accent=${encodeURIComponent(signup.brand?.colors?.accent || '#C89B59')}&link=${encodeURIComponent(signup.link || '')}`;
+    }
+    return signup?.link ? `/s/${signup.link}?preview=1` : null;
+  }, [signup]);
+
   const loadPreview = useCallback(() => {
     setState((s) => ({ ...s, error: null }));
-    papi('/preview', { method: 'POST', token })
-      .then((r) => setUrl(r.url))
-      .catch((err) => setState((s) => ({ ...s, error: err.message })));
-  }, [token]);
+    papi('/preview', { method: 'POST', token, body: { backupSignup: signup } })
+      .then((r) => setUrl(r.url || fallbackUrl))
+      .catch((err) => {
+        if (fallbackUrl) {
+          setUrl(fallbackUrl);
+        } else {
+          setState((s) => ({ ...s, error: err.message }));
+        }
+      });
+  }, [token, signup, fallbackUrl]);
 
   useEffect(() => {
     loadPreview();
@@ -770,7 +802,7 @@ function PreviewPayStep({ token, signup, info, onEditLook, onEditProducts, onLiv
                   testMode={info.testMode}
                   defaultPhone={signup.phone}
                   cta="Pay & go live"
-                  start={async (phone, plan) => (await papi('/pay', { method: 'POST', body: { phone, plan }, token })).id}
+                  start={async (phone, plan) => (await papi('/pay', { method: 'POST', body: { phone, plan, backupSignup: signup }, token })).id}
                   check={(id) => papi(`/pay/${id}`, { token })}
                   onPaid={() => setTimeout(goLive, 800)}
                 />
@@ -824,10 +856,20 @@ export default function Wizard({ info }) {
     papi('/signup', { token })
       .then((s) => {
         setSignup(s);
-        // Back where they left off: straight to the preview once products and payment details are in.
         setStep((cur) => cur ?? (s.brand?.products?.length && (s.brand.till || s.brand.paybill) ? 3 : 1));
       })
-      .catch(() => {
+      .catch(async () => {
+        const draft = store.getDraft();
+        if (draft && draft.link && draft.name) {
+          try {
+            const fresh = await papi('/signup', { method: 'POST', body: draft });
+            setToken(fresh.token);
+            store.set(fresh.token);
+            setSignup({ ...draft, link: draft.link, brand: draft.brand || {} });
+            setStep((cur) => cur ?? 3);
+            return;
+          } catch {}
+        }
         store.set(null);
         setToken(null);
         setStep(0);

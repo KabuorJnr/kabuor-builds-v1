@@ -195,22 +195,22 @@ const BOTANICAL_PALETTES = [
   { name: 'Deep Olive', hex: '#556B2F' },
 ];
 
-export default function PurelixDemo() {
+export default function PurelixDemo({ site, isLiveShop } = {}) {
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
   // Modifiable Shell Configuration State
   const [shellConfig, setShellConfig] = useState({
-    brandName: params.get('name') || 'ZURI ORGANICS',
+    brandName: site?.brand?.name || params.get('name') || 'ZURI ORGANICS',
     heroHeading: 'Your Journey to Better Health Starts Here',
     heroSubtext: 'Discover plant-based supplements that enhance energy, immunity, digestion, and overall wellness with reliable ingredients.',
     ctaText: 'Buy Now',
     bgColor: params.get('accent') || '#C89B59',
-    currency: 'USD', // 'USD' | 'KSH'
+    currency: 'KSH', // 'KSH' | 'USD'
     tillNumber: '789123',
     dispatchCity: 'Nairobi',
     deliveryPromise: 'Same-day Nairobi dispatch',
-    phone: '0712345678',
+    phone: site?.brand?.phone || '0712345678',
     shippingThresholdUSD: 60,
   });
 

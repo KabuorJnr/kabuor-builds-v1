@@ -133,7 +133,24 @@ platformRouter.post('/signup', (req, res) => {
 
 // Everything after signup carries the setup token.
 function signup(req) {
-  const shop = shopByToken(req.get('x-setup-token') ?? req.query.token);
+  const token = req.get('x-setup-token') ?? req.query.token;
+  let shop = shopByToken(token);
+  if (!shop && req.body?.backupSignup) {
+    const b = req.body.backupSignup;
+    if (b.link && b.name) {
+      const link = String(b.link).toLowerCase().replace(/\s+/g, '-').replace(/^-+|-+$/g, '');
+      const { salt, hash } = hashPassword(b.password || 'password123');
+      const at = now();
+      const setupToken = token || b.token || randomBytes(24).toString('hex');
+      try {
+        pdb.prepare('INSERT OR REPLACE INTO shops (slug, name, kind, city, owner_name, phone, email, password_salt, password_hash, setup_token, brand, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+          .run(link, b.name, b.kind || 'fashion', b.city || '', b.ownerName || b.name, b.phone || '', b.email || (link + '@example.com'), salt, hash, setupToken, JSON.stringify(b.brand || {}), at, at);
+        shop = shopByToken(setupToken);
+      } catch (err) {
+        console.error('Failed to restore backup signup:', err);
+      }
+    }
+  }
   if (!shop) throw new HttpError(401, 'Your signup has expired. Please start again.');
   return shop;
 }
@@ -288,6 +305,9 @@ function readyProblem(spec) {
 /** Builds the real shop from the wizard and returns its private preview address. */
 platformRouter.post('/preview', (req, res) => {
   const record = signup(req);
+  if (req.body?.backupSignup?.brand) {
+    try { updateShop(record.slug, { brand: JSON.stringify(req.body.backupSignup.brand) }); } catch {}
+  }
   const problem = readyProblem(JSON.parse(record.brand || '{}'));
   if (problem) throw new HttpError(400, problem);
   stockShop(record.slug);

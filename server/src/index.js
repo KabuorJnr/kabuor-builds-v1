@@ -112,7 +112,7 @@ app.get('/api/site', (req, res) => {
   const { shop, slug } = req.site;
   if (!shop) return res.status(404).json({ kind: 'missing', link: slug, platform: { name: PLATFORM_NAME, domain: PLATFORM_DOMAIN } });
   const state = shopState(shop.record) !== 'live' && isPreview(req, shop.record) ? 'preview' : shopState(shop.record);
-  res.json({ kind: 'shop', state, brand: clientBrand(shop.brand), platform: { name: PLATFORM_NAME, domain: PLATFORM_DOMAIN } });
+  res.json({ kind: 'shop', state, template: shop.record.kind, shopKind: shop.record.kind, brand: { ...clientBrand(shop.brand), kind: shop.record.kind }, platform: { name: PLATFORM_NAME, domain: PLATFORM_DOMAIN } });
 });
 
 // ---------- a shop ----------

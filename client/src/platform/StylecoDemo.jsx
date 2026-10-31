@@ -189,22 +189,22 @@ const ACCENT_PRESETS = [
   { name: 'Golden Honey', hex: '#C89B59' },
 ];
 
-export default function StylecoDemo() {
+export default function StylecoDemo({ site, isLiveShop } = {}) {
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
   // Client Shell Configurable State
   const [shellConfig, setShellConfig] = useState({
-    storeName: params.get('name') || 'Urban Sartorial',
+    storeName: site?.brand?.name || params.get('name') || 'Urban Sartorial',
     tagline: 'Fashion is a trend of modern life',
     heroTitle: 'Best of the week',
     announcement: 'Now you can shopping in our mobile app, Install now',
     accentColor: params.get('accent') || '#1E1E1E',
-    currency: 'USD', // 'USD' | 'KSH'
+    currency: 'KSH', // 'KSH' | 'USD'
     tillNumber: '345678',
     dispatchCity: 'Nairobi',
     deliveryPromise: 'Same-day Nairobi delivery',
-    phone: '0712345678',
+    phone: site?.brand?.phone || '0712345678',
   });
 
   const [products, setProducts] = useState(DEFAULT_PRODUCTS);
