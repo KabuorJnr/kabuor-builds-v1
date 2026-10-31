@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  AlertCircle, Shirt, Apple, Armchair, ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
+  AlertCircle, Shirt, Apple, Armchair, ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Eye, EyeOff, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { EASE, ksh, MpesaPay, PalettePicker, papi, PictureDrop, ShopPreview, StylePicker } from './shared';
@@ -91,7 +91,9 @@ function Field({ label, hint, error, children }) {
 // ---------- 1. business ----------
 function BusinessStep({ info, onDone }) {
   const [params] = useSearchParams();
-  const [f, setF] = useState({ name: '', kind: params.get('kind') ?? '', link: params.get('link') ?? '', city: '', ownerName: '', phone: '', email: '', password: '' });
+  const [f, setF] = useState({ name: '', kind: params.get('kind') ?? '', link: params.get('link') ?? '', city: '', ownerName: '', phone: '', email: '', password: '', confirmPassword: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [linkEdited, setLinkEdited] = useState(Boolean(params.get('link')));
   const [check, setCheck] = useState(null);
   const [state, setState] = useState({ busy: false, error: null });
@@ -132,6 +134,19 @@ function BusinessStep({ info, onDone }) {
     const cleanPhone = f.phone.trim();
     const cleanEmail = f.email.trim().toLowerCase();
     const cleanPassword = f.password.trim();
+    const cleanConfirmPassword = (f.confirmPassword ?? '').trim();
+
+    if (cleanPassword.length < 8) {
+      setState({ busy: false, error: 'Use at least 8 characters for your password.' });
+      document.getElementById('password-input')?.focus();
+      return;
+    }
+
+    if (cleanPassword !== cleanConfirmPassword) {
+      setState({ busy: false, error: 'Passwords do not match. Please verify your password.' });
+      document.getElementById('confirm-password-input')?.focus();
+      return;
+    }
 
     if (cleanLink.length < 3 || !LINK_RULE.test(cleanLink)) {
       const msg = cleanLink.length < 3
@@ -248,7 +263,54 @@ function BusinessStep({ info, onDone }) {
           <input className="field" type="email" value={f.email} onChange={set('email')} onBlur={() => setF((x) => ({ ...x, email: x.email.trim().toLowerCase() }))} autoComplete="email" required />
         </Field>
         <Field label="Password" hint="At least 8 characters">
-          <input className="field" type="password" value={f.password} onChange={set('password')} onBlur={() => setF((x) => ({ ...x, password: x.password.trim() }))} autoComplete="new-password" minLength={8} required />
+          <div className="relative">
+            <input
+              id="password-input"
+              className="field pr-10"
+              type={showPassword ? 'text' : 'password'}
+              value={f.password}
+              onChange={set('password')}
+              onBlur={() => setF((x) => ({ ...x, password: x.password.trim() }))}
+              autoComplete="new-password"
+              minLength={8}
+              placeholder="••••••••"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-espresso/45 hover:text-espresso transition p-1 cursor-pointer"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+        </Field>
+        <Field label="Confirm password" error={f.confirmPassword && f.password !== f.confirmPassword ? 'Passwords do not match' : null}>
+          <div className="relative">
+            <input
+              id="confirm-password-input"
+              className="field pr-10"
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={f.confirmPassword}
+              onChange={set('confirmPassword')}
+              onBlur={() => setF((x) => ({ ...x, confirmPassword: x.confirmPassword.trim() }))}
+              autoComplete="new-password"
+              minLength={8}
+              placeholder="••••••••"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-espresso/45 hover:text-espresso transition p-1 cursor-pointer"
+              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
         </Field>
       </div>
 
