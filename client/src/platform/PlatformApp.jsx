@@ -12,6 +12,9 @@ import Shops from './Shops';
 import Erp from './Erp';
 import CareersPage from './CareersPage';
 import AboutFounder from './AboutFounder';
+import StylecoDemo from './StylecoDemo';
+import PurelixDemo from './PurelixDemo';
+
 import { Privacy, ShopsPrivacy, ShopsTerms, Terms } from './Legal';
 import { linkLabel, platformOrigin } from '../lib/base';
 import { BUILDS_HOST } from './contact';
@@ -77,6 +80,8 @@ export default function PlatformApp({ site }) {
             </Suspense>
           }
         />
+                <Route path="/demo/styleco" element={<StylecoDemo />} />
+        <Route path="/demo/purelix" element={<PurelixDemo />} />
         <Route path="/shops" element={<Shops info={info} />} />
         <Route path="/erp" element={<Erp info={info} />} />
         <Route path="/careers" element={<CareersPage info={info} />} />

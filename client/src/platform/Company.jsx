@@ -305,6 +305,11 @@ export default function Company({ info }) {
                   ))}
                 </ul>
                 <div className="mt-8 flex flex-wrap gap-4">
+                  {activeShowcase.demoPath && (
+                    <Go to={activeShowcase.demoPath} className="ms-btn bg-[#1A1A1A] text-white hover:bg-black shadow-md">
+                      Launch Interactive Store ↗
+                    </Go>
+                  )}
                   <Go to="/shops" className="ms-btn ms-btn-primary">
                     Get a shop like this
                   </Go>

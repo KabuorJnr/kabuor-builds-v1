@@ -20,6 +20,44 @@ const STEPS = [
 ];
 const SHOWCASE_SHOPS = [
   {
+    id: 'purelix',
+    name: 'Purelix Botanical Wellness',
+    category: 'Botanical & Wellness',
+    tag: '100% Vegan · Sunlit Ochre Aesthetic',
+    accent: '#C89B59',
+    headline: 'Plant-based supplements that enhance health',
+    desc: 'Warm sunlit studio editorial aesthetics featuring stone still-life presentation, 100% vegan certification cards, cold-pressed botanical formulations, and instant M-Pesa one-touch checkout.',
+    features: [
+      'Architectural typography and warm sunlit studio palette',
+      'Botanical formulations catalog with vegan & organic filters',
+      'Interactive product detail modal with bioactive ingredients breakdown',
+      'Express M-Pesa STK checkout with free delivery progress bar',
+    ],
+    address: 'purelix.shop.ke',
+    img: '/brand/purelix/purelix_hero_full.png',
+    kind: 'sauce',
+    demoPath: '/demo/purelix',
+  },
+  {
+    id: 'styleco',
+    name: 'Styleco. Modern Apparel',
+    category: 'Fashion & Apparel',
+    tag: 'Minimalist Fashion · Dual Price & Swatches',
+    accent: '#1E1E1E',
+    headline: 'Clean minimalist fashion megastore',
+    desc: 'Organized product listings with real-time sidebar filters (Category accordion, dual price slider $100-$2000, 12-color swatches), 3-column product grid with favorites and quick bag add, and detailed PDP with size picker.',
+    features: [
+      'Organized category accordion & dual price range slider ($100 - $2000)',
+      '12-color swatch grid with real-time product filtering',
+      'Product Details Page (PDP) with S-XXL size selector & material specs',
+      'Slide-over shopping bag with instant M-Pesa phone prompt checkout',
+    ],
+    address: 'styleco.shop.ke',
+    img: '/brand/styleco/styleco_plp_full.png',
+    kind: 'fashion',
+    demoPath: '/demo/styleco',
+  },
+  {
     id: 'groceries',
     name: 'Gromuse Fresh Mart',
     category: 'Supermarket & Groceries',
@@ -316,6 +354,11 @@ export default function Shops({ info }) {
                 ))}
               </ul>
               <div className="mt-8 flex flex-wrap gap-4">
+                {activeShop.demoPath && (
+                  <Link to={activeShop.demoPath} className="ms-btn bg-[#1A1A1A] text-white hover:bg-black shadow-md">
+                    Launch Interactive Store ↗
+                  </Link>
+                )}
                 <Link to={`/start?kind=${activeShop.kind}`} className="ms-btn ms-btn-primary">
                   Build a {activeShop.category.split(' ')[0]} shop
                 </Link>
