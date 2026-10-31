@@ -13,6 +13,21 @@ import { Wordmark } from './PlatformApp';
 import { linkLabel, linkParts } from '../lib/base';
 import { whatsapp } from './Site';
 
+
+const DEFAULT_KINDS = [
+  { id: 'sauce', label: 'Sauces & condiments', accent: '#D9381E' },
+  { id: 'honey', label: 'Honey & bee products', accent: '#E3A21A' },
+  { id: 'skincare', label: 'Skincare & body butter', accent: '#C27C8E' },
+  { id: 'candle', label: 'Candles & home scents', accent: '#9A5BC9' },
+  { id: 'soap', label: 'Soap & natural care', accent: '#4F8A3C' },
+  { id: 'food', label: 'Food & snacks', accent: '#C0702A' },
+  { id: 'drinks', label: 'Juices & drinks', accent: '#E2632A' },
+  { id: 'groceries', label: 'Supermarket & fresh groceries', accent: '#107C41' },
+  { id: 'electronics', label: 'Electronics & tech gadgets', accent: '#FF5722' },
+  { id: 'furniture', label: 'Furniture & home living', accent: '#8C6239' },
+  { id: 'other', label: 'Something else', accent: '#2F6F5E' },
+];
+
 const KIND_ICONS = { sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, groceries: Apple, electronics: Smartphone, furniture: Armchair, other: Package };
 const STEP_LABELS = ['Your business', 'Make it yours', 'Products', 'Preview & pay'];
 const TOKEN_KEY = 'shop-signup-token';
@@ -70,7 +85,7 @@ function Field({ label, hint, error, children }) {
 // ---------- 1. business ----------
 function BusinessStep({ info, onDone }) {
   const [params] = useSearchParams();
-  const [f, setF] = useState({ name: '', kind: '', link: params.get('link') ?? '', city: '', ownerName: '', phone: '', email: '', password: '' });
+  const [f, setF] = useState({ name: '', kind: params.get('kind') ?? '', link: params.get('link') ?? '', city: '', ownerName: '', phone: '', email: '', password: '' });
   const [linkEdited, setLinkEdited] = useState(Boolean(params.get('link')));
   const [check, setCheck] = useState(null);
   const [state, setState] = useState({ busy: false, error: null });
@@ -103,7 +118,7 @@ function BusinessStep({ info, onDone }) {
       <div>
         <p className="mb-2 text-sm font-semibold">What do you sell?</p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="radiogroup" aria-label="What you sell">
-          {(info?.kinds ?? []).map((k) => {
+          {(info?.kinds?.length ? info.kinds : DEFAULT_KINDS).map((k) => {
             const Icon = KIND_ICONS[k.id] ?? Package;
             return (
               <button
