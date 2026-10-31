@@ -51,19 +51,19 @@ export const KINDS = {
     label: 'Supermarket & fresh groceries', motif: 'leaf', texture: 'dots', accent: '#107C41', style: 'fresh',
     shape: 'box', pack: 'Pack', size: '500g',
     eyebrow: 'Farm fresh & organic', tagline: 'We bring the store to your door', shopEyebrow: 'Daily fresh essentials', shopTitle: 'Fresh produce, 15-min delivery',
-    story: (n, c) => ${n} delivers fresh organic produce, farm groceries and daily essentials in ${c || 'Kenya'}, direct from local growers with express delivery.,
+    story: (n, c) => `${n} delivers fresh organic produce, farm groceries and daily essentials in ${c || 'Kenya'}, direct from local growers with express delivery.`,
   },
   electronics: {
     label: 'Electronics & tech gadgets', motif: 'drop', texture: 'glow', accent: '#FF5722', style: 'cyber',
     shape: 'box', pack: 'Unit', size: '1 pc',
     eyebrow: 'Smart devices & gaming', tagline: 'Power your digital lifestyle', shopEyebrow: 'Tech essentials', shopTitle: 'Latest phones, audio & gear',
-    story: (n, c) => ${n} provides original smartphones, gaming gear, laptops, and smart tech accessories in ${c || 'Kenya'} with warranty and same-day delivery.,
+    story: (n, c) => `${n} provides original smartphones, gaming gear, laptops, and smart tech accessories in ${c || 'Kenya'} with warranty and same-day delivery.`,
   },
   furniture: {
     label: 'Furniture & home living', motif: 'leaf', texture: 'paper', accent: '#8C6239', style: 'scandi',
     shape: 'box', pack: 'Piece', size: '1 item',
     eyebrow: 'Architectural furniture', tagline: 'Furniture that defines your space', shopEyebrow: 'Curated living', shopTitle: 'Built to impress, made to last',
-    story: (n, c) => ${n} crafts contemporary architectural furniture and interior pieces in ${c || 'Kenya'}, bringing harmony, form, and functionality to your space.,
+    story: (n, c) => `${n} crafts contemporary architectural furniture and interior pieces in ${c || 'Kenya'}, bringing harmony, form, and functionality to your space.`,
   },
   other: {
     label: 'Something else', motif: 'leaf', texture: 'dots', accent: '#2F6F5E', style: 'natural',
