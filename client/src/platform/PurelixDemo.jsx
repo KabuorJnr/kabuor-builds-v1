@@ -201,7 +201,7 @@ export default function PurelixDemo() {
 
   // Modifiable Shell Configuration State
   const [shellConfig, setShellConfig] = useState({
-    brandName: params.get('name') || 'PURELIX',
+    brandName: params.get('name') || 'ZURI ORGANICS',
     heroHeading: 'Your Journey to Better Health Starts Here',
     heroSubtext: 'Discover plant-based supplements that enhance energy, immunity, digestion, and overall wellness with reliable ingredients.',
     ctaText: 'Buy Now',
@@ -303,7 +303,7 @@ export default function PurelixDemo() {
 
   const handleResetShell = () => {
     setShellConfig({
-      brandName: 'PURELIX',
+      brandName: 'ZURI ORGANICS',
       heroHeading: 'Your Journey to Better Health Starts Here',
       heroSubtext: 'Discover plant-based supplements that enhance energy, immunity, digestion, and overall wellness with reliable ingredients.',
       ctaText: 'Buy Now',
@@ -900,7 +900,7 @@ export default function PurelixDemo() {
                       type="text"
                       value={shellConfig.brandName}
                       onChange={(e) => setShellConfig({ ...shellConfig, brandName: e.target.value.toUpperCase() })}
-                      placeholder="e.g. PURELIX, AURA"
+                      placeholder="e.g. ZURI ORGANICS, AURA"
                       className="w-full rounded-xl border border-white/20 bg-white/10 p-2.5 text-xs text-white uppercase tracking-wider font-bold focus:outline-none focus:border-[#FFDE59]"
                     />
                   </div>

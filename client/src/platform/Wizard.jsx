@@ -15,8 +15,8 @@ import { whatsapp } from './Site';
 
 
 const DEFAULT_KINDS = [
-  { id: 'fashion', label: 'Fashion & apparel (Styleco shell)', accent: '#1E1E1E' },
-  { id: 'wellness', label: 'Wellness & botanicals (Purelix shell)', accent: '#C89B59' },
+  { id: 'fashion', label: 'Fashion & apparel (Urban Sartorial shell)', accent: '#1E1E1E' },
+  { id: 'wellness', label: 'Wellness & botanicals (Zuri Organics shell)', accent: '#C89B59' },
   { id: 'groceries', label: 'Supermarket & groceries (Gromuse shell)', accent: '#107C41' },
   { id: 'electronics', label: 'Electronics & tech (Nuvio shell)', accent: '#FF5722' },
   { id: 'furniture', label: 'Furniture & living (Rova shell)', accent: '#8C6239' },

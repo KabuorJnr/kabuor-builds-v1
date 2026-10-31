@@ -14,6 +14,32 @@ import { BrowserShot, CorporatePage, FOUNDER, PhoneShot, SectionHead } from './C
 
 const COMPANY_SHOWCASES = [
   {
+    id: 'purelix',
+    name: 'Zuri Organics & Wellness',
+    category: 'Botanical & Wellness',
+    tag: '100% Vegan · Sunlit Ochre Aesthetic',
+    accent: '#C89B59',
+    headline: 'Plant-based supplements that enhance health',
+    desc: 'Warm sunlit studio editorial aesthetics featuring stone still-life presentation, 100% vegan certification cards, cold-pressed botanical formulations, and instant M-Pesa one-touch checkout.',
+    features: ['Architectural typography and warm sunlit palette', 'Botanical formulations catalog with vegan & organic filters', 'Bioactive ingredients breakdown modal', 'Express M-Pesa STK checkout with free delivery progress'],
+    address: 'zuri.shop.ke',
+    img: '/brand/purelix/purelix_hero_full.png',
+    demoPath: '/demo/purelix',
+  },
+  {
+    id: 'styleco',
+    name: 'Urban Sartorial',
+    category: 'Fashion & Apparel',
+    tag: 'Minimalist Fashion · Dual Price & Swatches',
+    accent: '#1E1E1E',
+    headline: 'Clean minimalist urban tailoring & apparel megastore',
+    desc: 'Organized product listings with real-time sidebar filters (Category accordion, dual price slider $100-$2000, 12-color swatches), 3-column product grid with favorites and quick bag add, and detailed PDP with size picker.',
+    features: ['Organized category accordion & dual price range slider', '12-color swatch grid with real-time filtering', 'PDP with S-XXL size selector & material specs', 'Instant M-Pesa phone prompt checkout'],
+    address: 'urbansartorial.shop.ke',
+    img: '/brand/styleco/styleco_plp_full.png',
+    demoPath: '/demo/styleco',
+  },
+  {
     id: 'groceries',
     name: 'Gromuse Fresh Mart',
     category: 'Supermarket & Groceries',

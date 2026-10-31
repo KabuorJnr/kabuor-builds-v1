@@ -195,7 +195,7 @@ export default function StylecoDemo() {
 
   // Client Shell Configurable State
   const [shellConfig, setShellConfig] = useState({
-    storeName: params.get('name') || 'Styleco.',
+    storeName: params.get('name') || 'Urban Sartorial',
     tagline: 'Fashion is a trend of modern life',
     heroTitle: 'Best of the week',
     announcement: 'Now you can shopping in our mobile app, Install now',
@@ -295,7 +295,7 @@ export default function StylecoDemo() {
   // Reset shell to default
   const handleResetShell = () => {
     setShellConfig({
-      storeName: 'Styleco.',
+      storeName: 'Urban Sartorial',
       tagline: 'Fashion is a trend of modern life',
       heroTitle: 'Best of the week',
       announcement: 'Now you can shopping in our mobile app, Install now',
@@ -1386,7 +1386,7 @@ export default function StylecoDemo() {
                       type="text"
                       value={shellConfig.storeName}
                       onChange={(e) => setShellConfig({ ...shellConfig, storeName: e.target.value })}
-                      placeholder="e.g. Nairobi Drip, Styleco."
+                      placeholder="e.g. Urban Sartorial, Nairobi Drip"
                       className="w-full rounded-xl border border-[#D1D1D6] bg-white p-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-black font-semibold"
                     />
                   </div>
