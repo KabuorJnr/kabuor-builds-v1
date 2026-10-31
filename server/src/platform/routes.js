@@ -65,6 +65,9 @@ const SAMPLES = [
   { kind: 'sauce', name: 'Mama Pili Sauces', brand: { style: 'warm', accent: '#D9381E', tagline: 'Heat with flavour' }, product: { name: 'Garden Chilli', size: '250g', price: 400 } },
   { kind: 'candle', name: 'Glow Candle Co', brand: { style: 'luxe', accent: '#9A5BC9', tagline: 'Calm scents for slow evenings' }, product: { name: 'Lavender Candle', size: '200g', price: 600 } },
   { kind: 'honey', name: 'Kerio Honey', brand: { style: 'natural', accent: '#E3A21A', tagline: 'From the hive to your home' }, product: { name: 'Raw Honey', size: '500g', price: 650 } },
+  { kind: 'groceries', name: 'Gromuse Fresh Mart', brand: { style: 'fresh', accent: '#107C41', tagline: 'We bring the store to your door' }, product: { name: 'Organic Whole Wheat Flour', size: '1kg', price: 420 } },
+  { kind: 'electronics', name: 'Nuvio Tech Megastore', brand: { style: 'cyber', accent: '#FF5722', tagline: 'Power your digital lifestyle' }, product: { name: 'iPhone 15 Pro Max Titanium', size: '256GB', price: 154999 } },
+  { kind: 'furniture', name: 'Rova Living', brand: { style: 'scandi', accent: '#8C6239', tagline: 'Furniture that defines your space' }, product: { name: 'Nordic Oak Armchair', size: 'Solid Wood', price: 34500 } },
 ].map((s) => ({
   name: s.name,
   product: s.product,
@@ -303,3 +306,4 @@ platformRouter.post('/launch', (req, res) => {
 });
 
 export { billingSummary, shopUrl };
+

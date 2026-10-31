@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  AlertCircle, ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
+  AlertCircle, Apple, Armchair, ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { EASE, ksh, MpesaPay, PalettePicker, papi, PictureDrop, ShopPreview, StylePicker } from './shared';
@@ -13,7 +13,7 @@ import { Wordmark } from './PlatformApp';
 import { linkLabel, linkParts } from '../lib/base';
 import { whatsapp } from './Site';
 
-const KIND_ICONS = { sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, other: Package };
+const KIND_ICONS = { sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, groceries: Apple, electronics: Smartphone, furniture: Armchair, other: Package };
 const STEP_LABELS = ['Your business', 'Make it yours', 'Products', 'Preview & pay'];
 const TOKEN_KEY = 'shop-signup-token';
 
@@ -800,3 +800,4 @@ export default function Wizard({ info }) {
     </div>
   );
 }
+

@@ -47,6 +47,24 @@ export const KINDS = {
     eyebrow: 'Freshly made', tagline: 'Fresh in every sip', shopEyebrow: 'Our drinks', shopTitle: 'Pick your flavour',
     story: (n, c) => `${n} makes fresh drinks in ${c || 'Kenya'}, from real fruit.`,
   },
+  groceries: {
+    label: 'Supermarket & fresh groceries', motif: 'leaf', texture: 'dots', accent: '#107C41', style: 'fresh',
+    shape: 'box', pack: 'Pack', size: '500g',
+    eyebrow: 'Farm fresh & organic', tagline: 'We bring the store to your door', shopEyebrow: 'Daily fresh essentials', shopTitle: 'Fresh produce, 15-min delivery',
+    story: (n, c) => ${n} delivers fresh organic produce, farm groceries and daily essentials in ${c || 'Kenya'}, direct from local growers with express delivery.,
+  },
+  electronics: {
+    label: 'Electronics & tech gadgets', motif: 'drop', texture: 'glow', accent: '#FF5722', style: 'cyber',
+    shape: 'box', pack: 'Unit', size: '1 pc',
+    eyebrow: 'Smart devices & gaming', tagline: 'Power your digital lifestyle', shopEyebrow: 'Tech essentials', shopTitle: 'Latest phones, audio & gear',
+    story: (n, c) => ${n} provides original smartphones, gaming gear, laptops, and smart tech accessories in ${c || 'Kenya'} with warranty and same-day delivery.,
+  },
+  furniture: {
+    label: 'Furniture & home living', motif: 'leaf', texture: 'paper', accent: '#8C6239', style: 'scandi',
+    shape: 'box', pack: 'Piece', size: '1 item',
+    eyebrow: 'Architectural furniture', tagline: 'Furniture that defines your space', shopEyebrow: 'Curated living', shopTitle: 'Built to impress, made to last',
+    story: (n, c) => ${n} crafts contemporary architectural furniture and interior pieces in ${c || 'Kenya'}, bringing harmony, form, and functionality to your space.,
+  },
   other: {
     label: 'Something else', motif: 'leaf', texture: 'dots', accent: '#2F6F5E', style: 'natural',
     shape: 'box', pack: 'Item', size: '1 pc',
@@ -74,6 +92,9 @@ export const STYLES = {
   classic: { label: 'Classic & trusted', note: 'Catalogue list with full details, solid menu bar', mode: 'light', hero: 'editorial', nav: 'bar', cards: 'list', cols: 2, home: 'hub', radius: 'soft', body: 'commissioner', texture: 'paper', fonts: { brand: 'young-serif', tagline: 'caveat' } },
   market: { label: 'Fresh market', note: 'Half-screen photo, then products, four across', mode: 'light', hero: 'split', nav: 'bar', cards: 'card', cols: 4, home: 'shop-first', radius: 'round', body: 'golos-text', fonts: { brand: 'titan-one', tagline: 'caveat-brush' } },
   street: { label: 'Street & urban', note: 'Full-screen photo, big products two across', mode: 'dark', hero: 'cover', nav: 'minimal', cards: 'overlay', cols: 2, home: 'shop-first', radius: 'sharp', body: 'schibsted-grotesk', texture: 'speckle', fonts: { brand: 'shrikhand', tagline: 'kalam' } },
+  fresh: { label: 'Fresh supermarket', note: 'Lush green, 15-min delivery badge, quantity steppers', mode: 'light', hero: 'split', nav: 'bar', cards: 'card', cols: 4, home: 'shop-first', radius: 'round', body: 'golos-text', fonts: { brand: 'titan-one', tagline: 'caveat-brush' } },
+  cyber: { label: 'Cyber tech & dark', note: 'Titanium dark mode, glowing neon orange, countdown deals', mode: 'dark', hero: 'poster', nav: 'bar', cards: 'overlay', cols: 3, home: 'shop-first', radius: 'sharp', body: 'archivo', texture: 'glow', fonts: { brand: 'rammetto-one', tagline: 'kalam' } },
+  scandi: { label: 'Architectural living', note: 'Sand and stone, airy editorial layout, sculptural forms', mode: 'light', hero: 'editorial', nav: 'centered', cards: 'framed', cols: 3, home: 'hub', radius: 'soft', body: 'instrument-sans', texture: 'paper', fonts: { brand: 'young-serif', tagline: 'parisienne' } },
   boutique: { label: 'Boutique', note: 'Words first, a row of products, framed cards', mode: 'light', hero: 'minimal', nav: 'centered', cards: 'framed', cols: 3, home: 'hub', radius: 'soft', texture: 'grain', body: 'jost', fonts: { brand: 'gilda-display', tagline: 'sacramento' } },
 };
 
@@ -219,3 +240,4 @@ export const clientBrand = (b) => ({
   facets: b.facets,
   photos: b.photos,
 });
+

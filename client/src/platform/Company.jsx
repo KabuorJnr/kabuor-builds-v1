@@ -3,7 +3,7 @@
 // white header with text links and one blue action, product tiles on a regular grid, a grey footer of link
 // columns): the two products with their status and price, a guide to choosing, what both are built on, real
 // work, a demo request, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCircle, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
 import { ksh } from './shared';
@@ -12,6 +12,58 @@ import { Go, whatsapp } from './Site';
 import { BrowserShot, CorporatePage, FOUNDER, PhoneShot, SectionHead } from './Corporate';
 
 
+const COMPANY_SHOWCASES = [
+  {
+    id: 'groceries',
+    name: 'Gromuse Fresh Mart',
+    category: 'Supermarket & Groceries',
+    tag: '15-min delivery · Live steppers',
+    accent: '#107C41',
+    headline: 'Fresh farm groceries & supermarket, online',
+    desc: 'From fresh organic produce to daily pantry staples. Built with 1-tap live quantity steppers, 15-minute express delivery promise, and instant M-Pesa checkout.',
+    features: ['15-minute express delivery badge', '1-tap quantity steppers with live cart total', 'Category carousels for fast reordering', 'M-Pesa direct checkout'],
+    address: 'gromuse.shop.ke',
+    video: 'https://cdn.dribbble.com/userupload/10640472/file/original-c81c56245856e105c75424cf9a958366.mp4',
+    img: '/brand/work-gromuse-desk.png',
+  },
+  {
+    id: 'electronics',
+    name: 'Nuvio Tech Megastore',
+    category: 'Electronics & Gadgets',
+    tag: 'Cyber Dark Mode · 50% Off Deals',
+    accent: '#FF5722',
+    headline: 'A cyber tech & electronics megastore',
+    desc: 'Deep titanium dark mode with glowing neon accents. Live countdown flash sale banners, category counts (Smartwatches 685+, Earbuds 1,120+), specs badges, and trusted brand partners.',
+    features: ['Live countdown flash deal timer', 'Titanium cyber dark mode layout', 'Category product counters and spec badges', 'Instant M-Pesa one-touch payment'],
+    address: 'nuvio.shop.ke',
+    img: '/brand/work-nuvio-desk.png',
+  },
+  {
+    id: 'furniture',
+    name: 'Rova Architectural Living',
+    category: 'Furniture & Living',
+    tag: 'Scandinavian Minimalist · Luxury',
+    accent: '#8C6239',
+    headline: 'Furniture that defines your space',
+    desc: 'High-end architectural minimalism in warm cream and stone palettes. Sculptural modern showcases, high-fashion serif typography, and material craft guarantees.',
+    features: ['Editorial magazine-grade gallery', 'Sculptural curved arch showcases', 'Premium material & sustainability tags', 'Custom deposits and M-Pesa settlement'],
+    address: 'rova.shop.ke',
+    img: '/brand/work-rova-desk.png',
+  },
+  {
+    id: 'sauce',
+    name: 'Anjugu Peanut Butter',
+    category: 'Artisanal Brands',
+    tag: 'Artisanal · Multi-Branch',
+    accent: '#D9381E',
+    headline: 'A peanut butter brand selling online with M-Pesa checkout',
+    desc: 'A Kenyan brand with several branches, selling its own jars at its own prices, with customers paying by M-Pesa in a few taps. Designed around their real products, on a computer and a phone.',
+    features: ['Real jars with live size selector', 'Multiple branches across Kenya', 'Direct M-Pesa Till integration', 'Zero sales commissions'],
+    address: 'anjugu.shop.ke',
+    img: '/brand/work-anjugu-desk.webp',
+    phoneImg: '/brand/work-anjugu-shop-phone.webp',
+  },
+];
 const SHARED = [
   { icon: Wallet, title: 'M-Pesa first', text: 'Prompts, Paybills and Tills built in, and payments matched to invoices by themselves.' },
   { icon: ReceiptText, title: 'KRA-ready', text: 'VAT worked out as you go, and invoices prepared for eTIMS.' },
@@ -174,23 +226,89 @@ export default function Company({ info }) {
           </div>
         </section>
 
-        {/* Customer story */}
-        <section id="work" aria-labelledby="work-title" className="scroll-mt-20 bg-[#F5F7FC] py-10 sm:py-12">
-          <div className="container-x grid items-center gap-10 lg:grid-cols-2">
-<div className="relative sm:pr-[14%] sm:pb-8">
-              <BrowserShot src="/brand/work-anjugu-desk.webp" alt="An online shop we built for a Kenyan peanut butter brand" address="A shop we built" />
-              <PhoneShot src="/brand/work-anjugu-shop-phone.webp" alt="The same shop on a phone" className="absolute right-0 bottom-0 hidden w-[24%] sm:block" />
+        {/* Customer story: Interactive Multi-Category Showcase */}
+        <section id="work" aria-labelledby="work-title" className="scroll-mt-20 bg-[#F5F7FC] py-12 sm:py-16">
+          <div className="container-x">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--ms-line)] pb-8">
+              <div>
+                <p className="text-sm font-semibold text-[var(--ms-blue)]">Our work</p>
+                <h2 id="work-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Real stores built by Kabuor
+                </h2>
+                <p className="mt-2 max-w-xl text-lg text-[var(--ms-muted)]">
+                  Explore how we design and engineer e-commerce experiences tailored to specific Kenyan industries.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {COMPANY_SHOWCASES.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setActiveShowcaseId(s.id)}
+                    type="button"
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition cursor-pointer ${activeShowcaseId === s.id ? "bg-[var(--ms-blue)] text-white shadow-sm" : "border border-[var(--ms-line)] bg-white text-[var(--ms-ink)] hover:bg-[#EAEFF8]"}`}
+                  >
+                    {s.category}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-semibold text-[var(--ms-blue)]">Our work</p>
-              <h2 id="work-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">
-                A peanut butter brand selling online with M-Pesa checkout
-              </h2>
-              <p className="mt-4 text-lg leading-relaxed text-[var(--ms-muted)]">A Kenyan brand with several branches, selling its own jars at its own prices, with customers paying by M-Pesa in a few taps. Designed around their real products, on a computer and a phone.</p>
-              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
-                <Go to="/shops" className="ms-btn ms-btn-primary">
-                  Get a shop like this
-                </Go>
+
+            <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]">
+              <div className="relative">
+                {activeShowcase.video ? (
+                  <div className="overflow-hidden rounded-xl border border-[var(--ms-line)] bg-black shadow-[0_20px_50px_-20px_rgba(0,0,0,0.35)]">
+                    <div className="flex items-center gap-1.5 border-b border-white/10 bg-[#1A1A1A] px-3.5 py-2.5">
+                      <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
+                      <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
+                      <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
+                      <span className="ml-2 rounded bg-white/10 px-2 py-0.5 text-xs text-white/70 font-mono">{activeShowcase.address}</span>
+                      <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-[#107C41]/20 px-2.5 py-0.5 text-[11px] font-semibold text-[#16A34A]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#16A34A] animate-pulse" /> Live Store Preview
+                      </span>
+                    </div>
+                    <video
+                      src={activeShowcase.video}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="aspect-[16/10] w-full object-cover object-top"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative sm:pr-[12%] sm:pb-6">
+                    <BrowserShot src={activeShowcase.img} alt={activeShowcase.headline} address={activeShowcase.address} />
+                    {activeShowcase.phoneImg && (
+                      <PhoneShot src={activeShowcase.phoneImg} alt="Shop on phone" className="absolute right-0 bottom-0 hidden w-[26%] sm:block" />
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: activeShowcase.accent + "15", color: activeShowcase.accent }}>
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: activeShowcase.accent }} />
+                  {activeShowcase.tag}
+                </div>
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+                  {activeShowcase.headline}
+                </h3>
+                <p className="mt-4 text-base leading-relaxed text-[var(--ms-muted)] sm:text-lg">
+                  {activeShowcase.desc}
+                </p>
+                <ul className="mt-6 space-y-2.5">
+                  {activeShowcase.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2.5 text-sm sm:text-base">
+                      <span className="text-[#0F7A3D] font-bold">✓</span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <Go to="/shops" className="ms-btn ms-btn-primary">
+                    Get a shop like this
+                  </Go>
+                </div>
               </div>
             </div>
           </div>
@@ -275,4 +393,8 @@ export default function Company({ info }) {
     </CorporatePage>
   );
 }
+
+
+
+
 

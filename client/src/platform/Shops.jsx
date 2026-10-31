@@ -18,6 +18,63 @@ const STEPS = [
   { icon: Eye, title: 'See it first', text: 'Add your products and walk through your real shop, on a phone and a computer.' },
   { icon: Wallet, title: 'Pay and go live', text: 'Happy with it? Pay by M-Pesa prompt and your link is live straight away.' },
 ];
+const SHOWCASE_SHOPS = [
+  {
+    id: 'groceries',
+    name: 'Gromuse Fresh Mart',
+    category: 'Supermarket & Groceries',
+    tag: '15-min delivery · Live steppers',
+    accent: '#107C41',
+    headline: 'Fresh supermarket & farm groceries, online',
+    desc: 'From fresh organic farm produce to pantry goods. Features interactive 1-tap quantity steppers (-) [qty] (+), express 15-minute delivery banners, category carousels, and instant M-Pesa order placement.',
+    features: ['15-minute express delivery badge & promise', '1-tap quantity steppers with live cart total', 'Category carousels (Vegetables, Fruits, Dairy, Snacks)', 'Full multi-image product detail view with flash timers'],
+    address: 'gromuse.shop.ke',
+    video: 'https://cdn.dribbble.com/userupload/10640472/file/original-c81c56245856e105c75424cf9a958366.mp4',
+    img: '/brand/work-gromuse-desk.png',
+    kind: 'groceries',
+  },
+  {
+    id: 'electronics',
+    name: 'Nuvio Tech Megastore',
+    category: 'Electronics & Gadgets',
+    tag: 'Cyber Dark Mode · 50% Off Deals',
+    accent: '#FF5722',
+    headline: 'A cyber tech & electronics megastore',
+    desc: 'Deep titanium dark mode with glowing neon accents. Live countdown flash sale banners, category counts (Smartwatches 685+, Earbuds 1,120+), specs badges, and trusted brand partners.',
+    features: ['Live countdown flash deal timer', 'Titanium cyber dark mode layout', 'Category product counters and spec badges', 'Instant M-Pesa one-touch payment'],
+    address: 'nuvio.shop.ke',
+    img: '/brand/work-nuvio-desk.png',
+    subImg: '/brand/work-nuvio-full.png',
+    kind: 'electronics',
+  },
+  {
+    id: 'furniture',
+    name: 'Rova Architectural Living',
+    category: 'Furniture & Living',
+    tag: 'Scandinavian Minimalist · Luxury',
+    accent: '#8C6239',
+    headline: 'Furniture that defines your space',
+    desc: 'High-end architectural minimalism in warm cream and stone palettes. Sculptural modern showcases, high-fashion serif typography, and material craft guarantees.',
+    features: ['Editorial magazine-grade gallery', 'Sculptural curved arch showcases', 'Premium material & sustainability tags', 'Custom deposits and M-Pesa settlement'],
+    address: 'rova.shop.ke',
+    img: '/brand/work-rova-desk.png',
+    kind: 'furniture',
+  },
+  {
+    id: 'sauce',
+    name: 'Anjugu Peanut Butter',
+    category: 'Artisanal Brands',
+    tag: 'Artisanal · Multi-Branch',
+    accent: '#D9381E',
+    headline: 'A peanut butter brand, online',
+    desc: 'Pure, creamy peanut butter with no additives. Five sizes from 250g to 1kg, multi-branch pickup across Nairobi, Mombasa, Kisumu & Rodi, and instant M-Pesa checkout.',
+    features: ['Real jars with live size selector', 'Multiple branches across Kenya', 'Direct M-Pesa Till integration', 'Zero sales commissions'],
+    address: 'anjugu.shop.ke',
+    img: '/brand/work-anjugu-desk.webp',
+    phoneImg: '/brand/work-anjugu-shop-phone.webp',
+    kind: 'sauce',
+  },
+];
 const INCLUDED = ['Your colours, fonts and real photos', 'M-Pesa checkout and receipts', 'Admin: orders, stock, SMS alerts', 'Fast on every phone', 'Your own shop link to share', 'No commission on your sales'];
 const FACTS = [
   ['Live the same day', 'Sign up, design, preview, pay. No developer.'],
@@ -99,6 +156,8 @@ function StyleStrip({ styles }) {
 }
 
 export default function Shops({ info }) {
+  const [activeShopId, setActiveShopId] = useState('groceries');
+  const activeShop = SHOWCASE_SHOPS.find((s) => s.id === activeShopId) ?? SHOWCASE_SHOPS[0];
   useEffect(() => {
     document.title = 'Kabuor Shops · Online shops for Kenyan brands';
   }, []);
@@ -172,29 +231,99 @@ export default function Shops({ info }) {
         </section>
       )}
 
-      {/* Real work */}
-      <section id="work" aria-labelledby="work-title" className="scroll-mt-20 py-10 sm:py-12">
-        <div className="container-x grid items-center gap-10 lg:grid-cols-2">
-<div className="relative sm:pr-[14%] sm:pb-8">
-            <BrowserShot src="/brand/work-anjugu-desk.webp" alt="An online shop we built for a Kenyan peanut butter brand" address="A shop we built" />
-            <PhoneShot src="/brand/work-anjugu-shop-phone.webp" alt="The same shop on a phone" className="absolute right-0 bottom-0 hidden w-[24%] sm:block" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-[var(--ms-blue)]">Our work</p>
-            <h2 id="work-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-[2.5rem] sm:leading-tight">
-              A peanut butter brand, online
-            </h2>
-            <p className="mt-4 text-lg leading-relaxed text-[var(--ms-muted)]">A Kenyan brand with several branches, selling its own jars at its own prices online.</p>
-            <ul className="mt-5 space-y-2">
-              {['Real jars, real prices', 'M-Pesa checkout', 'Every branch in one shop'].map((x) => (
-                <li key={x} className="flex gap-2">
-                  <ChevronRight className="mt-0.5 h-5 w-5 shrink-0 text-[var(--ms-blue)]" /> {x}
-                </li>
+      {/* Real work: Multi-Category Showcase */}
+      <section id="work" aria-labelledby="work-title" className="scroll-mt-20 py-12 sm:py-16">
+        <div className="container-x">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--ms-line)] pb-8">
+            <div>
+              <p className="text-sm font-semibold text-[var(--ms-blue)]">What we build</p>
+              <h2 id="work-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+                Shops built for what you sell
+              </h2>
+              <p className="mt-2 max-w-xl text-lg text-[var(--ms-muted)]">
+                Whether you sell farm produce, electronics, designer furniture or handmade jars — your shop is designed specifically for how your customers buy.
+              </p>
+            </div>
+            {/* Store category pills */}
+            <div className="flex flex-wrap gap-2">
+              {SHOWCASE_SHOPS.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setActiveShopId(s.id)}
+                  type="button"
+                  className={cn(
+                    'rounded-full px-4 py-2 text-sm font-semibold transition cursor-pointer',
+                    activeShopId === s.id
+                      ? 'bg-[var(--ms-blue)] text-white shadow-sm'
+                      : 'border border-[var(--ms-line)] bg-white text-[var(--ms-ink)] hover:bg-[#F5F7FC]'
+                  )}
+                >
+                  {s.category}
+                </button>
               ))}
-            </ul>
-            <Link to="/start" className="ms-btn ms-btn-primary mt-6">
-              Get a shop like this
-            </Link>
+            </div>
+          </div>
+
+          <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]">
+            <div className="relative">
+              {activeShop.video ? (
+                <div className="overflow-hidden rounded-xl border border-[var(--ms-line)] bg-black shadow-[0_20px_50px_-20px_rgba(0,0,0,0.35)]">
+                  <div className="flex items-center gap-1.5 border-b border-white/10 bg-[#1A1A1A] px-3.5 py-2.5">
+                    <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
+                    <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
+                    <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
+                    <span className="ml-2 rounded bg-white/10 px-2 py-0.5 text-xs text-white/70 font-mono">{activeShop.address}</span>
+                    <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-[#107C41]/20 px-2.5 py-0.5 text-[11px] font-semibold text-[#16A34A]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#16A34A] animate-pulse" /> Live Store Preview
+                    </span>
+                  </div>
+                  <video
+                    src={activeShop.video}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="aspect-[16/10] w-full object-cover object-top"
+                  />
+                </div>
+              ) : (
+                <div className="relative sm:pr-[12%] sm:pb-6">
+                  <BrowserShot src={activeShop.img} alt={activeShop.headline} address={activeShop.address} />
+                  {activeShop.phoneImg && (
+                    <PhoneShot src={activeShop.phoneImg} alt="Shop on phone" className="absolute right-0 bottom-0 hidden w-[26%] sm:block" />
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: activeShop.accent + "15", color: activeShop.accent }}>
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: activeShop.accent }} />
+                {activeShop.tag}
+              </div>
+              <h3 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+                {activeShop.headline}
+              </h3>
+              <p className="mt-4 text-base leading-relaxed text-[var(--ms-muted)] sm:text-lg">
+                {activeShop.desc}
+              </p>
+              <ul className="mt-6 space-y-2.5">
+                {activeShop.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2.5 text-sm sm:text-base">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#0F7A3D]" strokeWidth={2.5} />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link to={`/start?kind=${activeShop.kind}`} className="ms-btn ms-btn-primary">
+                  Build a {activeShop.category.split(' ')[0]} shop
+                </Link>
+                <a href="#how" className="ms-link flex items-center gap-1 text-sm">
+                  See how it works <ChevronRight className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -286,3 +415,6 @@ export default function Shops({ info }) {
     </CorporatePage>
   );
 }
+
+
+
