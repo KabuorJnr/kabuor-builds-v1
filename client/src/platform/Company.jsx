@@ -105,6 +105,9 @@ function ProductTile({ picture, status, name, text, points, primary, more }) {
 }
 
 export default function Company({ info }) {
+  const [activeShowcaseId, setActiveShowcaseId] = useState(COMPANY_SHOWCASES[0]?.id || 'groceries');
+  const activeShowcase = COMPANY_SHOWCASES.find((s) => s.id === activeShowcaseId) || COMPANY_SHOWCASES[0];
+
   useEffect(() => {
     document.title = 'Kabuor Technologies · Software for Kenyan businesses'; // not the platform's name (Kabuor Builds)
   }, [info]);

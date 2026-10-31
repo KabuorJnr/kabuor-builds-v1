@@ -1,7 +1,7 @@
 // The standalone Kabuor Builds company site (deployed on its own, e.g. Vercel). Just the company page; the
 // product tabs and buttons open the product pages on the platform (VITE_PRODUCT_ORIGIN), and the demo form
 // posts to the platform's API there.
-import { StrictMode, useEffect, useState } from 'react';
+import { Component, StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { MotionConfig } from 'framer-motion';
@@ -25,6 +25,39 @@ const DEFAULT_INFO = {
     linkedin: 'https://www.linkedin.com/in/rooney-odhiambo-9a26b6256',
   },
 };
+
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('Page error caught by ErrorBoundary:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#111', background: '#F8FAFC' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '8px' }}>Something went wrong</h2>
+          <p style={{ color: '#64748B', marginBottom: '20px', maxWidth: '400px', textAlign: 'center' }}>
+            We encountered a temporary display issue. Please reload the page to refresh your session.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{ padding: '10px 20px', background: '#2357F5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+          >
+            Reload Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function CompanySite() {
   const [info, setInfo] = useState(DEFAULT_INFO);
@@ -52,7 +85,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <MotionConfig reducedMotion="user">
-        <CompanySite />
+        <ErrorBoundary><CompanySite /></ErrorBoundary>
       </MotionConfig>
     </BrowserRouter>
   </StrictMode>,
