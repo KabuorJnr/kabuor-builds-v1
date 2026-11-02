@@ -36,6 +36,7 @@ export const family = (slug) => slug.replace(/(^|-)(\w)/g, (_, dash, c) => (dash
 
 /** Loads the brand, accent and text fonts; resolves when their CSS is in (missing ones are skipped). */
 export function loadFonts({ brand, tagline, body }) {
-  const jobs = [LOADERS[brand], LOADERS[tagline], LOADERS[`v:${body}`]].filter(Boolean).map((load) => load().catch(() => {}));
+  // A brand or accent font may also be one of the variable text fonts (a clean sans for a tech or grocery shop).
+  const jobs = [LOADERS[brand] ?? LOADERS[`v:${brand}`], LOADERS[tagline] ?? LOADERS[`v:${tagline}`], LOADERS[`v:${body}`]].filter(Boolean).map((load) => load().catch(() => {}));
   return Promise.all(jobs);
 }

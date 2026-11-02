@@ -6,8 +6,8 @@ import { setLook } from './brand';
 export function themeVars(look) {
   const vars = {};
   for (const [name, value] of Object.entries(look.colors)) vars[`--color-${name}`] = value;
-  const tagline = `"${family(look.fonts.tagline)}", cursive`;
-  vars['--font-brand'] = `"${family(look.fonts.brand)}", ui-rounded, system-ui, sans-serif`;
+  const tagline = `"${family(look.fonts.tagline)}", "${family(look.fonts.tagline)} Variable", cursive`;
+  vars['--font-brand'] = `"${family(look.fonts.brand)}", "${family(look.fonts.brand)} Variable", ui-rounded, system-ui, sans-serif`;
   vars['--font-tagline'] = tagline;
   vars['--font-hand'] = tagline;
   vars['--font-script'] = tagline;

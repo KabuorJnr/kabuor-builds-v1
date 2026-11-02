@@ -54,7 +54,7 @@ export function content(s) {
       chipText: s.hero.chipText,
       featured: s.hero.featured,
     },
-    ticker: { enabled: true, items: s.ticker },
+    ticker: { enabled: s.tickerEnabled ?? true, items: s.ticker },
     shop: { eyebrow: s.shop.eyebrow, title: s.shop.title, text: s.shop.text, allLabel: s.shop.allLabel ?? 'Everything', categories: s.shop.categories ?? [] },
     process: {
       enabled: true,

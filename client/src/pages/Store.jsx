@@ -52,7 +52,8 @@ export default function Store() {
   return (
     <>
       <Navbar content={content} links={links} />
-      <main>
+      {/* A sample or preview bar above the menu pushes the page down by its height (App.jsx sets --banner-h). */}
+      <main className="pt-[var(--banner-h,0px)]">
         {/* No fade between pages: the next page is there the moment it's tapped. */}
         <Outlet context={context} />
       </main>

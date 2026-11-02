@@ -13,51 +13,51 @@ const DEPARTMENTS = ['Young Builders & Volunteers', 'Engineering', 'Leadership',
 
 const PERKS = [
   {
-    title: 'Generous Founding ESOP Ownership',
-    description: 'We reward early conviction with meaningful stock option grants with formal 4-year vesting. You own real equity in the company upside from day one.',
+    title: 'You own part of the company',
+    description: 'Founding members hold shares in Kabuor Technologies Ltd, not options or a bonus scheme. Shares vest over four years, so the people who build the company are the people who own it, for the long term.',
   },
   {
-    title: 'Post-Funding Salary & Medical Guarantee',
-    description: 'We are currently pre-funding and bootstrapping. All founding roles have contractual market-competitive salaries and tier-1 health cover locked in upon closing our funding round.',
+    title: 'Salaries once the company can pay them',
+    description: 'We’re bootstrapping and haven’t raised money yet. Founding members are rewarded in shares now; salaries start once we raise funding or earn enough to pay them, on terms we agree in writing before you start.',
   },
   {
-    title: '100% Fully Remote & High Autonomy',
-    description: 'Headquartered along Ngong Road, Nairobi, we operate 100% remote. Work on your schedule with zero micromanagement, focused purely on shipped merchant impact.',
+    title: 'A say in how it’s run',
+    description: 'Founding members help set the direction: which products, which customers, who joins next. You own a whole area of the business, not a ticket queue.',
   },
   {
-    title: 'Real Production Systems Ownership',
-    description: 'No busywork or toy apps. You architect and deploy low-allocation C# .NET 10 microservices and offline React 19 PWAs moving real transactions for Kenyan businesses.',
+    title: 'Remote, based in Nairobi',
+    description: 'We work remotely, with our base on Ngong Road, Nairobi, and meet in person when the work needs it. You plan your own time around what we’ve agreed to deliver.',
   },
   {
-    title: 'Founder & Senior Architect Mentorship',
-    description: 'Direct pairing with experienced founders and engineers who have built and scaled high-throughput financial infrastructure across East Africa.',
+    title: 'Products already in use',
+    description: 'Kabuor ERP and Kabuor Shops are built and running. You’re joining to grow them and the company, not to start from a slide deck.',
   },
   {
-    title: 'Flexible Leave & Collaborative Culture',
-    description: 'High-trust environment with flexible time off, asynchronous engineering workflows, and deep commitment to work-life sustainability.',
+    title: 'Work directly with the founder',
+    description: 'Rooney built Kabuor ERP end to end: the .NET API, the React app, the KRA eTIMS and M-Pesa integrations, and Kenyan payroll. You’ll work with him day to day.',
   },
 ];
 
 const PRINCIPLES = [
   {
-    title: 'Zero Tolerance for Slowness',
-    description: 'When a cashier in a supermarket has 15 customers queuing with groceries, every millisecond matters. We optimize down to zero-allocation memory pools in C# and client-side caching.',
+    title: 'Fast for the person at the counter',
+    description: 'A cashier with a queue can’t wait for a slow screen. We keep every page quick on a cheap phone and a weak connection.',
   },
   {
-    title: 'Massive Economic Impact',
-    description: 'MSMEs contribute over 40% of Kenya’s GDP. Giving them automated financial controls and instant tax compliance fundamentally protects their business livelihoods.',
+    title: 'Built for Kenyan businesses',
+    description: 'Small and growing businesses carry the economy. M-Pesa, KRA eTIMS and Kenyan payroll come first, not as add-ons.',
   },
   {
-    title: 'Extreme Ownership & Equity',
-    description: "You won't be a cog in an 8-layer approval chain. You will own complete functional domains, deploy weekly, and share directly in company ownership through our formal ESOP equity program.",
+    title: 'Owners, not employees',
+    description: 'Everyone on the founding team holds shares and owns a whole area of the business. We decide together and ship every week.',
   },
 ];
 
 const BUILDER_POINTS = [
-  { title: 'Real Production Code', description: 'No coffee runs or toy apps. You will build high-throughput C# backends, offline React PWAs, and local payment rails from day one.' },
-  { title: 'Direct Mentorship', description: 'Pair directly with core architects and founders who have scaled financial systems and high-growth African startups.' },
-  { title: 'No Degree Barrier', description: 'We care about your passion, curiosity, and speed of learning. Self-taught tinkerers and student developers are warmly welcome.' },
-  { title: 'Full-Time Pathway', description: 'Top-performing fellows and open contributors graduate into full-time engineering and product positions with equity ownership.' },
+  { title: 'Real production code', description: 'No coffee runs or toy apps. You work on the .NET and React code that Kenyan businesses use every day.' },
+  { title: 'Learn from the founder', description: 'Work alongside the founder, who built Kabuor ERP end to end, with reviews on everything you ship.' },
+  { title: 'No degree needed', description: 'We care about curiosity and how fast you learn. Self-taught and student developers are welcome.' },
+  { title: 'A way onto the founding team', description: 'Builders who do great work can be invited onto the founding team, with shares in the company.' },
 ];
 
 function RoleCard({ role, expanded, onToggle, onApply }) {
@@ -263,10 +263,10 @@ export default function CareersPage({ info }) {
       {/* Hero */}
       <section className="border-b border-[var(--ms-line)] bg-[#F5F7FC]">
         <div className="container-x py-10 sm:py-12 lg:py-14">
-          <p className="text-sm font-semibold text-[var(--ms-blue)]">Careers at Kabuor Technologies</p>
-          <h1 className="mt-3 max-w-3xl text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">Build the software Kenyan businesses run on</h1>
+          <p className="text-sm font-semibold text-[var(--ms-blue)]">Join the founding team</p>
+          <h1 className="mt-3 max-w-3xl text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">Build Kabuor Technologies with us, and own part of it</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--ms-muted)]">
-            Kenyan merchants run on M-Pesa, paper dockets and resilience. We build the systems that take that work off their hands: invoicing and M-Pesa matching, KRA eTIMS, stock, payroll and online shops. We’re a fully remote team based on Ngong Road, Nairobi.
+            We’re forming the team that will establish Kabuor Technologies and run it for the long term. Founding members join as shareholders: you own part of the company you help build. The products are already working: Kabuor ERP and Kabuor Shops, for Kenyan businesses that run on M-Pesa and KRA eTIMS.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#open-roles" className="ms-btn ms-btn-primary">
@@ -286,7 +286,7 @@ export default function CareersPage({ info }) {
             <SectionHead
               id="roles-title"
               title="Open positions"
-              text={`${openRoles.length} of ${roles.length} roles are taking applications. Founding roles are paid in equity now, with salaries agreed in advance from our funding round.`}
+              text={`${openRoles.length} of ${roles.length} roles are taking applications. Each founding role comes with shares in the company; salaries start once the company can pay them.`}
             />
             <label className="relative block w-full md:w-80">
               <span className="sr-only">Search roles</span>
@@ -377,8 +377,8 @@ export default function CareersPage({ info }) {
         <div className="container-x">
           <SectionHead
             id="perks-title"
-            title="Equity now, salaries from our funding round"
-            text="We’re open about where we are: bootstrapping, before funding. People who join now get founding equity, with competitive salaries agreed in advance that start when the round closes."
+            title="What founding members get"
+            text="We’re open about where we are: bootstrapping, before funding, with Kabuor Technologies Ltd being incorporated. Shares, vesting and salary terms are agreed in writing with each member before they start."
           />
           <ul className="mt-7 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
             {PERKS.map((perk) => (

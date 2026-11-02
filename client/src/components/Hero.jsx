@@ -4,6 +4,7 @@ import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { ArrowRight, Truck } from 'lucide-react';
 import { isBrandTagline, LoveNutHome } from './LoveNutHome';
 import ProductJar from './ProductJar';
+import { TEMPLATE_HEROES } from './templates';
 import { Display, EASE, Stars } from './ui';
 import { cn, money } from '../lib/format';
 import { LOOK } from '../lib/brand';
@@ -109,6 +110,10 @@ export default function Hero({ products, config, content }) {
   const yFront = useTransform(scrollYProgress, [0, 1], [0, -20]);
   const textY = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const textFade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  // The category templates (Living, Tech, Botanical, Grocer) draw their own banner.
+  const Template = TEMPLATE_HEROES[layout];
+  if (Template) return <Template products={products} config={config} content={content} />;
 
   // Featured products from the content, falling back to the catalogue order if one was removed.
   const used = new Set();

@@ -448,7 +448,7 @@ export default function CareersApplicationPage({ role, onBack, info }) {
                   className="mt-1 h-5 w-5 shrink-0 rounded border-espresso/30 accent-[#2357F5]"
                 />
                 <span className="text-[15px] leading-relaxed text-espresso/80">
-                  <b className="text-espresso">I understand the pre-funding terms.</b> Kabuor Technologies Ltd is bootstrapping and pre-funding. I’m joining on the founding ESOP equity / volunteer fellowship track, with pre-agreed competitive salaries starting when the funding round closes.
+                  <b className="text-espresso">I understand the pre-funding terms.</b> Kabuor Technologies Ltd is bootstrapping and has not raised money yet. I’m applying to join as a founding shareholder (or as a volunteer builder), with shares, vesting and any salary agreed in writing before I start.
                 </span>
               </label>
               {errors.equityAcknowledgment && (

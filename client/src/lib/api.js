@@ -20,8 +20,19 @@ export function previewKey() {
   }
 }
 
+// A sample shop (/demo/<template> on the website) runs the real storefront on data it was handed, and must never
+// place an order or take money: anything but reading is refused with a plain explanation.
+let SAMPLE = false;
+const SAMPLE_REFUSAL = 'This is a sample shop, so ordering is switched off and no money is taken. Start your own shop to take real orders.';
+export function startSampleShop({ products, config, content, posts }) {
+  SAMPLE = true;
+  useSite.setState({ content });
+  storePromise = Promise.resolve({ products, config, content, posts });
+}
+
 // `file` sends a File/Blob as the raw request body (used for image uploads).
 export async function api(path, { method = 'GET', body, file, token, raw = false } = {}) {
+  if (SAMPLE && (file || method !== 'GET' || body)) throw new ApiError(403, SAMPLE_REFUSAL, 'SAMPLE_SHOP');
   const res = await fetch(`/api${path}`, {
     method: file ? 'POST' : method,
     headers: {

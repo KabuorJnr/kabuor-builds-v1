@@ -62,7 +62,7 @@ platformRouter.get('/info', (req, res) => {
 
 // Example looks for the landing page: what a sauce, candle and honey shop come out as.
 const SAMPLES = [
-  { kind: 'fashion', name: 'Urban Sartorial', brand: { style: 'street', accent: '#1E1E1E', tagline: 'Fashion is a trend of modern life' }, product: { name: 'Polyester Printed Shirt', size: '1 pc', price: 16900 } },
+  { kind: 'fashion', name: 'Urban Sartorial', brand: { style: 'studio', accent: '#E8541C', tagline: 'Fashion is a trend of modern life' }, product: { name: 'Printed resort shirt', size: 'S to XXL', price: 2900 } },
   { kind: 'wellness', name: 'Zuri Organics & Wellness', brand: { style: 'natural', accent: '#C89B59', tagline: 'Your Journey to Better Health Starts Here' }, product: { name: 'Citrus & Stone Botanical Cleanser', size: '200ml', price: 5200 } },
   { kind: 'sauce', name: 'Mama Pili Sauces', brand: { style: 'warm', accent: '#D9381E', tagline: 'Heat with flavour' }, product: { name: 'Garden Chilli', size: '250g', price: 400 } },
   { kind: 'candle', name: 'Glow Candle Co', brand: { style: 'luxe', accent: '#9A5BC9', tagline: 'Calm scents for slow evenings' }, product: { name: 'Lavender Candle', size: '200g', price: 600 } },
@@ -75,6 +75,102 @@ const SAMPLES = [
   product: s.product,
   look: clientBrand(makeBrand({ slug: s.kind, name: s.name, kind: s.kind, city: 'Nairobi', phone: '', email: '', brand: JSON.stringify(s.brand) })),
 }));
+
+// ---------- sample shops for the four category templates ----------
+// /demo/<template> on the website: the real storefront, running on sample products built the same way a new
+// signup's shop is (makeBrand). Nothing is stored, and the storefront switches ordering off for samples.
+const art = (t, f) => `/brand/templates/${t}/${f}.svg`;
+const TEMPLATE_SAMPLES = {
+  living: {
+    kind: 'furniture', name: 'Rova Living', brand: { style: 'scandi', accent: '#8C6239', tagline: 'Furniture that defines your space' },
+    products: [
+      { name: 'Oak lounge chair', size: 'Solid oak, wool cushion', price: 34500, photo: art('living', 'lounge-chair'), badge: 'Bestseller', description: 'A low, deep chair in solid oak with a removable wool cushion. 72 cm wide, 78 cm deep, seat height 38 cm.' },
+      { name: 'Boucle three-seater sofa', size: 'Boucle, beech legs', price: 128000, photo: art('living', 'sofa'), description: 'Rounded arms and deep seats in an oatmeal boucle. 220 cm wide. Covers come off for cleaning.' },
+      { name: 'Arc floor lamp', size: 'Brass, linen shade', price: 18900, photo: art('living', 'arc-lamp'), badge: 'New', description: 'A brushed brass arc on a marble base that reaches over a sofa or reading chair. 190 cm tall.' },
+      { name: 'Travertine side table', size: 'Travertine stone', price: 22500, photo: art('living', 'side-table'), description: 'A tapered column of honed travertine. Every piece has its own veining. 45 cm across, 50 cm tall.' },
+      { name: 'Stoneware vase', size: 'Hand-thrown clay', price: 4800, photo: art('living', 'vase'), description: 'Thrown by hand in terracotta clay with a soft matte finish. 34 cm tall.' },
+      { name: 'Walnut sideboard', size: 'Walnut veneer', price: 86000, photo: art('living', 'sideboard'), description: 'Four doors and adjustable shelves behind them, on slim walnut legs. 180 cm wide.' },
+    ],
+  },
+  tech: {
+    kind: 'electronics', name: 'Nuvio Tech', brand: { style: 'cyber', accent: '#FF5722', tagline: 'Power your digital life', mode: 'dark' },
+    products: [
+      { name: 'Wireless over-ear headphones', size: '40 h battery · ANC', price: 18999, photo: art('tech', 'headphones'), badge: 'Best seller', description: 'Active noise cancelling, 40 hours on a charge, and a USB-C fast charge that gives 5 hours in 10 minutes.' },
+      { name: 'Smart watch', size: '1.9" AMOLED · GPS', price: 12499, photo: art('tech', 'smartwatch'), badge: 'Deal', description: 'Heart rate, sleep and GPS for runs, with a week between charges.' },
+      { name: '6.7" smartphone', size: '256 GB · 5G', price: 54999, photo: art('tech', 'phone'), description: 'A 6.7-inch screen, 256 GB of storage, a 50 MP camera and a two-day battery.' },
+      { name: 'True wireless earbuds', size: '30 h with case', price: 6499, photo: art('tech', 'earbuds'), description: 'Sweat-resistant earbuds with 30 hours of listening including the charging case.' },
+      { name: '14" laptop', size: '16 GB RAM · 512 GB SSD', price: 89999, photo: art('tech', 'laptop'), description: 'A light 14-inch laptop with 16 GB of memory, a 512 GB SSD and a full-day battery.' },
+      { name: 'Portable speaker', size: 'Waterproof · 20 W', price: 7999, photo: art('tech', 'speaker'), description: 'A 20 W waterproof speaker that runs 12 hours and pairs with a second one for stereo.' },
+    ],
+  },
+  botanical: {
+    kind: 'wellness', name: 'Zuri Organics', brand: { style: 'botanical', accent: '#C89B59', tagline: 'Your journey to better health starts here' },
+    products: [
+      { name: 'Citrus botanical cleanser', size: '200 ml', price: 2400, photo: art('botanical', 'cleanser'), badge: 'Bestseller', description: 'A gentle daily face wash with orange peel and chamomile. Ingredients listed on the bottle.' },
+      { name: 'Vitamin C serum', size: '30 ml', price: 3200, photo: art('botanical', 'serum'), description: 'A light serum with vitamin C and aloe, for the morning before sunscreen.' },
+      { name: 'Shea body balm', size: '100 g', price: 1800, photo: art('botanical', 'balm'), description: 'Whipped shea and coconut for dry skin. Made in small batches.' },
+      { name: 'Green tonic powder', size: '250 g', price: 2900, photo: art('botanical', 'tonic'), badge: 'New', description: 'Moringa, spirulina and baobab to stir into water or a smoothie.' },
+      { name: 'Hibiscus herbal tea', size: '20 bags', price: 950, photo: art('botanical', 'tea'), description: 'Kenyan hibiscus with lemongrass and ginger. Caffeine-free.' },
+      { name: 'Body oil', size: '100 ml', price: 2100, photo: art('botanical', 'body-oil'), description: 'Baobab and jojoba oil with a light citrus scent, for after the shower.' },
+    ],
+  },
+  fashion: {
+    kind: 'fashion', name: 'Urban Sartorial', brand: { style: 'studio', accent: '#E8541C', tagline: 'Clothes made to be lived in' },
+    products: [
+      { name: 'Mustard trench coat', size: 'Cotton gabardine · S to XL', price: 8900, photo: art('fashion', 'trench-coat'), badge: 'New drop', description: 'A belted, double-breasted trench in water-resistant cotton gabardine. Falls just below the knee.' },
+      { name: 'Orange wrap dress', size: 'Viscose crepe · S to XL', price: 5400, photo: art('fashion', 'wrap-dress'), description: 'A true wrap with a tie at the waist and short sleeves. Midi length, light enough for a hot day.' },
+      { name: 'Tailored blazer', size: 'Linen blend · S to XXL', price: 7200, photo: art('fashion', 'blazer'), badge: 'Bestseller', description: 'A single-breasted, half-lined blazer in a linen blend that keeps its shape. Two flap pockets.' },
+      { name: 'Printed resort shirt', size: 'Cotton · S to XXL', price: 2900, photo: art('fashion', 'printed-shirt'), description: 'A short-sleeved camp-collar shirt in soft cotton, with a hand-drawn leaf print.' },
+      { name: 'Wide-leg trousers', size: 'Wool blend · 28 to 38', price: 4600, photo: art('fashion', 'trousers'), description: 'High-waisted, wide-leg trousers with front pleats and a full-length crease.' },
+      { name: 'Canvas sneakers', size: 'Sizes 37 to 45', price: 3800, photo: art('fashion', 'sneakers'), description: 'Low-top canvas sneakers on a natural gum sole, with cotton laces.' },
+    ],
+  },
+  grocer: {
+    kind: 'groceries', name: 'Gromuse Fresh Mart', brand: { style: 'fresh', accent: '#107C41', tagline: 'We bring the store to your door' },
+    categories: [{ id: 'fruit-veg', label: 'Fruit & veg' }, { id: 'dairy-eggs', label: 'Dairy & eggs' }, { id: 'bakery', label: 'Bakery' }, { id: 'pantry', label: 'Pantry' }],
+    products: [
+      { name: 'Tomatoes', size: '1 kg', price: 120, photo: art('grocer', 'tomatoes'), category: 'fruit-veg', badge: 'Fresh today' },
+      { name: 'Hass avocados', size: '4 pieces', price: 160, photo: art('grocer', 'avocados'), category: 'fruit-veg' },
+      { name: 'Ripe bananas', size: '1 bunch', price: 150, photo: art('grocer', 'bananas'), category: 'fruit-veg' },
+      { name: 'Carrots', size: '1 kg', price: 110, photo: art('grocer', 'carrots'), category: 'fruit-veg' },
+      { name: 'Fresh milk', size: '1 litre', price: 140, photo: art('grocer', 'milk'), category: 'dairy-eggs' },
+      { name: 'Eggs', size: 'Tray of 30', price: 480, photo: art('grocer', 'eggs'), category: 'dairy-eggs' },
+      { name: 'Brown bread', size: '400 g', price: 75, photo: art('grocer', 'bread'), category: 'bakery' },
+      { name: 'Wheat flour', size: '2 kg', price: 210, photo: art('grocer', 'flour'), category: 'pantry' },
+    ],
+  },
+};
+
+platformRouter.get('/samples/:id', (req, res) => {
+  const sample = TEMPLATE_SAMPLES[req.params.id];
+  if (!sample) throw new HttpError(404, 'No sample shop by that name');
+  const b = makeBrand({ slug: `sample-${req.params.id}`, name: sample.name, kind: sample.kind, city: 'Nairobi', phone: PLATFORM_PHONE, email: '', brand: JSON.stringify({ ...sample.brand, products: sample.products }) });
+  const products = b.catalog.map(({ cost, estimate, active, popularity, ...p }, i) => ({
+    ...p,
+    category: sample.products[i].category ?? 'all',
+    badge: sample.products[i].badge,
+    notes: [],
+    look: { photo: '', ...p.look },
+  }));
+  const content = { ...b.content, shop: { ...b.content.shop, categories: sample.categories ?? [] } };
+  res.json({
+    look: clientBrand(b),
+    products,
+    content,
+    posts: b.posts.map((p, i) => ({ id: i + 1, ...p, image: '', pinned: Boolean(p.pinned), published: true, createdAt: new Date().toISOString() })),
+    config: {
+      currency: 'Ksh',
+      deliveryEnabled: true,
+      deliveryFee: 0,
+      freeDeliveryThreshold: 0,
+      deliveryNote: b.store.deliveryNote,
+      pickup: b.store.pickup,
+      paybill: b.store.paybill,
+      mpesaPrompt: true,
+      paymentMethods: [{ id: 'mpesa', label: 'M-Pesa', hint: 'This is a sample shop: no order is placed and no money is taken', prompt: true }],
+    },
+  });
+});
 
 // ---------- the link ----------
 function linkProblem(link) {

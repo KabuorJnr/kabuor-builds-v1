@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router';
 import { MotionConfig } from 'framer-motion';
 import './index.css';
 import { applyLook } from './lib/theme';
-import { previewKey } from './lib/api';
+import { previewKey, startSampleShop } from './lib/api';
 import { PATH_SHOP, SHOP_BASE, linkLabel, setPlatformDomain } from './lib/base';
 import { BUILDS_HOST } from './platform/contact';
 
@@ -26,7 +26,13 @@ const companyPage = isCompanyDomain && !PATH_SHOP;
 const controller = new AbortController();
 const timeoutId = setTimeout(() => controller.abort(), companyPage ? 1500 : 15000);
 
-const site = companyPage && window.location.pathname === '/careers'
+// A sample shop for one of the category templates: the real storefront on sample data from the platform.
+const SAMPLE = window.location.pathname.match(/^\/demo\/(living|tech|botanical|grocer|fashion)(?=\/|$)/)?.[1];
+const sample = SAMPLE ? await fetch(`/api/platform/samples/${SAMPLE}`).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null;
+
+const site = sample
+  ? { kind: 'shop', brand: sample.look, state: 'live', sample: SAMPLE }
+  : companyPage && window.location.pathname === '/careers'
   ? { kind: 'platform', name: 'Kabuor Technologies' }
   : await fetch('/api/site', {
       signal: controller.signal,
@@ -61,6 +67,7 @@ if (site.kind === 'offline') {
     </main>
   );
 } else if (site.kind === 'shop') {
+  if (sample) startSampleShop(sample);
   await applyLook({ ...site.brand, platform: site.platform });
   head({ title: `${site.brand.name} · ${site.brand.tagline}`, icon: site.brand.logo?.image || 'data:,' });
   const { default: App } = await import('./App');
@@ -76,7 +83,7 @@ if (site.kind === 'offline') {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename={SHOP_BASE || undefined}>
+    <BrowserRouter basename={sample ? `/demo/${SAMPLE}` : SHOP_BASE || undefined}>
       <MotionConfig reducedMotion="user">
         <Root />
       </MotionConfig>

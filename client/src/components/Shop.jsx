@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, Flame, Plus, Star } from 'lucide-react';
 import ProductJar from './ProductJar';
+import { TEMPLATE_CARDS } from './templates';
 import { EASE, Reveal, SectionHeading } from './ui';
 import { LOOK } from '../lib/brand';
 import { cn, money, perHundredGrams } from '../lib/format';
@@ -102,7 +103,7 @@ const PHOTO = {
   overlay: 'aspect-[3/4] rounded-[var(--r-xl)]',
 };
 const BODY = { card: 'p-3.5 sm:p-5', bare: 'px-0.5 pt-3', framed: 'border-t border-espresso/10 p-4', list: 'py-1 pr-1', overlay: 'px-0.5 pt-3' };
-export const cardKind = () => (CARD[LOOK.theme?.cards] ? LOOK.theme.cards : 'card');
+export const cardKind = () => (CARD[LOOK.theme?.cards] || TEMPLATE_CARDS[LOOK.theme?.cards] ? LOOK.theme.cards : 'card');
 
 function ProductCard({ product, all, index, label }) {
   const href = `/products/${product.id}`;
@@ -110,6 +111,23 @@ function ProductCard({ product, all, index, label }) {
   const kind = cardKind();
   const photo = Boolean(look.photo);
   const price = product.stock > 0 ? money(product.price) : 'Sold out';
+  const motionProps = {
+    layout: true,
+    initial: { opacity: 0, y: 12 },
+    whileInView: { opacity: 1, y: 0 },
+    exit: { opacity: 0, scale: 0.96, transition: { duration: 0.2 } },
+    viewport: { once: true, margin: '0px 0px -20px 0px' },
+    transition: { duration: 0.4, delay: (index % 4) * 0.04, ease: EASE },
+  };
+  // A category template (templates.jsx) draws the whole card its own way.
+  const Template = TEMPLATE_CARDS[kind];
+  if (Template) {
+    return (
+      <motion.article {...motionProps} className="group relative">
+        <Template product={product} title={titleOf(product, all)} href={href} price={price} />
+      </motion.article>
+    );
+  }
   return (
     <motion.article
       layout

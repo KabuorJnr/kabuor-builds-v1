@@ -2,7 +2,7 @@
 // corporate layout in the manner of large software companies' sites. A white header with the products as text links
 // and one blue action, a grey footer of link columns, and the small pieces pages repeat. Styles live under .ms
 // (platform.css); wrap a page in <CorporatePage> to get them.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { Menu, X } from 'lucide-react';
 import { ERP_RAILWAY_URL, Go, tel, whatsapp } from './Site';
@@ -195,3 +195,23 @@ export function CorporatePage({ cta, children }) {
   );
 }
 
+
+/** An address that isn't one of our pages: say so, instead of showing the home page under a wrong address. */
+export function NotFoundPage() {
+  useEffect(() => {
+    document.title = 'Page not found · Kabuor Technologies';
+  }, []);
+  return (
+    <CorporatePage cta={{ href: '/#demo', label: 'Request a demo' }}>
+      <section className="container-x py-20 sm:py-28">
+        <p className="text-sm font-semibold text-[var(--ms-blue)]">404</p>
+        <h1 className="mt-3 text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">We couldn’t find that page</h1>
+        <p className="mt-4 max-w-xl text-lg text-[var(--ms-muted)]">The link may be old or mistyped.</p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link to="/" className="ms-btn ms-btn-primary">Go to the home page</Link>
+          <Link to="/careers" className="ms-btn ms-btn-secondary">See open roles</Link>
+        </div>
+      </section>
+    </CorporatePage>
+  );
+}

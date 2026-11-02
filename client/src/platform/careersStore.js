@@ -15,8 +15,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '5+ years experience',
     technical: false,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Generous Founding ESOP Equity Grant',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: 'Founding shareholding',
     tags: ['Executive', 'Operations', 'Strategy', 'Expansion', 'Fundraising'],
     summary:
       'Partner directly with the Founder & CEO to drive company-wide operational velocity, board reporting, cross-functional OKRs, and strategic market expansion across East Africa.',
@@ -29,7 +29,7 @@ export const DEFAULT_ROLES = [
       '5+ years in high-growth tech startups, top-tier management consulting, or venture capital in Africa.',
       'Uncanny ability to translate ambiguous strategic goals into crisp operational execution.',
     ],
-    benefitsNote: 'Direct founder mentorship + Founding ESOP Stake + Executive Salaried Package post-funding.',
+    benefitsNote: 'Direct founder mentorship + founding shares + salary once the company can pay.',
   },
   {
     id: 'vp-engineering',
@@ -40,8 +40,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '8+ years experience',
     technical: true,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Significant Executive ESOP Stake',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: 'Founding shareholding',
     tags: ['C# .NET 10', 'Distributed Systems', 'Architecture', 'Team Leadership'],
     summary:
       'Lead our engineering organization. Set architectural direction across backend transaction processing, offline edge runtimes, security posture, and high-velocity developer ergonomics.',
@@ -54,7 +54,7 @@ export const DEFAULT_ROLES = [
       '8+ years building enterprise SaaS or high-throughput financial infrastructure.',
       'Proven track record leading engineering teams of 15+ engineers in fast-paced environments.',
     ],
-    benefitsNote: 'Significant Executive ESOP Stake + Core Architecture Ownership + Executive Salaried Package post-funding.',
+    benefitsNote: 'founding shares + Core Architecture Ownership + salary once the company can pay.',
   },
   {
     id: 'lead-platform-architect',
@@ -65,8 +65,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '6+ years experience',
     technical: true,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: '0.50% – 1.00% ESOP',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: '0.50% – 1.00% of the company’s shares',
     tags: ['.NET 10', 'C#', 'SequenceGate', 'PostgreSQL', 'High-Throughput'],
     summary:
       'Own the core distributed transaction backbone of Kabuor ERP. Scale our SequenceGate concurrency engine, real-time M-Pesa ledger pipelines, and zero-loss event streaming to handle 500k+ transactions per day.',
@@ -79,7 +79,7 @@ export const DEFAULT_ROLES = [
       '6+ years architecting high-throughput, low-latency distributed systems (C#/.NET, Go, or Rust).',
       'Deep mastery of relational databases (PostgreSQL/SQL Server), transactional isolation levels, and row locking.',
     ],
-    benefitsNote: 'Core Distributed Systems Leadership + Generous ESOP Stake + Salaried Package post-funding.',
+    benefitsNote: 'Core Distributed Systems Leadership + founding shares + salary once the company can pay.',
   },
   {
     id: 'senior-edge-frontend-engineer',
@@ -90,8 +90,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '4+ years experience',
     technical: true,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: '0.35% – 0.75% ESOP',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: '0.35% – 0.75% of the company’s shares',
     tags: ['React 19', 'TypeScript', 'Offline PWA', 'IndexedDB', 'Tailwind'],
     summary:
       'Lead our mission to make business software instant and indestructible. Build the client runtime that keeps Kenyan wholesale storefronts, supermarkets, and field vans running smoothly even when the cellular network drops completely.',
@@ -103,7 +103,7 @@ export const DEFAULT_ROLES = [
       '4+ years building production web applications in modern React, TypeScript, and modern CSS.',
       'Hands-on expertise with Progressive Web Apps (PWA), Service Workers, CacheStorage, and offline sync.',
     ],
-    benefitsNote: '100% Fully Remote + Offline PWA Runtime Ownership + ESOP Equity Grant + Salaried post-funding.',
+    benefitsNote: '100% Fully Remote + Offline PWA Runtime Ownership + founding shares + salary once the company can pay.',
   },
   {
     id: 'head-of-tax-compliance-etims',
@@ -114,8 +114,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: 'eTIMS integration experience',
     technical: true,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: '0.40% – 0.80% ESOP',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: '0.40% – 0.80% of the company’s shares',
     tags: ['KRA eTIMS', 'VSCU/OSCU', 'Tax Procedures Act', 'Cryptography', 'FinTech'],
     summary:
       'Lead the technological bridge between 1.5 million Kenyan businesses and the Kenya Revenue Authority. You will own our native eTIMS transmission infrastructure, cryptographic invoice signing, and regulatory compliance roadmap.',
@@ -127,7 +127,7 @@ export const DEFAULT_ROLES = [
       'Proven track record implementing or integrating eTIMS, TIMS, or fiscal device middleware in Kenya.',
       'Strong technical background in cryptography (digital signatures, RSA/ECDSA, QR code payloads, PKI).',
     ],
-    benefitsNote: 'Direct regulatory architecture leadership + Generous ESOP Stake + Salaried post-funding.',
+    benefitsNote: 'Direct regulatory architecture leadership + founding shares + salary once the company can pay.',
   },
   {
     id: 'head-of-growth-marketing',
@@ -138,8 +138,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '4+ years experience',
     technical: false,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: 'Founding shareholding',
     tags: ['Performance Marketing', 'B2B SaaS', 'Accountant Network', 'SEO/SEM', 'CAC/LTV'],
     summary:
       'Own top-of-funnel customer acquisition and merchant expansion across Kenya. Build our automated acquisition engine across digital channels, partner accountant networks, and referral loops to acquire 5,000+ paying businesses.',
@@ -151,7 +151,7 @@ export const DEFAULT_ROLES = [
       '4+ years driving measurable growth at a high-velocity B2B SaaS, FinTech, or fast-growing startup in East Africa.',
       'Demonstrated track record managing 7-figure marketing budgets with strict CAC and payback constraints.',
     ],
-    benefitsNote: 'Meaningful Founding ESOP Stake + Salaried post-funding + Uncapped revenue share upon funding.',
+    benefitsNote: 'Meaningful founding shares + salary once the company can pay + Uncapped revenue share upon funding.',
   },
   {
     id: 'field-trade-corridor-marketing-lead',
@@ -162,8 +162,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '3+ years experience',
     technical: false,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: 'Founding shareholding',
     tags: ['Field Activation', 'Merchant Corridors', 'Trade Associations', 'Gikomba', 'Eastleigh'],
     summary:
       'Take Kabuor ERP straight into Kenya’s most lucrative commercial hubs. You will lead ground activations in Gikomba, Eastleigh, Industrial Area, and River Road, driving wholesale adoption through merchant association partnerships and live demo days.',
@@ -174,7 +174,7 @@ export const DEFAULT_ROLES = [
     requirements: [
       '3+ years of field marketing, FMCG route-to-market, or merchant acquisition leadership in urban Kenyan hubs.',
     ],
-    benefitsNote: 'Grassroots commercial corridor leadership + Founding ESOP Stake + Full mobility support post-funding.',
+    benefitsNote: 'Grassroots commercial corridor leadership + founding shares + Full mobility support post-funding.',
   },
   {
     id: 'content-and-brand-lead',
@@ -185,8 +185,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '3+ years experience',
     technical: false,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: 'Founding shareholding',
     tags: ['Video Storytelling', 'LinkedIn Thought Leadership', 'SME Case Studies', 'TikTok/YouTube'],
     summary:
       'Tell the story of African commerce through the lens of the ambitious business builders who run it. You will create documentary-style customer case studies, founder video content, tax masterclasses, and viral social campaigns.',
@@ -197,7 +197,7 @@ export const DEFAULT_ROLES = [
     requirements: [
       '3+ years creating high-engagement content for high-growth tech brands, agencies, or business media.',
     ],
-    benefitsNote: 'Creative freedom & voice of the brand + Founding ESOP Stake + Production kit post-funding.',
+    benefitsNote: 'Creative freedom & voice of the brand + founding shares + Production kit post-funding.',
   },
   {
     id: 'strategic-partner-accountant-lead',
@@ -208,8 +208,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '3+ years experience',
     technical: false,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake + Future Revenue Share',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: 'Founding shareholding',
     tags: ['ICPAK Network', 'Accountants', 'Audit Firms', 'Affiliate Programs', 'B2B Sales'],
     summary:
       'Empower Kenya’s Certified Public Accountants (CPAs) and audit firms. Build our nationwide Accountant Partner Network where practicing accountants manage their SME clients on Kabuor ERP while earning recurring referral commissions.',
@@ -220,7 +220,7 @@ export const DEFAULT_ROLES = [
     requirements: [
       '3+ years in B2B channel sales, accounting software consultancy, or corporate banking relationship management.',
     ],
-    benefitsNote: 'Founding ESOP Stake + Recurring Partner Affiliate Model + Salaried post-funding.',
+    benefitsNote: 'founding shares + Recurring Partner Affiliate Model + salary once the company can pay.',
   },
   {
     id: 'head-of-enterprise-sales',
@@ -231,8 +231,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '5+ years experience',
     technical: false,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Founding ESOP Stake',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: 'Founding shareholding',
     tags: ['Enterprise Sales', 'B2B Wholesalers', 'Distributors', 'Contract Negotiation'],
     summary:
       'Drive high-value enterprise contracts with mid-market distributors, multi-branch supermarket chains, and FMCG manufacturers across Kenya.',
@@ -243,7 +243,7 @@ export const DEFAULT_ROLES = [
     requirements: [
       '5+ years enterprise software or corporate technology sales experience in East Africa with documented quota achievement.',
     ],
-    benefitsNote: 'Founding ESOP Stake + Executive commission structure & salary post-funding.',
+    benefitsNote: 'founding shares + Executive commission structure & salary once the company can pay.',
   },
   {
     id: 'head-of-merchant-success',
@@ -254,8 +254,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: '4+ years experience',
     technical: false,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: '0.25% – 0.50% ESOP',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: '0.25% – 0.50% of the company’s shares',
     tags: ['Customer Success', 'Zero Churn', 'ERP Onboarding', 'Data Migration', 'NPS'],
     summary:
       'Guarantee that every business transitioning to Kabuor ERP experiences flawless onboarding and lifetime value. Lead our solutions engineering, historical data migration, and proactive merchant support operations.',
@@ -266,7 +266,7 @@ export const DEFAULT_ROLES = [
     requirements: [
       '4+ years leading Customer Success, Implementation, or Solutions Engineering in B2B software in Africa.',
     ],
-    benefitsNote: 'Founding ESOP Stake + Direct solutions architecture leadership + Salaried post-funding.',
+    benefitsNote: 'founding shares + Direct solutions architecture leadership + salary once the company can pay.',
   },
   {
     id: 'finance-director-controller',
@@ -277,8 +277,8 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: 'CPA-K or ACCA, 6+ years',
     technical: false,
-    compensationNote: 'Pre-Funding: Founding Equity (Salaried Upon Funding)',
-    equity: 'Meaningful Executive ESOP Stake',
+    compensationNote: 'Founding shareholder · salary once the company can pay',
+    equity: 'Founding shareholding',
     tags: ['CPA-K', 'Financial Controller', 'KRA Compliance', 'Audit', 'Treasury'],
     summary:
       'Lead our corporate financial management. Own statutory compliance, management accounts, audit readiness, and treasury management as Kabuor ERP scales its revenue.',
@@ -289,7 +289,7 @@ export const DEFAULT_ROLES = [
     requirements: [
       '6+ years in corporate financial management, with active ICPAK (CPA-K) or ACCA membership.',
     ],
-    benefitsNote: 'Founding Executive ESOP Stake + Corporate governance leadership + Salaried post-funding.',
+    benefitsNote: 'founding shares + Corporate governance leadership + salary once the company can pay.',
   },
   {
     id: 'young-builders-fellowship',
@@ -300,7 +300,7 @@ export const DEFAULT_ROLES = [
     status: 'open',
     experience: 'No degree needed',
     technical: true,
-    compensationNote: 'Pre-Funding: Volunteer / Fellow Track · Equity & Mentorship (Salaried post-funding)',
+    compensationNote: 'Pre-Funding: Volunteer / Fellow Track · Equity & Mentorship (salary once the company can pay)',
     equity: 'Fellowship Completion Grant & Full-Time Priority',
     tags: ['Young Builders', 'Students', 'Self-Taught', 'React', 'C# .NET', 'Product'],
     summary:
@@ -378,7 +378,7 @@ export const fetchRoleStatuses = () => papi('/careers').then((d) => d.roles ?? {
 export const sendApplication = (data) => papi('/careers/apply', { method: 'POST', body: data });
 
 /** What each role pays today, in the words candidates use: volunteers aren't salaried, everyone else is from funding. */
-export const payLine = (role) => (/volunteer/i.test(role.type) ? 'Volunteer role, unpaid' : 'Salary starts when we close funding');
+export const payLine = (role) => (/volunteer/i.test(role.type) ? 'Volunteer role, unpaid' : 'Shares now · salary once the company can pay');
 
 // Answer options on the application form as [stored value, label]. The stored values are what earlier
 // applications already hold, so keep them; change only the labels.

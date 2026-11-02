@@ -6,16 +6,16 @@ import { buildPalette } from './palette.js';
 
 export const KINDS = {
   fashion: {
-    label: 'Fashion & apparel', motif: 'leaf', texture: 'dots', accent: '#1E1E1E', style: 'street',
+    label: 'Fashion & apparel', motif: 'leaf', texture: 'dots', accent: '#E8541C', style: 'studio',
     shape: 'box', pack: 'Item', size: '1 pc',
-    eyebrow: 'Modern apparel', tagline: 'Fashion is a trend of modern life', shopEyebrow: "Male's & Women's Clothing", shopTitle: 'Latest Summer & Casual Drops',
-    story: (n, c) => `${n} creates contemporary apparel and streetwear in ${c || 'Kenya'}, blending premium breathable fabrics with modern runway silhouettes.`,
+    eyebrow: 'Clothing & style', tagline: 'Fashion is a trend of modern life', shopEyebrow: "Men's and women's clothing", shopTitle: 'New in this season',
+    story: (n, c) => `${n} designs and sells clothing in ${c || 'Kenya'}, with sizes and fabrics listed for every piece.`,
   },
   wellness: {
-    label: 'Botanical wellness & supplements', motif: 'leaf', texture: 'speckle', accent: '#C89B59', style: 'natural',
+    label: 'Botanical wellness & supplements', motif: 'leaf', texture: 'speckle', accent: '#C89B59', style: 'botanical',
     shape: 'squeeze', pack: 'Bottle', size: '200ml',
-    eyebrow: 'Plant-based wellness', tagline: 'Your Journey to Better Health Starts Here', shopEyebrow: 'Botanical Formulations', shopTitle: '100% Vegan & Cold-Pressed',
-    story: (n, c) => `${n} crafts cold-pressed organic botanical supplements in ${c || 'Kenya'}, enhancing vitality, digestion, and daily immunity with zero synthetic additives.`,
+    eyebrow: 'Plant-based wellness', tagline: 'Your journey to better health starts here', shopEyebrow: 'Our range', shopTitle: 'Made from plants, for every day',
+    story: (n, c) => `${n} makes plant-based wellness and skincare products in ${c || 'Kenya'}, with every ingredient listed on the label.`,
   },
   sauce: {
     label: 'Sauces & condiments', motif: 'chilli', texture: 'speckle', accent: '#D9381E', style: 'warm',
@@ -62,20 +62,20 @@ export const KINDS = {
   groceries: {
     label: 'Supermarket & fresh groceries', motif: 'leaf', texture: 'dots', accent: '#107C41', style: 'fresh',
     shape: 'box', pack: 'Pack', size: '500g',
-    eyebrow: 'Farm fresh & organic', tagline: 'We bring the store to your door', shopEyebrow: 'Daily fresh essentials', shopTitle: 'Fresh produce, 15-min delivery',
-    story: (n, c) => `${n} delivers fresh organic produce, farm groceries and daily essentials in ${c || 'Kenya'}, direct from local growers with express delivery.`,
+    eyebrow: 'Fresh every day', tagline: 'We bring the store to your door', shopEyebrow: 'Daily essentials', shopTitle: 'Fresh produce and pantry staples',
+    story: (n, c) => `${n} delivers fresh produce, groceries and daily essentials in ${c || 'Kenya'}, bought from local growers and suppliers.`,
   },
   electronics: {
     label: 'Electronics & tech gadgets', motif: 'drop', texture: 'glow', accent: '#FF5722', style: 'cyber',
     shape: 'box', pack: 'Unit', size: '1 pc',
-    eyebrow: 'Smart devices & gaming', tagline: 'Power your digital lifestyle', shopEyebrow: 'Tech essentials', shopTitle: 'Latest phones, audio & gear',
-    story: (n, c) => `${n} provides original smartphones, gaming gear, laptops, and smart tech accessories in ${c || 'Kenya'} with warranty and same-day delivery.`,
+    eyebrow: 'Phones, audio & gear', tagline: 'Power your digital life', shopEyebrow: 'Tech essentials', shopTitle: 'Phones, audio and accessories',
+    story: (n, c) => `${n} sells phones, laptops, audio and accessories in ${c || 'Kenya'}, with the full specs on every product.`,
   },
   furniture: {
     label: 'Furniture & home living', motif: 'leaf', texture: 'paper', accent: '#8C6239', style: 'scandi',
     shape: 'box', pack: 'Piece', size: '1 item',
-    eyebrow: 'Architectural furniture', tagline: 'Furniture that defines your space', shopEyebrow: 'Curated living', shopTitle: 'Built to impress, made to last',
-    story: (n, c) => `${n} crafts contemporary architectural furniture and interior pieces in ${c || 'Kenya'}, bringing harmony, form, and functionality to your space.`,
+    eyebrow: 'Furniture & living', tagline: 'Furniture that defines your space', shopEyebrow: 'The collection', shopTitle: 'Pieces made to last',
+    story: (n, c) => `${n} makes and sells furniture and home pieces in ${c || 'Kenya'}, with the materials and sizes listed for every piece.`,
   },
   other: {
     label: 'Something else', motif: 'leaf', texture: 'dots', accent: '#2F6F5E', style: 'natural',
@@ -104,9 +104,12 @@ export const STYLES = {
   classic: { label: 'Classic & trusted', note: 'Catalogue list with full details, solid menu bar', mode: 'light', hero: 'editorial', nav: 'bar', cards: 'list', cols: 2, home: 'hub', radius: 'soft', body: 'commissioner', texture: 'paper', fonts: { brand: 'young-serif', tagline: 'caveat' } },
   market: { label: 'Fresh market', note: 'Half-screen photo, then products, four across', mode: 'light', hero: 'split', nav: 'bar', cards: 'card', cols: 4, home: 'shop-first', radius: 'round', body: 'golos-text', fonts: { brand: 'titan-one', tagline: 'caveat-brush' } },
   street: { label: 'Street & urban', note: 'Full-screen photo, big products two across', mode: 'dark', hero: 'cover', nav: 'minimal', cards: 'overlay', cols: 2, home: 'shop-first', radius: 'sharp', body: 'schibsted-grotesk', texture: 'speckle', fonts: { brand: 'shrikhand', tagline: 'kalam' } },
-  fresh: { label: 'Fresh supermarket', note: 'Lush green, 15-min delivery badge, quantity steppers', mode: 'light', hero: 'split', nav: 'bar', cards: 'card', cols: 4, home: 'shop-first', radius: 'round', body: 'golos-text', fonts: { brand: 'titan-one', tagline: 'caveat-brush' } },
-  cyber: { label: 'Cyber tech & dark', note: 'Titanium dark mode, glowing neon orange, countdown deals', mode: 'dark', hero: 'poster', nav: 'bar', cards: 'overlay', cols: 3, home: 'shop-first', radius: 'sharp', body: 'archivo', texture: 'glow', fonts: { brand: 'rammetto-one', tagline: 'kalam' } },
-  scandi: { label: 'Architectural living', note: 'Sand and stone, airy editorial layout, sculptural forms', mode: 'light', hero: 'editorial', nav: 'centered', cards: 'framed', cols: 3, home: 'hub', radius: 'soft', body: 'instrument-sans', texture: 'paper', fonts: { brand: 'young-serif', tagline: 'parisienne' } },
+  // The four category templates (components/templates.jsx): each brings its own banner and product card.
+  fresh: { label: 'Fresh supermarket', note: 'Green banner, aisles to jump between, quantity buttons on every product', mode: 'light', hero: 'grocer', nav: 'bar', cards: 'grocer', cols: 4, home: 'shop-first', radius: 'round', body: 'golos-text', ticker: false, fonts: { brand: 'golos-text', tagline: 'golos-text' } },
+  cyber: { label: 'Tech store', note: 'Dark, with a glowing accent, a deal banner and specs on every card', mode: 'dark', hero: 'tech', nav: 'bar', cards: 'tech', cols: 4, home: 'shop-first', radius: 'soft', body: 'archivo', texture: 'glow', ticker: false, fonts: { brand: 'archivo', tagline: 'archivo' } },
+  scandi: { label: 'Architectural living', note: 'Sand and stone, arched frames, serif type, room to breathe', mode: 'light', hero: 'living', nav: 'centered', cards: 'living', cols: 3, home: 'hub', radius: 'soft', body: 'instrument-sans', texture: 'paper', ticker: false, fonts: { brand: 'young-serif', tagline: 'parisienne' } },
+  botanical: { label: 'Sunlit botanical', note: 'Warm ochre, your name in giant letters behind the product, soft cards', mode: 'light', hero: 'botanical', nav: 'centered', cards: 'botanical', cols: 3, home: 'shop-first', radius: 'round', body: 'familjen-grotesk', texture: 'speckle', ticker: false, fonts: { brand: 'gilda-display', tagline: 'parisienne' } },
+  studio: { label: 'Fashion studio', note: 'A big plain headline, your newest pieces as tall rounded photos, small tags', mode: 'light', hero: 'fashion', nav: 'bar', cards: 'fashion', cols: 4, home: 'shop-first', radius: 'round', body: 'plus-jakarta-sans', ticker: false, fonts: { brand: 'plus-jakarta-sans', tagline: 'plus-jakarta-sans' } },
   boutique: { label: 'Boutique', note: 'Words first, a row of products, framed cards', mode: 'light', hero: 'minimal', nav: 'centered', cards: 'framed', cols: 3, home: 'hub', radius: 'soft', texture: 'grain', body: 'jost', fonts: { brand: 'gilda-display', tagline: 'sacramento' } },
 };
 
@@ -218,6 +221,8 @@ export function makeBrand(record) {
         featured: { front: ids[0] ?? '', left: ids[1] ?? '', right: ids[2] ?? '' },
       },
       ticker: [...catalog.slice(0, 4).map((p) => p.name), 'Pay with M-Pesa', city ? `Delivery from ${city}` : 'Delivery countrywide'],
+      // The category templates draw their own banner; the moving ticker under it is off until the owner turns it on.
+      tickerEnabled: style.ticker !== false,
       shop: { eyebrow: kind.shopEyebrow, title: kind.shopTitle, text: tagline + '.' },
       story: {
         title: `About ${name}`,

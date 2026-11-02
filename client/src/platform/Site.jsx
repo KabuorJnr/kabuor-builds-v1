@@ -42,8 +42,9 @@ export const ERP_RAILWAY_URL = resolveDeployUrl(
 );
 
 /** A link to a page: inside the app on the platform, or to the platform's product pages from the company site. */
-export function Go({ to, children, ...props }) {
-  if (PRODUCT_ORIGIN && to !== '/' && !to.startsWith('/#')) return <a href={PRODUCT_ORIGIN + to} {...props}>{children}</a>;
+/** A link to a product page. `reload` loads the address fresh (a sample shop at /demo/<template> starts on load). */
+export function Go({ to, children, reload, ...props }) {
+  if (reload || (PRODUCT_ORIGIN && to !== '/' && !to.startsWith('/#'))) return <a href={(PRODUCT_ORIGIN || '') + to} {...props}>{children}</a>;
   return <Link to={to} {...props}>{children}</Link>;
 }
 

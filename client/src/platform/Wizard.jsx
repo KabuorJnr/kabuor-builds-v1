@@ -15,11 +15,8 @@ import { whatsapp } from './Site';
 
 
 const DEFAULT_KINDS = [
-  { id: 'fashion', label: 'Fashion & apparel (Urban Sartorial shell)', accent: '#1E1E1E' },
-  { id: 'wellness', label: 'Wellness & botanicals (Zuri Organics shell)', accent: '#C89B59' },
-  { id: 'groceries', label: 'Supermarket & groceries (Gromuse shell)', accent: '#107C41' },
-  { id: 'electronics', label: 'Electronics & tech (Nuvio shell)', accent: '#FF5722' },
-  { id: 'furniture', label: 'Furniture & living (Rova shell)', accent: '#8C6239' },
+  { id: 'fashion', label: 'Fashion & apparel', accent: '#1E1E1E' },
+  { id: 'wellness', label: 'Botanical wellness & supplements', accent: '#C89B59' },
   { id: 'sauce', label: 'Sauces & condiments', accent: '#D9381E' },
   { id: 'honey', label: 'Honey & bee products', accent: '#E3A21A' },
   { id: 'skincare', label: 'Skincare & body butter', accent: '#C27C8E' },
@@ -665,12 +662,7 @@ function PreviewPayStep({ token, signup, info, onEditLook, onEditProducts, onLiv
   const paid = Boolean(signup.paidUntil);
 
   const fallbackUrl = useMemo(() => {
-    if (signup?.kind === 'fashion') {
-      return `/demo/styleco?name=${encodeURIComponent(signup.name || 'Urban Sartorial')}&accent=${encodeURIComponent(signup.brand?.colors?.accent || '#1E1E1E')}&link=${encodeURIComponent(signup.link || '')}`;
-    }
-    if (signup?.kind === 'wellness') {
-      return `/demo/purelix?name=${encodeURIComponent(signup.name || 'Zuri Organics')}&accent=${encodeURIComponent(signup.brand?.colors?.accent || '#C89B59')}&link=${encodeURIComponent(signup.link || '')}`;
-    }
+    // The owner's own shop, never a sample: what they see here is what their customers will get.
     return signup?.link ? `/s/${signup.link}?preview=1` : null;
   }, [signup]);
 

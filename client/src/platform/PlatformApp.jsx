@@ -12,8 +12,6 @@ import Shops from './Shops';
 import Erp from './Erp';
 import CareersPage from './CareersPage';
 import AboutFounder from './AboutFounder';
-import StylecoDemo from './StylecoDemo';
-import PurelixDemo from './PurelixDemo';
 
 import { Privacy, ShopsPrivacy, ShopsTerms, Terms } from './Legal';
 import { linkLabel, platformOrigin } from '../lib/base';
@@ -29,6 +27,7 @@ import { PLATFORM_LOOK } from './look';
 export { platformOrigin };
 
 import { Wordmark } from './Site';
+import { NotFoundPage } from './Corporate';
 export { Wordmark };
 
 function useInfo() {
@@ -39,6 +38,12 @@ function useInfo() {
   return info;
 }
 
+
+/** Opens an address with a full page load (sample shops start when the page loads). */
+function Reload({ to }) {
+  useEffect(() => window.location.replace(to), [to]);
+  return null;
+}
 
 /** A visitor on a shop link nobody has taken. */
 function Unclaimed({ site }) {
@@ -80,8 +85,9 @@ export default function PlatformApp({ site }) {
             </Suspense>
           }
         />
-                <Route path="/demo/styleco" element={<StylecoDemo />} />
-        <Route path="/demo/purelix" element={<PurelixDemo />} />
+        {/* The old concept pages became templates: old links open their sample shops. */}
+        <Route path="/demo/styleco" element={<Reload to="/demo/fashion" />} />
+        <Route path="/demo/purelix" element={<Reload to="/demo/botanical" />} />
         <Route path="/shops" element={<Shops info={info} />} />
         <Route path="/erp" element={<Erp info={info} />} />
         <Route path="/careers" element={<CareersPage info={info} />} />
@@ -93,7 +99,7 @@ export default function PlatformApp({ site }) {
         <Route path="/shops/terms" element={<ShopsTerms />} />
         {/* "Launch Shop" opens the platform's own address: there the home page is the shops page. */}
         <Route path="/" element={BUILDS_HOST ? <Shops info={info} /> : <Company info={info} />} />
-        <Route path="*" element={<Company info={info} />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );

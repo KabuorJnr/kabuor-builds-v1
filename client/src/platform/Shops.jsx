@@ -9,109 +9,15 @@ import { cn } from '../lib/format';
 import { family, loadFonts } from '../lib/fonts';
 import { linkLabel, linkParts } from '../lib/base';
 import { ksh, papi } from './shared';
-import { tel, whatsapp } from './Site';
+import { Go, tel, whatsapp } from './Site';
 import { BrowserShot, CorporatePage, PhoneShot, SectionHead } from './Corporate';
+import { SHOWCASES as SHOWCASE_SHOPS } from './showcases';
 
 const STEPS = [
   { icon: Store, title: 'Tell us about your brand', text: 'Your name, what you sell, and the link you want.' },
   { icon: Palette, title: 'Make it yours', text: 'Upload your logo and photos and pick from 10 styles. Your shop takes their colours.' },
   { icon: Eye, title: 'See it first', text: 'Add your products and walk through your real shop, on a phone and a computer.' },
   { icon: Wallet, title: 'Pay and go live', text: 'Happy with it? Pay by M-Pesa prompt and your link is live straight away.' },
-];
-const SHOWCASE_SHOPS = [
-  {
-    id: 'purelix',
-    name: 'Zuri Organics & Wellness',
-    category: 'Botanical & Wellness',
-    tag: '100% Vegan · Sunlit Ochre Aesthetic',
-    accent: '#C89B59',
-    headline: 'Plant-based supplements that enhance health',
-    desc: 'Warm sunlit studio editorial aesthetics featuring stone still-life presentation, 100% vegan certification cards, cold-pressed botanical formulations, and instant M-Pesa one-touch checkout.',
-    features: [
-      'Architectural typography and warm sunlit studio palette',
-      'Botanical formulations catalog with vegan & organic filters',
-      'Interactive product detail modal with bioactive ingredients breakdown',
-      'Express M-Pesa STK checkout with free delivery progress bar',
-    ],
-    address: 'zuri.shop.ke',
-    img: '/brand/purelix/purelix_hero_full.png',
-    kind: 'sauce',
-    demoPath: '/demo/purelix',
-  },
-  {
-    id: 'styleco',
-    name: 'Urban Sartorial',
-    category: 'Fashion & Apparel',
-    tag: 'Minimalist Fashion · Dual Price & Swatches',
-    accent: '#1E1E1E',
-    headline: 'Clean minimalist urban tailoring & fashion megastore',
-    desc: 'Organized product listings with real-time sidebar filters (Category accordion, dual price slider $100-$2000, 12-color swatches), 3-column product grid with favorites and quick bag add, and detailed PDP with size picker.',
-    features: [
-      'Organized category accordion & dual price range slider ($100 - $2000)',
-      '12-color swatch grid with real-time product filtering',
-      'Product Details Page (PDP) with S-XXL size selector & material specs',
-      'Slide-over shopping bag with instant M-Pesa phone prompt checkout',
-    ],
-    address: 'urbansartorial.shop.ke',
-    img: '/brand/styleco/styleco_plp_full.png',
-    kind: 'fashion',
-    demoPath: '/demo/styleco',
-  },
-  {
-    id: 'groceries',
-    name: 'Gromuse Fresh Mart',
-    category: 'Supermarket & Groceries',
-    tag: '15-min delivery · Live steppers',
-    accent: '#107C41',
-    headline: 'Fresh supermarket & farm groceries, online',
-    desc: 'From fresh organic farm produce to pantry goods. Features interactive 1-tap quantity steppers (-) [qty] (+), express 15-minute delivery banners, category carousels, and instant M-Pesa order placement.',
-    features: ['15-minute express delivery badge & promise', '1-tap quantity steppers with live cart total', 'Category carousels (Vegetables, Fruits, Dairy, Snacks)', 'Full multi-image product detail view with flash timers'],
-    address: 'gromuse.shop.ke',
-    video: 'https://cdn.dribbble.com/userupload/10640472/file/original-c81c56245856e105c75424cf9a958366.mp4',
-    img: '/brand/work-gromuse-desk.png',
-    kind: 'groceries',
-  },
-  {
-    id: 'electronics',
-    name: 'Nuvio Tech Megastore',
-    category: 'Electronics & Gadgets',
-    tag: 'Cyber Dark Mode · 50% Off Deals',
-    accent: '#FF5722',
-    headline: 'A cyber tech & electronics megastore',
-    desc: 'Deep titanium dark mode with glowing neon accents. Live countdown flash sale banners, category counts (Smartwatches 685+, Earbuds 1,120+), specs badges, and trusted brand partners.',
-    features: ['Live countdown flash deal timer', 'Titanium cyber dark mode layout', 'Category product counters and spec badges', 'Instant M-Pesa one-touch payment'],
-    address: 'nuvio.shop.ke',
-    img: '/brand/work-nuvio-desk.png',
-    subImg: '/brand/work-nuvio-full.png',
-    kind: 'electronics',
-  },
-  {
-    id: 'furniture',
-    name: 'Rova Architectural Living',
-    category: 'Furniture & Living',
-    tag: 'Scandinavian Minimalist · Luxury',
-    accent: '#8C6239',
-    headline: 'Furniture that defines your space',
-    desc: 'High-end architectural minimalism in warm cream and stone palettes. Sculptural modern showcases, high-fashion serif typography, and material craft guarantees.',
-    features: ['Editorial magazine-grade gallery', 'Sculptural curved arch showcases', 'Premium material & sustainability tags', 'Custom deposits and M-Pesa settlement'],
-    address: 'rova.shop.ke',
-    img: '/brand/work-rova-desk.png',
-    kind: 'furniture',
-  },
-  {
-    id: 'sauce',
-    name: 'Anjugu Peanut Butter',
-    category: 'Artisanal Brands',
-    tag: 'Artisanal · Multi-Branch',
-    accent: '#D9381E',
-    headline: 'A peanut butter brand, online',
-    desc: 'Pure, creamy peanut butter with no additives. Five sizes from 250g to 1kg, multi-branch pickup across Nairobi, Mombasa, Kisumu & Rodi, and instant M-Pesa checkout.',
-    features: ['Real jars with live size selector', 'Multiple branches across Kenya', 'Direct M-Pesa Till integration', 'Zero sales commissions'],
-    address: 'anjugu.shop.ke',
-    img: '/brand/work-anjugu-desk.webp',
-    phoneImg: '/brand/work-anjugu-shop-phone.webp',
-    kind: 'sauce',
-  },
 ];
 const INCLUDED = ['Your colours, fonts and real photos', 'M-Pesa checkout and receipts', 'Admin: orders, stock, SMS alerts', 'Fast on every phone', 'Your own shop link to share', 'No commission on your sales'];
 const FACTS = [
@@ -194,7 +100,7 @@ function StyleStrip({ styles }) {
 }
 
 export default function Shops({ info }) {
-  const [activeShopId, setActiveShopId] = useState('groceries');
+  const [activeShopId, setActiveShopId] = useState(SHOWCASE_SHOPS[0].id);
   const activeShop = SHOWCASE_SHOPS.find((s) => s.id === activeShopId) ?? SHOWCASE_SHOPS[0];
   useEffect(() => {
     document.title = 'Kabuor Shops · Online shops for Kenyan brands';
@@ -269,7 +175,7 @@ export default function Shops({ info }) {
         </section>
       )}
 
-      {/* Real work: Multi-Category Showcase */}
+      {/* Our work: one real shop, then sample designs for other trades */}
       <section id="work" aria-labelledby="work-title" className="scroll-mt-20 py-12 sm:py-16">
         <div className="container-x">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--ms-line)] pb-8">
@@ -279,7 +185,7 @@ export default function Shops({ info }) {
                 Shops built for what you sell
               </h2>
               <p className="mt-2 max-w-xl text-lg text-[var(--ms-muted)]">
-                Whether you sell farm produce, electronics, designer furniture or handmade jars — your shop is designed specifically for how your customers buy.
+                Anjugu is a real shop on Kabuor Shops. The others are templates for other kinds of business: open one to try its sample shop. Every design takes your own colours and photos.
               </p>
             </div>
             {/* Store category pills */}
@@ -311,9 +217,6 @@ export default function Shops({ info }) {
                     <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
                     <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
                     <span className="ml-2 rounded bg-white/10 px-2 py-0.5 text-xs text-white/70 font-mono">{activeShop.address}</span>
-                    <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-[#107C41]/20 px-2.5 py-0.5 text-[11px] font-semibold text-[#16A34A]">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#16A34A] animate-pulse" /> Live Store Preview
-                    </span>
                   </div>
                   <video
                     src={activeShop.video}
@@ -355,12 +258,12 @@ export default function Shops({ info }) {
               </ul>
               <div className="mt-8 flex flex-wrap gap-4">
                 {activeShop.demoPath && (
-                  <Link to={activeShop.demoPath} className="ms-btn bg-[#1A1A1A] text-white hover:bg-black shadow-md">
-                    Launch Interactive Store ↗
-                  </Link>
+                  <Go reload to={activeShop.demoPath} className="ms-btn bg-[#1A1A1A] text-white hover:bg-black shadow-md">
+                    Try the sample shop
+                  </Go>
                 )}
                 <Link to={`/start?kind=${activeShop.kind}`} className="ms-btn ms-btn-primary">
-                  Build a {activeShop.category.split(' ')[0]} shop
+                  Build a shop like this
                 </Link>
                 <a href="#how" className="ms-link flex items-center gap-1 text-sm">
                   See how it works <ChevronRight className="h-4 w-4" />

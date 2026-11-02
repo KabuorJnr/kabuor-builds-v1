@@ -8,88 +8,11 @@ import { Link } from 'react-router';
 import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCircle, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
 import { ksh } from './shared';
 import DemoRequest from './DemoRequest';
+import { SHOWCASES as COMPANY_SHOWCASES } from './showcases';
 import { Go, whatsapp } from './Site';
 import { BrowserShot, CorporatePage, FOUNDER, PhoneShot, SectionHead } from './Corporate';
 
 
-const COMPANY_SHOWCASES = [
-  {
-    id: 'purelix',
-    name: 'Zuri Organics & Wellness',
-    category: 'Botanical & Wellness',
-    tag: '100% Vegan · Sunlit Ochre Aesthetic',
-    accent: '#C89B59',
-    headline: 'Plant-based supplements that enhance health',
-    desc: 'Warm sunlit studio editorial aesthetics featuring stone still-life presentation, 100% vegan certification cards, cold-pressed botanical formulations, and instant M-Pesa one-touch checkout.',
-    features: ['Architectural typography and warm sunlit palette', 'Botanical formulations catalog with vegan & organic filters', 'Bioactive ingredients breakdown modal', 'Express M-Pesa STK checkout with free delivery progress'],
-    address: 'zuri.shop.ke',
-    img: '/brand/purelix/purelix_hero_full.png',
-    demoPath: '/demo/purelix',
-  },
-  {
-    id: 'styleco',
-    name: 'Urban Sartorial',
-    category: 'Fashion & Apparel',
-    tag: 'Minimalist Fashion · Dual Price & Swatches',
-    accent: '#1E1E1E',
-    headline: 'Clean minimalist urban tailoring & apparel megastore',
-    desc: 'Organized product listings with real-time sidebar filters (Category accordion, dual price slider $100-$2000, 12-color swatches), 3-column product grid with favorites and quick bag add, and detailed PDP with size picker.',
-    features: ['Organized category accordion & dual price range slider', '12-color swatch grid with real-time filtering', 'PDP with S-XXL size selector & material specs', 'Instant M-Pesa phone prompt checkout'],
-    address: 'urbansartorial.shop.ke',
-    img: '/brand/styleco/styleco_plp_full.png',
-    demoPath: '/demo/styleco',
-  },
-  {
-    id: 'groceries',
-    name: 'Gromuse Fresh Mart',
-    category: 'Supermarket & Groceries',
-    tag: '15-min delivery · Live steppers',
-    accent: '#107C41',
-    headline: 'Fresh farm groceries & supermarket, online',
-    desc: 'From fresh organic produce to daily pantry staples. Built with 1-tap live quantity steppers, 15-minute express delivery promise, and instant M-Pesa checkout.',
-    features: ['15-minute express delivery badge', '1-tap quantity steppers with live cart total', 'Category carousels for fast reordering', 'M-Pesa direct checkout'],
-    address: 'gromuse.shop.ke',
-    video: 'https://cdn.dribbble.com/userupload/10640472/file/original-c81c56245856e105c75424cf9a958366.mp4',
-    img: '/brand/work-gromuse-desk.png',
-  },
-  {
-    id: 'electronics',
-    name: 'Nuvio Tech Megastore',
-    category: 'Electronics & Gadgets',
-    tag: 'Cyber Dark Mode · 50% Off Deals',
-    accent: '#FF5722',
-    headline: 'A cyber tech & electronics megastore',
-    desc: 'Deep titanium dark mode with glowing neon accents. Live countdown flash sale banners, category counts (Smartwatches 685+, Earbuds 1,120+), specs badges, and trusted brand partners.',
-    features: ['Live countdown flash deal timer', 'Titanium cyber dark mode layout', 'Category product counters and spec badges', 'Instant M-Pesa one-touch payment'],
-    address: 'nuvio.shop.ke',
-    img: '/brand/work-nuvio-desk.png',
-  },
-  {
-    id: 'furniture',
-    name: 'Rova Architectural Living',
-    category: 'Furniture & Living',
-    tag: 'Scandinavian Minimalist · Luxury',
-    accent: '#8C6239',
-    headline: 'Furniture that defines your space',
-    desc: 'High-end architectural minimalism in warm cream and stone palettes. Sculptural modern showcases, high-fashion serif typography, and material craft guarantees.',
-    features: ['Editorial magazine-grade gallery', 'Sculptural curved arch showcases', 'Premium material & sustainability tags', 'Custom deposits and M-Pesa settlement'],
-    address: 'rova.shop.ke',
-    img: '/brand/work-rova-desk.png',
-  },
-  {
-    id: 'sauce',
-    name: 'Anjugu Peanut Butter',
-    category: 'Artisanal Brands',
-    tag: 'Artisanal · Multi-Branch',
-    accent: '#D9381E',
-    headline: 'A peanut butter brand selling online with M-Pesa checkout',
-    desc: 'A Kenyan brand with several branches, selling its own jars at its own prices, with customers paying by M-Pesa in a few taps. Designed around their real products, on a computer and a phone.',
-    features: ['Real jars with live size selector', 'Multiple branches across Kenya', 'Direct M-Pesa Till integration', 'Zero sales commissions'],
-    address: 'anjugu.shop.ke',
-    img: '/brand/work-anjugu-desk.webp',
-    phoneImg: '/brand/work-anjugu-shop-phone.webp',
-  },
-];
 const SHARED = [
   { icon: Wallet, title: 'M-Pesa first', text: 'Prompts, Paybills and Tills built in, and payments matched to invoices by themselves.' },
   { icon: ReceiptText, title: 'KRA-ready', text: 'VAT worked out as you go, and invoices prepared for eTIMS.' },
@@ -255,17 +178,17 @@ export default function Company({ info }) {
           </div>
         </section>
 
-        {/* Customer story: Interactive Multi-Category Showcase */}
+        {/* Our work: one real shop, then sample designs for other trades */}
         <section id="work" aria-labelledby="work-title" className="scroll-mt-20 bg-[#F5F7FC] py-12 sm:py-16">
           <div className="container-x">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--ms-line)] pb-8">
               <div>
                 <p className="text-sm font-semibold text-[var(--ms-blue)]">Our work</p>
                 <h2 id="work-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Real stores built by Kabuor
+                  Shops on Kabuor Shops
                 </h2>
                 <p className="mt-2 max-w-xl text-lg text-[var(--ms-muted)]">
-                  Explore how we design and engineer e-commerce experiences tailored to specific Kenyan industries.
+                  Anjugu is a real shop running on Kabuor Shops. The others are templates for other kinds of business: open one to try its sample shop.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -291,9 +214,6 @@ export default function Company({ info }) {
                       <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
                       <i className="h-2.5 w-2.5 rounded-full bg-[#555]" />
                       <span className="ml-2 rounded bg-white/10 px-2 py-0.5 text-xs text-white/70 font-mono">{activeShowcase.address}</span>
-                      <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-[#107C41]/20 px-2.5 py-0.5 text-[11px] font-semibold text-[#16A34A]">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#16A34A] animate-pulse" /> Live Store Preview
-                      </span>
                     </div>
                     <video
                       src={activeShowcase.video}
@@ -335,8 +255,8 @@ export default function Company({ info }) {
                 </ul>
                 <div className="mt-8 flex flex-wrap gap-4">
                   {activeShowcase.demoPath && (
-                    <Go to={activeShowcase.demoPath} className="ms-btn bg-[#1A1A1A] text-white hover:bg-black shadow-md">
-                      Launch Interactive Store ↗
+                    <Go reload to={activeShowcase.demoPath} className="ms-btn bg-[#1A1A1A] text-white hover:bg-black shadow-md">
+                      Try the sample shop
                     </Go>
                   )}
                   <Go to="/shops" className="ms-btn ms-btn-primary">

@@ -9,6 +9,9 @@ import './index.css';
 import './platform/platform.css';
 import Company from './platform/Company';
 import CareersPage from './platform/CareersPage';
+import { NotFoundPage } from './platform/Corporate';
+import AboutFounder from './platform/AboutFounder';
+import { Privacy, Terms } from './platform/Legal';
 import { applyPlatformLook } from './platform/look';
 import { papi } from './platform/shared';
 import { CONTACT_EMAIL } from './platform/contact';
@@ -75,7 +78,12 @@ function CompanySite() {
     <div className="min-h-svh bg-cream text-espresso">
       <Routes>
         <Route path="/careers" element={<CareersPage info={info} />} />
-        <Route path="*" element={<Company info={info} />} />
+        <Route path="/" element={<Company info={info} />} />
+        <Route path="/about-founder" element={<AboutFounder info={info} />} />
+        <Route path="/founder" element={<AboutFounder info={info} />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );

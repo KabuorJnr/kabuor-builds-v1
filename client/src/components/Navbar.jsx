@@ -59,7 +59,7 @@ export default function Navbar({ content, links }) {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, ease: EASE }}
-        className="fixed inset-x-0 top-0 z-50"
+        className="fixed inset-x-0 top-[var(--banner-h,0px)] z-50"
       >
         <AnimatePresence initial={false}>
           {showNotice && (

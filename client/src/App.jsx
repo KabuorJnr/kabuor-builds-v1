@@ -4,8 +4,6 @@ import Store from './pages/Store';
 import ProductPage from './pages/ProductPage';
 import { AboutPage, FaqPage, HomePage, HowToOrderPage, ShopPage, ShopPrivacyPage, UpdatesPage } from './pages/SitePages';
 import { Logo } from './components/ui';
-import StylecoDemo from './platform/StylecoDemo';
-import PurelixDemo from './platform/PurelixDemo';
 
 // The dashboard (and its chart library) only loads for admins.
 const AdminApp = lazy(() => import('./admin/AdminApp'));
@@ -37,9 +35,21 @@ function NotFound() {
 // Shown on the owner's preview of a shop that isn't live yet, so it's never mistaken for the real thing.
 function PreviewBar() {
   return (
-    <div className="fixed inset-x-0 top-0 z-[70] flex items-center justify-center gap-2 bg-[#0B0F19] px-4 py-2 text-center text-xs font-semibold text-[#F8FAFC] sm:text-sm shadow-md">
+    <div className="fixed inset-x-0 top-0 z-[70] flex h-10 items-center justify-center gap-2 overflow-hidden bg-[#0B0F19] px-4 text-center text-xs font-semibold text-[#F8FAFC] shadow-md sm:text-sm">
       <span className="h-2 w-2 shrink-0 rounded-full bg-[#3B82F6] shadow-[0_0_8px_#3B82F6]" />
       Preview: only you can see this. Customers can order once you pay and go live.
+    </div>
+  );
+}
+
+// On a sample shop for one of the templates (/demo/<template> on the website): what this is, and the way to get one.
+function SampleBar() {
+  return (
+    <div className="fixed inset-x-0 top-0 z-[70] flex h-10 items-center justify-center gap-3 overflow-hidden bg-[#0B0F19] px-4 text-center text-xs font-semibold text-[#F8FAFC] shadow-md sm:text-sm">
+      <span className="truncate">Sample shop on Kabuor Shops<span className="hidden sm:inline">. Ordering is switched off.</span></span>
+      <a href="/start" className="shrink-0 rounded-full bg-[#2357F5] px-3 py-1 text-[#fff] hover:bg-[#3A6BFF]">
+        Start a shop like this
+      </a>
     </div>
   );
 }
@@ -66,74 +76,21 @@ export default function App({ site }) {
   const closed = site?.state && site.state !== 'live' && site.state !== 'preview';
   const isPreviewMode = site?.state === 'preview';
 
-  // Template determination:
-  // If kind is fashion -> Urban Sartorial
-  // If kind is wellness -> Zuri Organics
-  // Otherwise -> standard store (Anjugu / artisanal)
-  const template = site?.template || site?.shopKind || site?.brand?.kind;
-  const isFashion = template === 'fashion' || site?.brand?.style === 'street';
-  const isWellness = template === 'wellness' || site?.brand?.style === 'natural';
-
-  if (isFashion) {
-    return (
-      <div className="relative min-h-screen">
-        {isPreviewMode && <PreviewBar />}
-        <Routes>
-          <Route path="/" element={closed ? <Closed state={site.state} /> : <StylecoDemo site={site} isLiveShop={!isPreviewMode} />} />
-          <Route
-            path="/admin/*"
-            element={
-              <Suspense fallback={<Loading />}>
-                <AdminApp />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/receipt/:code"
-            element={
-              <Suspense fallback={<Loading />}>
-                <Receipt />
-              </Suspense>
-            }
-          />
-          <Route path="*" element={<StylecoDemo site={site} isLiveShop={!isPreviewMode} />} />
-        </Routes>
-      </div>
-    );
-  }
-
-  if (isWellness) {
-    return (
-      <div className="relative min-h-screen">
-        {isPreviewMode && <PreviewBar />}
-        <Routes>
-          <Route path="/" element={closed ? <Closed state={site.state} /> : <PurelixDemo site={site} isLiveShop={!isPreviewMode} />} />
-          <Route
-            path="/admin/*"
-            element={
-              <Suspense fallback={<Loading />}>
-                <AdminApp />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/receipt/:code"
-            element={
-              <Suspense fallback={<Loading />}>
-                <Receipt />
-              </Suspense>
-            }
-          />
-          <Route path="*" element={<PurelixDemo site={site} isLiveShop={!isPreviewMode} />} />
-        </Routes>
-      </div>
-    );
-  }
+  // Every shop, whatever its design, runs on the real storefront below: its own products, cart and checkout.
+  // (Live shops must never be swapped for a demo page with made-up products.)
+  const bar = site?.sample ? <SampleBar /> : isPreviewMode ? <PreviewBar /> : null;
+  // The bar sits above the menu: tell the menu and the page how tall it is (both bars are one 40px line).
+  const banner = bar && (
+    <>
+      <style>{':root{--banner-h:40px}'}</style>
+      {bar}
+    </>
+  );
 
   return (
     <Routes>
       {/* The storefront: one page per section, sharing the top bar, footer and cart. */}
-      <Route path="/" element={closed ? <Closed state={site.state} /> : isPreviewMode ? <><PreviewBar /><Store /></> : <Store />}>
+      <Route path="/" element={closed ? <Closed state={site.state} /> : banner ? <>{banner}<Store /></> : <Store />}>
         <Route index element={<HomePage />} />
         <Route path="shop" element={<ShopPage />} />
         <Route path="products/:id" element={<ProductPage />} />
