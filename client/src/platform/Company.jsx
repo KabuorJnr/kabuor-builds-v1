@@ -35,7 +35,7 @@ function ProductTile({ picture, status, name, logo, text, points, primary, more 
     <article className="flex flex-col overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white">
       <div className="relative aspect-[16/9] overflow-hidden bg-[#EEF2FC]">{picture}</div>
       <div className="flex flex-1 flex-col p-6 sm:p-8">
-        {logo && <img src={logo} alt="" className="mb-4 h-14 w-auto self-start" />}
+        {logo && <img src={logo} alt="" className="mb-4 h-7 w-auto self-start" />}
         <p className="text-sm text-[var(--ms-muted)]">{status}</p>
         <h3 className="mt-1 text-2xl font-semibold sm:text-[1.75rem]">{name}</h3>
         <p className="mt-2 text-base leading-relaxed text-[var(--ms-muted)]">{text}</p>
@@ -150,7 +150,7 @@ export default function Company({ info }) {
                 }
                 status="New · KSh 3,000 a month per branch"
                 name="Kabuor Dine"
-                logo="/brand/kabuor-dine-logo.png"
+                logo="/brand/kabuor-dine-logo.svg"
                 text="QR ordering for restaurants, cafés and hotels. Guests order and pay from the table; the kitchen and bar see every order at once."
                 points={['A QR menu on every table, with guests’ choices', 'Kitchen and bar screens, and a floor view for waiters', 'M-Pesa at the table, eTIMS receipts, sales in your books']}
                 primary={

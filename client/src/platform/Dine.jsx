@@ -58,7 +58,7 @@ export default function Dine({ info }) {
       <section className="border-b border-[var(--ms-line)] bg-[#FBF7F2]">
         <div className="container-x grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1fr_1.05fr] lg:py-20">
           <div>
-            <img src="/brand/kabuor-dine-logo.png" alt="Kabuor Dine" className="h-14 w-auto" />
+            <img src="/brand/kabuor-dine-logo.svg" alt="Kabuor Dine" className="h-9 w-auto max-w-full" />
             <p className="mt-4 text-sm font-semibold" style={{ color: ACCENT }}>For restaurants, cafés, hotels and bars</p>
             <h1 className="mt-3 text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">Guests order from the table. The kitchen sees it at once.</h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--ms-muted)]">
