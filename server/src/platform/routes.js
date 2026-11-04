@@ -76,7 +76,7 @@ const SAMPLES = [
   look: clientBrand(makeBrand({ slug: s.kind, name: s.name, kind: s.kind, city: 'Nairobi', phone: '', email: '', brand: JSON.stringify(s.brand) })),
 }));
 
-// ---------- sample shops for the four category templates ----------
+// ---------- sample shops for the category templates ----------
 // /demo/<template> on the website: the real storefront, running on sample products built the same way a new
 // signup's shop is (makeBrand). Nothing is stored, and the storefront switches ordering off for samples.
 const art = (t, f) => `/brand/templates/${t}/${f}.svg`;
@@ -140,6 +140,62 @@ const TEMPLATE_SAMPLES = {
     ],
   },
 };
+
+// Sample shops for the newer templates are listed here too (their art is in client/public/brand/templates/<id>/).
+Object.assign(TEMPLATE_SAMPLES, {
+  bakery: {
+    kind: 'bakery', name: 'Tamu Bakehouse', brand: { style: 'patisserie', accent: '#C65D73', tagline: 'Baked fresh, made with love' },
+    products: [
+      { name: 'Celebration cake', size: '1 kg · serves 10', price: 2800, photo: art('bakery', 'cake'), badge: 'Bestseller', description: 'Vanilla sponge layered with strawberry jam and buttercream, finished with fresh berries. Order a day ahead and we write your message on top.' },
+      { name: 'Butter croissants', size: 'Box of 4', price: 600, photo: art('bakery', 'croissant'), description: 'Rolled and folded by hand with real butter, and baked every morning.' },
+      { name: 'Red velvet cupcakes', size: 'Box of 6', price: 900, photo: art('bakery', 'cupcakes'), badge: 'New', description: 'Soft red velvet with a swirl of cream cheese frosting.' },
+      { name: 'Sourdough loaf', size: '800 g', price: 450, photo: art('bakery', 'sourdough'), description: 'Slow-proved for 24 hours, with a crackling crust and an open crumb.' },
+      { name: 'Glazed doughnuts', size: 'Box of 6', price: 540, photo: art('bakery', 'doughnuts'), description: 'Light, fluffy rings with strawberry or chocolate glaze and sprinkles.' },
+      { name: 'Chocolate chip cookies', size: 'Pack of 8', price: 400, photo: art('bakery', 'cookies'), description: 'Crisp at the edges and chewy in the middle, with dark chocolate chunks.' },
+    ],
+  },
+  beauty: {
+    kind: 'beauty', name: 'Nuru Beauty', brand: { style: 'glow', accent: '#A8566F', tagline: 'Beauty that looks like you' },
+    products: [
+      { name: 'Satin matte lipstick', size: 'Rosewood · 3.5 g', price: 1450, photo: art('beauty', 'lipstick'), badge: 'Bestseller', description: 'Rich colour in one stroke with a soft satin finish that lasts through lunch. Eight shades.' },
+      { name: 'Glow serum', size: 'Niacinamide · 30 ml', price: 2200, photo: art('beauty', 'serum'), description: 'A light serum with niacinamide and aloe for an even, glowing skin. Use morning and night.' },
+      { name: 'Eau de parfum', size: 'Peony & amber · 50 ml', price: 4800, photo: art('beauty', 'perfume'), badge: 'New', description: 'Fresh peony on top, warm amber and vanilla underneath. Lasts the whole day.' },
+      { name: 'Eyeshadow palette', size: '9 shades', price: 2600, photo: art('beauty', 'palette'), description: 'Nine warm mattes and shimmers, from soft nude to deep plum, that blend easily.' },
+      { name: 'Nail colour', size: 'Coral · 12 ml', price: 650, photo: art('beauty', 'nail-polish'), description: 'A glossy, chip-resistant nail colour that dries in a minute.' },
+      { name: 'Whipped face cream', size: '50 ml', price: 1900, photo: art('beauty', 'face-cream'), description: 'Shea butter and hyaluronic acid in a light cream that sinks in quickly.' },
+      { name: 'Volume mascara', size: 'Black · 10 ml', price: 1200, photo: art('beauty', 'mascara'), description: 'A full brush that lifts and thickens without clumping. Washes off with warm water.' },
+      { name: 'Pressed powder', size: '6 shades · 9 g', price: 1650, photo: art('beauty', 'compact'), description: 'A light powder that sets makeup and takes away shine, in a compact with a mirror.' },
+    ],
+  },
+  books: {
+    kind: 'books', name: 'Kitabu Booksellers', brand: { style: 'library', accent: '#2F5D50', tagline: 'A good book for every reader' },
+    categories: [{ id: 'fiction', label: 'Fiction' }, { id: 'children', label: 'Children' }, { id: 'cookery', label: 'Cookery' }, { id: 'school', label: 'School' }, { id: 'stationery', label: 'Stationery' }],
+    products: [
+      { name: 'The Long Rains', size: 'A. Wanjiru · Paperback', price: 1450, photo: art('books', 'long-rains'), category: 'fiction', badge: 'Staff pick', description: 'Three sisters, one farm and the season that changes everything. A warm, funny novel about family.' },
+      { name: 'Little Kiboko', size: 'M. Achieng · Picture book', price: 850, photo: art('books', 'little-kiboko'), category: 'children', badge: 'New', description: 'A little hippo who is scared of water finds her courage. For ages 3 to 6.' },
+      { name: 'Salt & Savanna', size: 'K. Otieno · Paperback', price: 1300, photo: art('books', 'salt-savanna'), category: 'fiction', description: 'A road trip from the coast to the Mara, told in short chapters you can read in one sitting.' },
+      { name: 'Coastal Kitchen', size: 'Recipes · Hardback', price: 2900, photo: art('books', 'coastal-kitchen'), category: 'cookery', description: 'Eighty recipes from the coast: biryani, coconut fish, mahamri and more, with a photo of every dish.' },
+      { name: 'Maths Practice, Grade 6', size: 'Workbook · 120 pages', price: 650, photo: art('books', 'maths'), category: 'school', description: 'Practice for every topic in the Grade 6 syllabus, with answers at the back.' },
+      { name: 'Dotted notebook', size: 'A5 · 160 pages', price: 450, photo: art('books', 'notebook'), category: 'stationery', description: 'Thick dotted pages, a ribbon marker and an elastic band to keep it shut.' },
+      { name: 'Bedtime Hadithi', size: 'W. Mwangi · Story collection', price: 1100, photo: art('books', 'bedtime-hadithi'), category: 'children', description: 'Twelve short stories from across East Africa, each one just right for bedtime.' },
+      { name: 'Colour pencils', size: 'Box of 24', price: 550, photo: art('books', 'pencils'), category: 'stationery', description: 'Twenty-four bright, pre-sharpened colours with soft leads that don’t snap.' },
+    ],
+  },
+  hardware: {
+    kind: 'hardware', name: 'Jenga Hardware', brand: { style: 'depot', accent: '#E3A008', tagline: 'Everything you need to build' },
+    categories: [{ id: 'building', label: 'Building' }, { id: 'paint', label: 'Paint' }, { id: 'tools', label: 'Tools' }],
+    products: [
+      { name: 'Cement', size: '50 kg bag · 42.5N', price: 780, photo: art('hardware', 'cement'), category: 'building', badge: 'Trade price', description: 'General-purpose Portland cement for foundations, blocks and plaster. Ask about prices for 50 bags or more.' },
+      { name: 'Emulsion paint', size: 'Brilliant white · 20 L', price: 6500, photo: art('hardware', 'paint'), category: 'paint', description: 'A washable matt emulsion for inside walls and ceilings. About 120 m² per tin, two coats.' },
+      { name: 'Cordless drill', size: '18 V · 2 batteries', price: 9800, photo: art('hardware', 'drill'), category: 'tools', badge: 'New', description: 'Drill and drive with two batteries, a charger and a carry case. Two speeds and a hammer setting.' },
+      { name: 'Claw hammer', size: '16 oz · fibreglass', price: 950, photo: art('hardware', 'hammer'), category: 'tools', description: 'A forged steel head on a fibreglass handle with a rubber grip.' },
+      { name: 'Steel toolbox', size: '3 trays · 50 cm', price: 3400, photo: art('hardware', 'toolbox'), category: 'tools', description: 'A lockable steel box with three fold-out trays.' },
+      { name: 'Wheelbarrow', size: 'Heavy duty · 85 L', price: 5600, photo: art('hardware', 'wheelbarrow'), category: 'building', description: 'A deep steel tray on a pneumatic tyre, made for site work.' },
+      { name: 'Paint roller set', size: '9" roller · tray', price: 850, photo: art('hardware', 'roller'), category: 'paint', description: 'A 9-inch roller with a medium nap for walls, and a tray to load it.' },
+      { name: 'Brass padlock', size: '50 mm · 3 keys', price: 1200, photo: art('hardware', 'padlock'), category: 'tools', description: 'A solid brass padlock with a hardened steel shackle and three keys.' },
+    ],
+  },
+});
 
 platformRouter.get('/samples/:id', (req, res) => {
   const sample = TEMPLATE_SAMPLES[req.params.id];

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  AlertCircle, Shirt, Apple, Armchair, ArrowLeft, ArrowRight, Check, Cookie, CupSoda, Droplets, ExternalLink, Eye, EyeOff, Flame, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
+  AlertCircle, Shirt, Apple, Armchair, ArrowLeft, ArrowRight, BookOpen, CakeSlice, Check, Cookie, CupSoda, Droplets, ExternalLink, Eye, EyeOff, Flame, Gem, Hammer, Hexagon, Leaf, Loader2, Monitor, Moon, Package, Palette, Plus, RefreshCw, Smartphone, Sparkles, Sun, Trash2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { EASE, ksh, MpesaPay, PalettePicker, papi, PictureDrop, ShopPreview, StylePicker } from './shared';
@@ -27,10 +27,14 @@ const DEFAULT_KINDS = [
   { id: 'groceries', label: 'Supermarket & fresh groceries', accent: '#107C41' },
   { id: 'electronics', label: 'Electronics & tech gadgets', accent: '#FF5722' },
   { id: 'furniture', label: 'Furniture & home living', accent: '#8C6239' },
+  { id: 'bakery', label: 'Bakery, cakes & pastries', accent: '#C65D73' },
+  { id: 'beauty', label: 'Beauty & cosmetics', accent: '#A8566F' },
+  { id: 'books', label: 'Books & stationery', accent: '#2F5D50' },
+  { id: 'hardware', label: 'Hardware & building supplies', accent: '#E3A008' },
   { id: 'other', label: 'Something else', accent: '#2F6F5E' },
 ];
 
-const KIND_ICONS = { fashion: Shirt, wellness: Sparkles, sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, groceries: Apple, electronics: Smartphone, furniture: Armchair, other: Package };
+const KIND_ICONS = { fashion: Shirt, wellness: Sparkles, sauce: Flame, honey: Hexagon, skincare: Droplets, candle: Sparkles, soap: Leaf, food: Cookie, drinks: CupSoda, groceries: Apple, electronics: Smartphone, furniture: Armchair, bakery: CakeSlice, beauty: Gem, books: BookOpen, hardware: Hammer, other: Package };
 const STEP_LABELS = ['Your business', 'Make it yours', 'Products', 'Preview & pay'];
 const TOKEN_KEY = 'shop-signup-token';
 const DRAFT_KEY = 'shop-signup-draft';

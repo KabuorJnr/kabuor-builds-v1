@@ -15,7 +15,7 @@ import { SHOWCASES as SHOWCASE_SHOPS } from './showcases';
 
 const STEPS = [
   { icon: Store, title: 'Tell us about your brand', text: 'Your name, what you sell, and the link you want.' },
-  { icon: Palette, title: 'Make it yours', text: 'Upload your logo and photos and pick from 10 styles. Your shop takes their colours.' },
+  { icon: Palette, title: 'Make it yours', text: 'Upload your logo and photos and pick from 19 designs. Your shop takes their colours.' },
   { icon: Eye, title: 'See it first', text: 'Add your products and walk through your real shop, on a phone and a computer.' },
   { icon: Wallet, title: 'Pay and go live', text: 'Happy with it? Pay by M-Pesa prompt and your link is live straight away.' },
 ];
@@ -30,7 +30,7 @@ const faqs = (phone) => [
   ['Who receives my customers’ money?', 'You do. Customers pay straight to your own M-Pesa Till or Paybill. We never hold your money and take no commission.'],
   ['Can customers pay with an M-Pesa prompt?', 'Yes. Connect your Daraja keys in your admin and customers get the PIN prompt at checkout. Until then, checkout shows your Till or Paybill number.'],
   ['I don’t have professional photos. Is that a problem?', 'No. Use clear phone photos of your products. Products without a photo show a clean drawing of their packaging until you add one.'],
-  ['Can I change the look later?', 'Any time. Your admin has the same 10 styles, colours and photos, and changes go live when you save.'],
+  ['Can I change the look later?', 'Any time. Your admin has the same 19 designs, colours and photos, and changes go live when you save.'],
   ['What happens if I stop paying?', 'Your shop pauses three days after the plan ends. Nothing is deleted: renew from your admin and it reopens with all your products and orders.'],
   ['Can you build it for me instead?', phone ? `Yes. Call or WhatsApp ${phone} and we’ll design it around your products and set up M-Pesa for you.` : 'Yes. Get in touch and we’ll set it up for you.'],
 ];
@@ -76,7 +76,7 @@ function ClaimLink() {
   );
 }
 
-/** The 10 styles as small specimens, each in its own fonts, light or dark. */
+/** The designs as small specimens, each in its own fonts, light or dark. */
 function StyleStrip({ styles }) {
   useEffect(() => {
     styles.forEach((s) => loadFonts({ ...s.fonts, body: s.body }));

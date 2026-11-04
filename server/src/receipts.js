@@ -17,6 +17,10 @@ export const receiptPath = (order) => `/receipt/${order.code}?t=${receiptToken(o
 // Absolute link for messages: the configured public address, else the address the request came in on.
 export const receiptUrl = (order, req) => `${req.protocol}://${req.get('host')}${receiptPath(order)}`;
 
+// "400g" on its own reads better as "400g Jar"; a size that already says what it is ("Box of 4") stays as it is.
+const MEASURE = /^\s*\d+([.,]\d+)?\s*(g|kg|ml|l|litres?)\s*$/i;
+const sizeLine = (size, look) => (!size ? '' : MEASURE.test(size) ? `${size} ${packOf(look)}`.trim() : size);
+
 const packOf = (look) => {
   try {
     const l = JSON.parse(look);
@@ -42,7 +46,7 @@ export function receiptData(order) {
   const mpesa = db.prepare("SELECT receipt FROM payments WHERE order_id = ? AND status = 'paid' ORDER BY id DESC LIMIT 1").get(order.id);
   return {
     currency: currency(),
-    brand: { name: content.brand.name, short: content.brand.short, tagline: content.brand.tagline },
+    brand: { name: content.brand.name, short: content.brand.short, tagline: content.brand.tagline, email: content.brand.email || '' },
     branch: branch && { city: branch.city, country: branch.country, phone: branch.phone },
     code: order.code,
     status: order.status,
@@ -51,7 +55,8 @@ export function receiptData(order) {
     customer: { name: order.customer_name, phone: maskPhone(order.phone) },
     fulfilment: order.fulfilment,
     deliverTo: order.channel === 'website' && order.fulfilment !== 'pickup' ? order.city : null,
-    items: items.map((i) => ({ qty: i.qty, unitPrice: i.unit_price, label: i.size ? `${i.size} ${packOf(i.look)}`.trim() : i.name })),
+    // Each line by the product's name, with its size under it.
+    items: items.map((i) => ({ qty: i.qty, unitPrice: i.unit_price, label: i.name, detail: sizeLine(i.size, i.look) })),
     subtotal: order.subtotal,
     deliveryFee: order.delivery_fee,
     total: order.total,

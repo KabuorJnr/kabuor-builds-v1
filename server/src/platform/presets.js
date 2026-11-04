@@ -77,6 +77,30 @@ export const KINDS = {
     eyebrow: 'Furniture & living', tagline: 'Furniture that defines your space', shopEyebrow: 'The collection', shopTitle: 'Pieces made to last',
     story: (n, c) => `${n} makes and sells furniture and home pieces in ${c || 'Kenya'}, with the materials and sizes listed for every piece.`,
   },
+  bakery: {
+    label: 'Bakery, cakes & pastries', motif: 'leaf', texture: 'dots', accent: '#C65D73', style: 'patisserie',
+    shape: 'box', pack: 'Box', size: '1 pc',
+    eyebrow: 'Baked fresh every morning', tagline: 'Baked fresh, made with love', shopEyebrow: 'From our oven', shopTitle: 'Cakes, bread and pastries',
+    story: (n, c) => `${n} bakes cakes, bread and pastries in ${c || 'Kenya'} every morning, and takes orders for birthdays, weddings and the office.`,
+  },
+  beauty: {
+    label: 'Beauty & cosmetics', motif: 'drop', texture: 'grain', accent: '#A8566F', style: 'glow',
+    shape: 'tub', pack: 'Item', size: '1 pc',
+    eyebrow: 'Makeup & beauty', tagline: 'Beauty that looks like you', shopEyebrow: 'The edit', shopTitle: 'Makeup, skincare and scents',
+    story: (n, c) => `${n} sells makeup, skincare and fragrance in ${c || 'Kenya'}, with shades for every skin tone and the ingredients listed for every product.`,
+  },
+  books: {
+    label: 'Books & stationery', motif: 'leaf', texture: 'paper', accent: '#2F5D50', style: 'library',
+    shape: 'box', pack: 'Book', size: 'Paperback',
+    eyebrow: 'Books & stationery', tagline: 'A good book for every reader', shopEyebrow: 'On our shelves', shopTitle: 'Books, school and stationery',
+    story: (n, c) => `${n} is a bookshop in ${c || 'Kenya'} with novels, children’s books, school books and stationery, delivered to your door.`,
+  },
+  hardware: {
+    label: 'Hardware & building supplies', motif: 'drop', texture: 'dots', accent: '#E3A008', style: 'depot',
+    shape: 'box', pack: 'Unit', size: '1 pc',
+    eyebrow: 'Hardware & building', tagline: 'Everything you need to build', shopEyebrow: 'In stock now', shopTitle: 'Building, paint and tools',
+    story: (n, c) => `${n} supplies cement, paint, tools and building materials in ${c || 'Kenya'}, with trade prices for builders and delivery to site.`,
+  },
   other: {
     label: 'Something else', motif: 'leaf', texture: 'dots', accent: '#2F6F5E', style: 'natural',
     shape: 'box', pack: 'Item', size: '1 pc',
@@ -88,7 +112,7 @@ export const KINDS = {
 // Looks the owner can choose from. Each pairs a display font and an accent font with a text font, and sets
 // light or dark, the banner layout (photo collage, poster, or magazine spread) and the corners. A style may
 // also bring its own background texture; otherwise the texture comes from what they sell.
-// Ten website designs. Beyond fonts and colours, each sets the page structure:
+// Ten general designs, then the trade templates. Beyond fonts and colours, each sets the page structure:
 //   hero   photo (collage) | poster (centred, photos fanned) | editorial (magazine) | trio (floating packs)
 //          | split (half-screen photo) | cover (full-screen photo) | minimal (big words, then products)
 //   nav    pill (floating rounded) | bar (full-width strip) | centered (logo in the middle) | minimal (menu button)
@@ -104,13 +128,17 @@ export const STYLES = {
   classic: { label: 'Classic & trusted', note: 'Catalogue list with full details, solid menu bar', mode: 'light', hero: 'editorial', nav: 'bar', cards: 'list', cols: 2, home: 'hub', radius: 'soft', body: 'commissioner', texture: 'paper', fonts: { brand: 'young-serif', tagline: 'caveat' } },
   market: { label: 'Fresh market', note: 'Half-screen photo, then products, four across', mode: 'light', hero: 'split', nav: 'bar', cards: 'card', cols: 4, home: 'shop-first', radius: 'round', body: 'golos-text', fonts: { brand: 'titan-one', tagline: 'caveat-brush' } },
   street: { label: 'Street & urban', note: 'Full-screen photo, big products two across', mode: 'dark', hero: 'cover', nav: 'minimal', cards: 'overlay', cols: 2, home: 'shop-first', radius: 'sharp', body: 'schibsted-grotesk', texture: 'speckle', fonts: { brand: 'shrikhand', tagline: 'kalam' } },
-  // The four category templates (components/templates.jsx): each brings its own banner and product card.
+  boutique: { label: 'Boutique', note: 'Words first, a row of products, framed cards', mode: 'light', hero: 'minimal', nav: 'centered', cards: 'framed', cols: 3, home: 'hub', radius: 'soft', texture: 'grain', body: 'jost', fonts: { brand: 'gilda-display', tagline: 'sacramento' } },
+  // The category templates (components/templates.jsx): each brings its own banner and product card.
   fresh: { label: 'Fresh supermarket', note: 'Green banner, aisles to jump between, quantity buttons on every product', mode: 'light', hero: 'grocer', nav: 'bar', cards: 'grocer', cols: 4, home: 'shop-first', radius: 'round', body: 'golos-text', ticker: false, fonts: { brand: 'golos-text', tagline: 'golos-text' } },
   cyber: { label: 'Tech store', note: 'Dark, with a glowing accent, a deal banner and specs on every card', mode: 'dark', hero: 'tech', nav: 'bar', cards: 'tech', cols: 4, home: 'shop-first', radius: 'soft', body: 'archivo', texture: 'glow', ticker: false, fonts: { brand: 'archivo', tagline: 'archivo' } },
   scandi: { label: 'Architectural living', note: 'Sand and stone, arched frames, serif type, room to breathe', mode: 'light', hero: 'living', nav: 'centered', cards: 'living', cols: 3, home: 'hub', radius: 'soft', body: 'instrument-sans', texture: 'paper', ticker: false, fonts: { brand: 'young-serif', tagline: 'parisienne' } },
   botanical: { label: 'Sunlit botanical', note: 'Warm ochre, your name in giant letters behind the product, soft cards', mode: 'light', hero: 'botanical', nav: 'centered', cards: 'botanical', cols: 3, home: 'shop-first', radius: 'round', body: 'familjen-grotesk', texture: 'speckle', ticker: false, fonts: { brand: 'gilda-display', tagline: 'parisienne' } },
   studio: { label: 'Fashion studio', note: 'A big plain headline, your newest pieces as tall rounded photos, small tags', mode: 'light', hero: 'fashion', nav: 'bar', cards: 'fashion', cols: 4, home: 'shop-first', radius: 'round', body: 'plus-jakarta-sans', ticker: false, fonts: { brand: 'plus-jakarta-sans', tagline: 'plus-jakarta-sans' } },
-  boutique: { label: 'Boutique', note: 'Words first, a row of products, framed cards', mode: 'light', hero: 'minimal', nav: 'centered', cards: 'framed', cols: 3, home: 'hub', radius: 'soft', texture: 'grain', body: 'jost', fonts: { brand: 'gilda-display', tagline: 'sacramento' } },
+  patisserie: { label: 'Patisserie', note: 'A soft scalloped banner, your bakes on round plates, a script accent', mode: 'light', hero: 'bakery', nav: 'centered', cards: 'bakery', cols: 3, home: 'shop-first', radius: 'round', body: 'jost', texture: 'dots', ticker: false, fonts: { brand: 'young-serif', tagline: 'sacramento' } },
+  glow: { label: 'Beauty studio', note: 'An arched photo, shade swatches in your colours, tall cards with Add to bag', mode: 'light', hero: 'beauty', nav: 'centered', cards: 'beauty', cols: 4, home: 'shop-first', radius: 'round', body: 'albert-sans', texture: 'grain', ticker: false, fonts: { brand: 'marcellus', tagline: 'parisienne' } },
+  library: { label: 'Bookshop', note: 'Your books standing on a wooden shelf, covers with spines, sections to browse', mode: 'light', hero: 'books', nav: 'bar', cards: 'books', cols: 4, home: 'shop-first', radius: 'soft', body: 'commissioner', texture: 'paper', ticker: false, fonts: { brand: 'gilda-display', tagline: 'caveat' } },
+  depot: { label: 'Hardware depot', note: 'Bold and practical: a hazard stripe, prices up front, quantity buttons for bulk', mode: 'light', hero: 'hardware', nav: 'bar', cards: 'hardware', cols: 4, home: 'shop-first', radius: 'soft', body: 'red-hat-text', ticker: false, fonts: { brand: 'archivo', tagline: 'archivo' } },
 };
 
 /** The styles as the website shows them (no private settings). */

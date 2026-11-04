@@ -275,6 +275,82 @@ function LayoutSketch({ s, accent, dark }) {
         <rect x="8" y="38" width="36" height="2" fill={soft} />
       </>
     ),
+    // The category templates, each drawn the way its banner looks.
+    living: (
+      <>
+        {words(8, 18, 38)}
+        <path d="M70 47 L70 25 A10 10 0 0 1 90 25 L90 47 Z" fill={accent} opacity=".9" />
+        <path d="M94 47 L94 31 A8 8 0 0 1 110 31 L110 47 Z" fill={soft} />
+      </>
+    ),
+    tech: (
+      <>
+        <rect x="8" y="12" width="28" height="35" rx={r} fill={accent} />
+        <rect x="40" y="12" width="72" height="35" rx={r} fill={soft} />
+        <rect x="46" y="20" width="28" height="5" rx="1" fill={ink} />
+        <rect x="46" y="28" width="16" height="4" rx="1" fill={accent} />
+        <circle cx="96" cy="30" r="11" fill={accent} opacity=".45" />
+      </>
+    ),
+    botanical: (
+      <>
+        <rect x="8" y="12" width="104" height="35" rx={r} fill={accent} opacity=".5" />
+        <rect x="22" y="15" width="76" height="10" rx="1" fill="#fff" opacity=".85" />
+        <rect x="50" y="26" width="20" height="21" rx={r} fill={accent} />
+        <rect x="14" y="38" width="24" height="3" rx="1" fill={ink} />
+      </>
+    ),
+    grocer: (
+      <>
+        <rect x="8" y="12" width="104" height="35" rx={r} fill={accent} />
+        <rect x="14" y="20" width="34" height="5" rx="1" fill="#fff" />
+        <rect x="14" y="28" width="24" height="4" rx="1" fill="#fff" opacity=".7" />
+        {[0, 1, 2, 3].map((i) => <rect key={i} x={62 + (i % 2) * 24} y={15 + Math.floor(i / 2) * 15} width="21" height="13" rx={r} fill="#fff" opacity=".92" />)}
+      </>
+    ),
+    fashion: (
+      <>
+        <rect x="8" y="12" width="62" height="6" rx="1" fill={ink} />
+        <rect x="8" y="22" width="44" height="25" rx={r} fill={accent} opacity=".9" />
+        <rect x="56" y="22" width="26" height="25" rx={r} fill={soft} />
+        <rect x="86" y="22" width="26" height="25" rx={r} fill={soft} />
+      </>
+    ),
+    bakery: (
+      <>
+        <rect x="0" y="10" width={W} height="20" fill={soft} />
+        {Array.from({ length: 20 }, (_, i) => <circle key={i} cx={3 + i * 6} cy="30" r="3" fill={soft} />)}
+        <rect x="38" y="14" width="44" height="5" rx="1" fill={ink} />
+        <circle cx="38" cy="39" r="7" fill={accent} opacity=".7" />
+        <circle cx="60" cy="38" r="9" fill={accent} />
+        <circle cx="82" cy="39" r="7" fill={accent} opacity=".7" />
+      </>
+    ),
+    beauty: (
+      <>
+        {words(8, 18, 40)}
+        {[1, 0.7, 0.45].map((o, i) => <circle key={i} cx={12 + i * 6} cy="40" r="3" fill={accent} opacity={o} />)}
+        <path d="M78 47 L78 25 A12 12 0 0 1 102 25 L102 47 Z" fill={accent} opacity=".9" />
+        <rect x="66" y="38" width="20" height="8" rx="2" fill={dark ? '#23243a' : '#fff'} />
+      </>
+    ),
+    books: (
+      <>
+        {words(8, 18, 36)}
+        {[1, 0.75, 0.55, 0.9, 0.65].map((o, i) => <rect key={i} x={58 + i * 11} y={i === 1 ? 19 : 24} width={i === 1 ? 10 : 9} height={i === 1 ? 23 : 18} rx="1" fill={accent} opacity={o} transform={`rotate(${[-4, 0, 3, -2, 1][i]} ${62 + i * 11} 42)`} />)}
+        <rect x="54" y="42" width="60" height="3" rx="1" fill={ink} opacity=".6" />
+      </>
+    ),
+    hardware: (
+      <>
+        <rect x="8" y="12" width="104" height="35" rx={r} fill={dark ? 'rgba(255,255,255,.12)' : '#1d1b18'} />
+        <rect x="8" y="12" width="104" height="2.5" fill={accent} />
+        <rect x="14" y="20" width="36" height="5" rx="1" fill="#fff" />
+        <rect x="14" y="28" width="26" height="4" rx="1" fill="#fff" opacity=".6" />
+        <rect x="14" y="37" width="14" height="5" rx="1" fill={accent} />
+        {[0, 1, 2, 3].map((i) => <rect key={i} x={64 + (i % 2) * 24} y={17 + Math.floor(i / 2) * 15} width="21" height="13" rx={r} fill="#fff" opacity=".92" />)}
+      </>
+    ),
   }[s.hero];
 
   // products (y 50–62)

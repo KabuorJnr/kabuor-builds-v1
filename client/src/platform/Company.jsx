@@ -107,7 +107,7 @@ export default function Company({ info }) {
                 status={['Available now', price].filter(Boolean).join(' · ')}
                 name="Kabuor Shops"
                 text="Your brand’s own online shop. Your products, your colours, M-Pesa checkout. See it before you pay, and go live the same day."
-                points={['10 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, with no commission', 'Your own shop link, ready to share on WhatsApp']}
+                points={['19 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, with no commission', 'Your own shop link, ready to share on WhatsApp']}
                 primary={
                   <Go to="/start" className="ms-btn ms-btn-primary">
                     Start your shop

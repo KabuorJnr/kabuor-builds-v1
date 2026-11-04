@@ -26,16 +26,19 @@ phone and email are settings (`PLATFORM_*` in `server/.env`). Every shop's foote
   phone alerts) is the same one the hand-built brand shops use. Route code still imports `db` and `brand`;
   `server/src/tenant.js` makes them point at the current request's shop.
 - **Signup** (`server/src/platform/routes.js`, `client/src/platform/Wizard.jsx`): business and link →
-  look (colours picked from the owner's pictures, one of 10 styles, tagline) → products and how customers
+  look (colours picked from the owner's pictures, one of 19 designs, tagline) → products and how customers
   pay → **preview** → pay (STK push) → live. The owner lands in their admin already signed in. Unpaid
   signups hold their link for 3 days.
 - **Preview before paying:** `/api/platform/preview` builds the real shop from the wizard and returns a
   private link (`?preview=<key>`). The key comes from the signup's setup token, so it can view but not edit;
   the shop shows a "Preview" bar, refuses orders, and stays "opening soon" for everyone else.
 - **Looks** (`server/src/platform/presets.js`, `palette.js`): what they sell sets the decoration (chillies,
-  honeycomb, candle glow…); the style (10 to pick from) sets fonts, corners, light/dark, the banner layout
-  and sometimes the texture; the palette is built from the strongest colour in their photo, with text
-  contrast checked.
+  honeycomb, candle glow…); the design (19 to pick from: 10 general looks and 9 trade templates for
+  furniture, electronics, wellness, groceries, fashion, bakeries, beauty, bookshops and hardware) sets fonts,
+  corners, light/dark, the banner layout and sometimes the texture; the palette is built from the strongest
+  colour in their photo, with text contrast checked. Each trade template draws its own banner and product
+  card (`client/src/components/templates.jsx`) and has a sample shop at `/demo/<template>`, with its
+  product art in `client/public/brand/templates/<template>/`.
 - **Billing** (`server/src/platform/billing.js`): each M-Pesa payment adds a month or a year. A shop whose
   plan ended more than 3 days ago is paused: customers see "taking a short break", the admin keeps working
   and shows a renew banner. Owners renew under **Plan & billing** in their admin.

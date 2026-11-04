@@ -1,5 +1,6 @@
 // The category templates a shop can choose (server/src/platform/presets.js, STYLES): Living for furniture,
-// Tech for electronics, Botanical for wellness, Grocer for supermarkets and Fashion for clothing. Each brings its own home-page banner
+// Tech for electronics, Botanical for wellness, Grocer for supermarkets, Fashion for clothing, Bakery for cakes and
+// pastries, Beauty for makeup, Books for bookshops and stationers, and Hardware for building supplies. Each brings its own home-page banner
 // and its own product card, and runs on the shop's real products, cart and M-Pesa checkout like every design.
 // Colours come from the shop's palette (amber is the accent, espresso the text, cream the page), so a shop that
 // picks the template with its own colours still looks like itself. Text on the accent is literal #fff: on dark
@@ -7,7 +8,7 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, Check, Minus, Plus, ShieldCheck, Smartphone, Truck } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BookOpen, Check, Minus, Package, Phone, Plus, ShieldCheck, Smartphone, Truck } from 'lucide-react';
 import ProductJar from './ProductJar';
 import { EASE } from './ui';
 import { LOOK } from '../lib/brand';
@@ -375,7 +376,6 @@ function Stepper({ product }) {
 function GrocerHero({ products, config, content }) {
   const hero = content.hero;
   const tiles = products.slice(0, 4);
-  const aisles = (content.shop.categories ?? []).map((c) => ({ ...c, count: products.filter((p) => p.category === c.id).length })).filter((c) => c.count > 0);
   return (
     <section id="top" className={cn('relative pb-6', padTopFor(content))}>
       <div className="container-x">
@@ -403,19 +403,7 @@ function GrocerHero({ products, config, content }) {
             </div>
           )}
         </motion.div>
-        {aisles.length > 1 && (
-          <div className="no-scrollbar -mx-4 mt-5 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-            <ul className="flex w-max gap-2.5">
-              {aisles.map((c) => (
-                <li key={c.id}>
-                  <a href="#shop" className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold ring-1 ring-espresso/10 hover:ring-amber">
-                    {c.label} <span className="text-xs text-espresso/45 tabular-nums">{c.count}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <Aisles products={products} content={content} className="mt-5" />
       </div>
     </section>
   );
@@ -519,5 +507,378 @@ function FashionCard({ product, title, href, price }) {
   );
 }
 
-export const TEMPLATE_HEROES = { living: LivingHero, tech: TechHero, botanical: BotanicalHero, grocer: GrocerHero, fashion: FashionHero };
-export const TEMPLATE_CARDS = { living: LivingCard, tech: TechCard, botanical: BotanicalCard, grocer: GrocerCard, fashion: FashionCard };
+// ---------------------------------------------------------------------------------------------- Shared
+// Aisles (or sections) to jump between, with how many products each holds. Only when there are two or more.
+function Aisles({ products, content, className }) {
+  const aisles = (content.shop.categories ?? []).map((c) => ({ ...c, count: products.filter((p) => p.category === c.id).length })).filter((c) => c.count > 0);
+  if (aisles.length < 2) return null;
+  return (
+    <div className={cn('no-scrollbar -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0', className)}>
+      <ul className="flex w-max gap-2.5">
+        {aisles.map((c) => (
+          <li key={c.id}>
+            <a href="#shop" className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold ring-1 ring-espresso/10 transition hover:ring-amber">
+              {c.label} <span className="text-xs text-espresso/45 tabular-nums">{c.count}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** A button that says what it does: Add, then Added for a moment. */
+function AddButton({ product, className, label = 'Add' }) {
+  const { onClick, done, soldOut } = useAdd(product);
+  return (
+    <button type="button" onClick={onClick} disabled={soldOut} aria-label={soldOut ? `${product.name} is sold out` : `Add ${product.name} to cart`} className={cn('inline-flex items-center justify-center gap-1.5 font-semibold transition disabled:opacity-40', className)}>
+      {soldOut ? 'Sold out' : done ? <><Check className="h-4 w-4" strokeWidth={2.6} /> Added</> : <><Plus className="h-4 w-4" strokeWidth={2.4} /> {label}</>}
+    </button>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------- Bakery
+// Cakes and pastries: a soft scalloped banner like a cake-shop awning, the day's bakes on round plates, a script accent.
+
+const SCALLOP = { backgroundImage: 'radial-gradient(circle at 14px 0, var(--color-beige) 14px, transparent 14.5px)', backgroundSize: '28px 16px', backgroundRepeat: 'repeat-x' };
+
+function BakeryHero({ products, config, content }) {
+  const hero = content.hero;
+  const [a, b, c] = products;
+  const plates = [b, a, c].filter(Boolean);
+  return (
+    <section id="top" className={cn('relative overflow-hidden pb-14 sm:pb-20', padTopFor(content))}>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[64%] bg-beige">
+        <div className="absolute inset-x-0 -bottom-4 h-4" style={SCALLOP} />
+      </div>
+      <div className="container-x relative text-center">
+        <motion.p {...rise(0)} className="font-tagline text-[1.7rem] leading-none text-caramel sm:text-4xl">
+          {hero.eyebrow}
+        </motion.p>
+        <motion.h1 {...rise(0.08)} className="mx-auto mt-4 max-w-3xl font-brand text-[2.6rem] leading-[1.04] tracking-[-0.02em] text-espresso sm:text-6xl lg:text-7xl">
+          {hero.lines.join(' ')}
+        </motion.h1>
+        {hero.text && (
+          <motion.p {...rise(0.16)} className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-espresso/65 sm:text-lg">
+            {hero.text}
+          </motion.p>
+        )}
+        <motion.div {...rise(0.24)} className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link to="/shop" className="btn btn-primary group px-7 py-3.5">
+            See today’s bakes <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-4 py-2.5 text-sm font-semibold text-espresso/75 ring-1 ring-espresso/10">
+            <Truck className="h-4 w-4 text-amber" /> {deliveryLine(config)}
+          </span>
+        </motion.div>
+        {plates.length > 0 && (
+          <div className="mx-auto mt-12 grid max-w-4xl grid-cols-3 items-end gap-3 sm:mt-14 sm:gap-8">
+            {plates.map((p, i) => (
+              <motion.div key={p.id} {...rise(0.25 + i * 0.08)} className={plates.length === 1 ? 'col-start-2' : ''}>
+                <Link to={`/products/${p.id}`} className="group block">
+                  <span className={cn('relative mx-auto block aspect-square overflow-hidden rounded-full bg-white shadow-[0_34px_60px_-30px_rgba(90,50,20,0.5)] ring-[5px] ring-white sm:ring-[10px]', p === a ? 'w-full' : 'w-[80%]')}>
+                    <Pic product={p} />
+                  </span>
+                  <span className="mt-4 block truncate font-brand text-[15px] text-espresso sm:text-xl">{p.name}</span>
+                  <span className="text-sm font-semibold text-caramel tabular-nums">{money(p.price)}</span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function BakeryCard({ product, title, href, price }) {
+  return (
+    <div className="flex h-full flex-col items-center rounded-[var(--r-xl)] bg-white/70 px-4 pt-6 pb-4 text-center ring-1 ring-espresso/[0.06] transition hover:bg-white hover:shadow-[0_26px_50px_-30px_rgba(90,50,20,0.45)]">
+      <Link to={href} className="relative block aspect-square w-[84%] overflow-hidden rounded-full bg-beige ring-[6px] ring-cream" aria-label={`View ${product.name}`}>
+        <Pic product={product} />
+      </Link>
+      {product.badge && <span className="absolute top-4 right-4 rotate-6 rounded-full bg-amber px-2.5 py-1 text-[10px] font-bold tracking-wide text-[#fff] uppercase shadow-sm">{product.badge}</span>}
+      <h3 className="mt-4 font-brand text-lg leading-tight sm:text-xl">
+        <Link to={href} className="hover:text-caramel">
+          {title}
+        </Link>
+      </h3>
+      <p className="mt-1 text-sm text-espresso/55">{product.size}</p>
+      <div className="min-h-3 flex-1" />
+      <div className="mt-3 flex w-full items-center justify-between gap-2 border-t border-dashed border-espresso/15 pt-3">
+        <span className="font-semibold tabular-nums">{price}</span>
+        <AddButton product={product} className="h-9 rounded-full bg-espresso px-4 text-sm text-cream hover:bg-amber hover:text-[#fff]" />
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------- Beauty
+// Makeup and beauty: an arched photo, shade swatches in the shop's colours, tall cards with Add to bag.
+
+const SHADES = ['--color-latte', '--color-honey', '--color-amber', '--color-caramel', '--color-cocoa'];
+
+function BeautyHero({ products, content }) {
+  const hero = content.hero;
+  const [a, b] = products;
+  return (
+    <section id="top" className={cn('relative overflow-hidden pb-16 sm:pb-24', padTopFor(content))}>
+      <div className="pointer-events-none absolute -top-48 -right-48 h-[44rem] w-[44rem] rounded-full bg-beige/80 blur-3xl" />
+      <div className="container-x relative grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:gap-16">
+        <div>
+          <motion.p {...rise(0)} className="text-[12px] font-semibold tracking-[0.28em] text-caramel uppercase">
+            {hero.eyebrow}
+          </motion.p>
+          <motion.h1 {...rise(0.08)} className="mt-5 font-brand text-[2.7rem] leading-[1.03] tracking-[-0.01em] text-espresso sm:text-6xl lg:text-[4.5rem]">
+            {hero.lines.join(' ')}
+          </motion.h1>
+          {hero.text && (
+            <motion.p {...rise(0.16)} className="mt-6 max-w-md text-base leading-relaxed text-espresso/65 sm:text-lg">
+              {hero.text}
+            </motion.p>
+          )}
+          <motion.div {...rise(0.24)} className="mt-8 flex flex-wrap items-center gap-5">
+            <Link to="/shop" className="btn btn-primary group px-7 py-3.5">
+              Shop the range <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+            {content.story.enabled && (
+              <Link to="/about" className="text-sm font-semibold underline decoration-espresso/30 underline-offset-4 hover:decoration-espresso">
+                Our story
+              </Link>
+            )}
+          </motion.div>
+          <motion.div {...rise(0.32)} className="mt-10 flex items-center gap-4">
+            <span className="flex -space-x-2" aria-hidden>
+              {SHADES.map((v) => (
+                <span key={v} className="h-8 w-8 rounded-full ring-2 ring-cream" style={{ background: `var(${v})` }} />
+              ))}
+            </span>
+            <span className="text-sm text-espresso/60">{products.length} products · Pay with M-Pesa</span>
+          </motion.div>
+        </div>
+        {a && (
+          <div className="relative mx-auto w-full max-w-[26rem]">
+            <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, ease: EASE }}>
+              <Link to={`/products/${a.id}`} className="group block aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[var(--r-xl)] bg-beige shadow-[0_40px_80px_-40px_rgba(70,30,30,0.45)]">
+                <Pic product={a} />
+              </Link>
+            </motion.div>
+            {a.badge && (
+              <motion.span {...rise(0.3)} className="absolute top-10 -right-2 grid h-20 w-20 rotate-12 place-items-center rounded-full bg-amber p-2 text-center text-[11px] leading-tight font-bold tracking-wide text-[#fff] uppercase shadow-lg sm:-right-6">
+                {a.badge}
+              </motion.span>
+            )}
+            {b && (
+              <motion.div {...rise(0.4)} className="absolute -bottom-7 -left-3 w-60 sm:-left-14">
+                <Link to={`/products/${b.id}`} className="group flex items-center gap-3 rounded-[var(--r-lg)] bg-white/95 p-2.5 shadow-[0_24px_50px_-24px_rgba(60,30,30,0.5)] backdrop-blur">
+                  <span className="block h-14 w-14 shrink-0 overflow-hidden rounded-[var(--r-md)] bg-beige">
+                    <Pic product={b} />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-semibold">{b.name}</span>
+                    <span className="text-sm text-caramel tabular-nums">{money(b.price)}</span>
+                  </span>
+                </Link>
+              </motion.div>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function BeautyCard({ product, title, href, price }) {
+  return (
+    <div className="flex h-full flex-col">
+      <Link to={href} className="relative block aspect-[3/4] overflow-hidden rounded-[var(--r-xl)] bg-beige" aria-label={`View ${product.name}`}>
+        <Pic product={product} />
+        {product.badge && <span className="absolute top-3 left-3 rounded-full bg-white/90 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-espresso uppercase backdrop-blur">{product.badge}</span>}
+      </Link>
+      <p className="mt-3 truncate text-[11px] tracking-[0.18em] text-espresso/50 uppercase">{product.size}</p>
+      <h3 className="mt-1 line-clamp-2 font-brand text-lg leading-snug">
+        <Link to={href} className="hover:text-caramel">
+          {title}
+        </Link>
+      </h3>
+      <p className="mt-1 font-semibold tabular-nums">{price}</p>
+      <div className="min-h-3 flex-1" />
+      <AddButton product={product} label="Add to bag" className="mt-3 h-10 w-full rounded-full border border-espresso/20 text-sm hover:border-espresso hover:bg-espresso hover:text-cream" />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------- Books
+// Bookshops and stationers: the books standing on a wooden shelf, covers with a spine, sections to browse.
+
+const TILT = [-3.5, 0, 2.5, -1.5, 1];
+
+function Cover({ product, className }) {
+  return (
+    <span className={cn('relative block aspect-[2/3] overflow-hidden rounded-l-[2px] rounded-r-[6px] bg-sand shadow-[8px_12px_26px_-12px_rgba(40,20,0,0.6)]', className)}>
+      <Pic product={product} />
+      <span className="pointer-events-none absolute inset-y-0 left-0 w-[7%] bg-gradient-to-r from-black/30 via-white/20 to-transparent" />
+    </span>
+  );
+}
+
+function BooksHero({ products, config, content }) {
+  const hero = content.hero;
+  const shelf = products.slice(0, 5);
+  return (
+    <section id="top" className={cn('relative pb-10 sm:pb-14', padTopFor(content))}>
+      <div className="container-x">
+        <div className="grid grid-cols-1 items-end gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14">
+          <div className="lg:pb-10">
+            <motion.p {...rise(0)} className="inline-flex items-center gap-2 rounded-full bg-beige px-3.5 py-1.5 text-[12px] font-semibold tracking-[0.14em] text-caramel uppercase">
+              <BookOpen className="h-3.5 w-3.5" /> {hero.eyebrow}
+            </motion.p>
+            <motion.h1 {...rise(0.08)} className="mt-5 font-brand text-[2.6rem] leading-[1.05] text-espresso sm:text-6xl">
+              {hero.lines.join(' ')}
+            </motion.h1>
+            {hero.text && (
+              <motion.p {...rise(0.16)} className="mt-5 max-w-md text-base leading-relaxed text-espresso/65 sm:text-lg">
+                {hero.text}
+              </motion.p>
+            )}
+            <motion.div {...rise(0.24)} className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link to="/shop" className="btn btn-primary group px-7 py-3.5">
+                Browse the shelves <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <span className="inline-flex items-center gap-2 text-sm text-espresso/65">
+                <Truck className="h-4 w-4 text-amber" /> {deliveryLine(config)}
+              </span>
+            </motion.div>
+          </div>
+          {shelf.length > 0 && (
+            <motion.div {...rise(0.15)} className="relative">
+              <div className="flex items-end justify-center gap-2.5 px-3 sm:gap-4 sm:px-8">
+                {shelf.map((p, i) => (
+                  <Link key={p.id} to={`/products/${p.id}`} aria-label={p.name} className={cn('group block shrink-0 transition-transform duration-500 ease-out-expo hover:-translate-y-3', i === 1 ? 'w-[21%]' : 'w-[17%]')} style={{ rotate: `${TILT[i]}deg` }}>
+                    <Cover product={p} />
+                  </Link>
+                ))}
+              </div>
+              <div className="relative h-4 rounded-[3px] bg-gradient-to-b from-[#B07A4E] to-[#8A5A35] shadow-[0_16px_26px_-12px_rgba(40,20,0,0.6)]" />
+              <div className="mx-5 h-2.5 rounded-b-[3px] bg-[#5E3B22]/80" />
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BooksCard({ product, title, href, price }) {
+  return (
+    <div className="flex h-full flex-col">
+      <Link to={href} className="relative block rounded-[var(--r-lg)] bg-beige/70 px-[16%] pt-[13%] pb-[11%]" aria-label={`View ${product.name}`}>
+        <Cover product={product} className="transition-transform duration-500 ease-out-expo group-hover:-translate-y-1.5 group-hover:-rotate-1" />
+        {product.badge && <span className="absolute top-2.5 left-2.5 rounded-full bg-espresso px-2.5 py-1 text-[10px] font-semibold text-cream">{product.badge}</span>}
+      </Link>
+      <h3 className="mt-3 line-clamp-2 font-brand text-[17px] leading-snug">
+        <Link to={href} className="hover:text-caramel">
+          {title}
+        </Link>
+      </h3>
+      <p className="mt-0.5 line-clamp-1 text-sm text-espresso/55">{product.size}</p>
+      <div className="mt-auto flex items-center justify-between gap-2 pt-3">
+        <span className="font-bold tabular-nums">{price}</span>
+        <AddIcon product={product} className="h-9 w-9 rounded-full bg-espresso text-cream hover:bg-amber hover:text-[#fff]" />
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------- Hardware
+// Hardware and building supplies: bold and practical, a hazard stripe, prices up front, quantity buttons for bulk.
+
+const HAZARD = { backgroundImage: 'repeating-linear-gradient(-45deg, var(--color-honey) 0 14px, var(--color-bark) 14px 28px)' };
+
+function HardwareHero({ products, config, content }) {
+  const hero = content.hero;
+  const tiles = products.slice(0, 4);
+  const phone = content.brand?.branches?.find((b) => b.phone)?.phone;
+  return (
+    <section id="top" className={cn('relative pb-8', padTopFor(content))}>
+      <div className="container-x">
+        <motion.div {...rise(0)} className="overflow-hidden rounded-[var(--r-xl)] bg-bark text-[#fff]">
+          <div className="h-3" style={HAZARD} />
+          <div className="grid grid-cols-1 gap-8 p-6 sm:p-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
+            <div className="flex flex-col justify-center">
+              <span className="w-fit rounded-md bg-honey px-2.5 py-1 text-[11px] font-extrabold tracking-[0.16em] text-bark uppercase">{hero.eyebrow}</span>
+              <h1 className="mt-5 font-brand text-[2.4rem] leading-[0.98] font-extrabold tracking-[-0.02em] uppercase sm:text-6xl">{hero.lines.join(' ')}</h1>
+              {hero.text && <p className="mt-5 max-w-md text-base leading-relaxed text-[#fff]/70">{hero.text}</p>}
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link to="/shop" className="btn bg-honey px-7 py-3.5 text-bark hover:brightness-105">
+                  Shop all <ArrowRight className="h-4 w-4" />
+                </Link>
+                {phone && (
+                  <a href={`tel:${phone}`} className="btn border border-[#fff]/25 px-6 py-3.5 text-[#fff] hover:bg-[#fff]/10">
+                    <Phone className="h-4 w-4" /> Call for bulk prices
+                  </a>
+                )}
+              </div>
+            </div>
+            {tiles.length > 0 && (
+              <div className="grid grid-cols-2 gap-3">
+                {tiles.map((p) => (
+                  <Link key={p.id} to={`/products/${p.id}`} className="group flex flex-col overflow-hidden rounded-[var(--r-lg)] bg-[#fff] p-2.5 text-[#1d1d1f] sm:p-3">
+                    <span className="block aspect-[4/3] overflow-hidden rounded-[var(--r-md)] bg-[#F1F2F4]">
+                      <Pic product={p} contain />
+                    </span>
+                    <span className="mt-2 truncate text-sm font-semibold">{p.name}</span>
+                    <span className="flex items-baseline justify-between gap-2">
+                      <span className="truncate text-xs text-[#1d1d1f]/50">{p.size}</span>
+                      <span className="shrink-0 text-sm font-extrabold tabular-nums">{money(p.price)}</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </motion.div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {[
+            [Truck, deliveryLine(config)],
+            [Package, 'Bulk and trade orders welcome'],
+            [Smartphone, config?.mpesaPrompt ? 'M-Pesa prompt at checkout' : 'Pay with M-Pesa'],
+          ].map(([Icon, t]) => (
+            <p key={t} className="flex items-center gap-3 rounded-[var(--r-lg)] bg-white px-4 py-3 text-sm font-semibold ring-1 ring-espresso/10">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[var(--r-md)] bg-honey/25 text-caramel">
+                <Icon className="h-[18px] w-[18px]" />
+              </span>
+              {t}
+            </p>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HardwareCard({ product, title, href, price }) {
+  return (
+    <div className="flex h-full flex-col overflow-hidden rounded-[var(--r-lg)] bg-white ring-1 ring-espresso/10 transition hover:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.55)] hover:ring-espresso/25">
+      <Link to={href} className="relative block aspect-square bg-[#F1F2F4]" aria-label={`View ${product.name}`}>
+        <Pic product={product} contain />
+        {product.badge && <span className="absolute top-0 left-0 rounded-br-[var(--r-md)] bg-honey px-2.5 py-1 text-[10px] font-extrabold tracking-[0.12em] text-bark uppercase">{product.badge}</span>}
+      </Link>
+      <div className="flex flex-1 flex-col p-3.5 sm:p-4">
+        <p className="truncate font-mono text-[11px] tracking-wider text-espresso/45 uppercase">{product.size}</p>
+        <h3 className="mt-1 line-clamp-2 text-[15px] leading-snug font-bold">
+          <Link to={href} className="hover:text-caramel">
+            {title}
+          </Link>
+        </h3>
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-3">
+          <span className="text-lg font-extrabold tabular-nums">{price}</span>
+          <Stepper product={product} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const TEMPLATE_HEROES = { living: LivingHero, tech: TechHero, botanical: BotanicalHero, grocer: GrocerHero, fashion: FashionHero, bakery: BakeryHero, beauty: BeautyHero, books: BooksHero, hardware: HardwareHero };
+export const TEMPLATE_CARDS = { living: LivingCard, tech: TechCard, botanical: BotanicalCard, grocer: GrocerCard, fashion: FashionCard, bakery: BakeryCard, beauty: BeautyCard, books: BooksCard, hardware: HardwareCard };

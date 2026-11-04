@@ -27,7 +27,7 @@ const controller = new AbortController();
 const timeoutId = setTimeout(() => controller.abort(), companyPage ? 1500 : 15000);
 
 // A sample shop for one of the category templates: the real storefront on sample data from the platform.
-const SAMPLE = window.location.pathname.match(/^\/demo\/(living|tech|botanical|grocer|fashion)(?=\/|$)/)?.[1];
+const SAMPLE = window.location.pathname.match(/^\/demo\/(living|tech|botanical|grocer|fashion|bakery|beauty|books|hardware)(?=\/|$)/)?.[1];
 const sample = SAMPLE ? await fetch(`/api/platform/samples/${SAMPLE}`).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null;
 
 const site = sample

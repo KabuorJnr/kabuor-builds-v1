@@ -111,7 +111,7 @@ export default function Hero({ products, config, content }) {
   const textY = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const textFade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
-  // The category templates (Living, Tech, Botanical, Grocer) draw their own banner.
+  // The category templates (templates.jsx) draw their own banner.
   const Template = TEMPLATE_HEROES[layout];
   if (Template) return <Template products={products} config={config} content={content} />;
 

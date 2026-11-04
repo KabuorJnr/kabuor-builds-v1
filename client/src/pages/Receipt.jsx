@@ -6,6 +6,13 @@ import { Tagline } from '../components/LoveNutHome';
 import { api } from '../lib/api';
 import { cn, money, setCurrency } from '../lib/format';
 
+const PAPER_KEY = 'shop-receipt-paper';
+// How it prints: a receipt printer's 80 mm roll (the printer sets the length), or a full A4 page.
+const PAPER_CSS = {
+  80: '@page { margin: 0 } @media print { .receipt-page .receipt-shadow { max-width: 72mm !important; padding-top: 3mm } .receipt-page .receipt-paper { font-size: 11.5px } }',
+  a4: '@page { size: A4; margin: 16mm } @media print { .receipt-page .receipt-shadow { max-width: 105mm !important } }',
+};
+
 const when = (iso) =>
   new Date(iso).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Nairobi' });
 
@@ -48,6 +55,26 @@ export default function Receipt() {
   const [params] = useSearchParams();
   const [state, setState] = useState({ data: null, error: null });
   const [shared, setShared] = useState(false);
+  const [paper, setPaper] = useState(() => {
+    try {
+      return localStorage.getItem(PAPER_KEY) === 'a4' ? 'a4' : '80';
+    } catch {
+      return '80';
+    }
+  });
+
+  // The paper is remembered on this device and set for the browser's print.
+  useEffect(() => {
+    try {
+      localStorage.setItem(PAPER_KEY, paper);
+    } catch {
+      // Private browsing: it just isn't remembered.
+    }
+    const style = document.createElement('style');
+    style.textContent = PAPER_CSS[paper];
+    document.head.appendChild(style);
+    return () => style.remove();
+  }, [paper]);
 
   // The receipt sits on the beige "counter"; match the page behind it so no other colour shows.
   useEffect(() => {
@@ -64,6 +91,8 @@ export default function Receipt() {
         setCurrency(data.currency);
         setState({ data, error: null });
         document.title = `Receipt ${data.code} · ${data.brand.name}`;
+        // Opened with ?print=1 (the shop's admin): print as soon as it's drawn.
+        if (params.get('print') === '1') setTimeout(() => window.print(), 500);
       })
       .catch((err) => setState({ data: null, error: err.status === 404 ? 'This receipt link isn’t valid.' : err.message }));
   }, [code, params]);
@@ -88,12 +117,16 @@ export default function Receipt() {
 
   return (
     <div className="receipt-page bg-dots min-h-svh bg-beige px-4 py-8 sm:py-12">
-      <div className="no-print mx-auto mb-6 flex max-w-[380px] items-center justify-between gap-2">
+      <div className="no-print mx-auto mb-6 flex max-w-[420px] flex-wrap items-center justify-between gap-2">
         <Link to="/" className="btn btn-ghost h-10 px-4 text-sm">
           <ArrowLeft className="h-4 w-4" /> Shop
         </Link>
         {r && (
           <div className="flex gap-2">
+            <select value={paper} onChange={(e) => setPaper(e.target.value)} aria-label="Paper" title="Paper" className="h-10 rounded-full border border-espresso/15 bg-white px-3 text-sm font-semibold">
+              <option value="80">80 mm</option>
+              <option value="a4">A4</option>
+            </select>
             <button onClick={share} className="btn btn-ghost h-10 px-4 text-sm">
               {shared ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />} {shared ? 'Link copied' : 'Share'}
             </button>
@@ -126,6 +159,7 @@ export default function Receipt() {
                   {r.branch.city} branch{r.branch.country && r.branch.country !== 'Kenya' ? `, ${r.branch.country}` : ''} · {r.branch.phone}
                 </p>
               )}
+              {r.brand.email && <p className="text-xs text-espresso/60">{r.brand.email}</p>}
             </header>
 
             <Rule />
@@ -148,21 +182,23 @@ export default function Receipt() {
             </div>
             <ul className="mt-1.5 space-y-2">
               {r.items.map((i, k) => (
-                <li key={k}>
+                <li key={k} className="break-inside-avoid">
                   <div className="flex justify-between gap-3">
-                    <span>
+                    <span className="min-w-0">
                       {i.qty} x {i.label}
                     </span>
-                    <span className="tabular-nums">{money(i.unitPrice * i.qty)}</span>
+                    <span className="shrink-0 tabular-nums">{money(i.unitPrice * i.qty)}</span>
                   </div>
-                  {i.qty > 1 && <div className="text-[11px] text-espresso/50">@ {money(i.unitPrice)} each</div>}
+                  {(i.detail || i.qty > 1) && (
+                    <div className="pl-4 text-[11px] text-espresso/55">{[i.detail, i.qty > 1 && `@ ${money(i.unitPrice)} each`].filter(Boolean).join(' · ')}</div>
+                  )}
                 </li>
               ))}
             </ul>
 
             <Rule />
             <div className="relative space-y-0.5">
-              <Row label="Subtotal" value={money(r.subtotal)} />
+              <Row label={`Subtotal (${r.items.reduce((n, i) => n + i.qty, 0)} ${r.items.reduce((n, i) => n + i.qty, 0) === 1 ? 'item' : 'items'})`} value={money(r.subtotal)} />
               <Row
                 label="Delivery"
                 value={r.deliveryFee ? money(r.deliveryFee) : r.fulfilment === 'pickup' ? 'Pickup' : r.deliverTo ? 'Paid to rider' : '-'}
