@@ -36,6 +36,9 @@ export const SHOPS_RAILWAY_URL = resolveDeployUrl(
   'https://builds.kabuor-technologies.company'
 );
 
+// Kabuor Dine runs as its own product and deployment (repository kabuor-dine).
+export const DINE_URL = (import.meta.env.VITE_DINE_URL || 'https://dine.kabuor-technologies.company').replace(/\/+$/, '');
+
 export const ERP_RAILWAY_URL = resolveDeployUrl(
   import.meta.env.VITE_ERP_URL ?? import.meta.env.VITE_ERP_RAILWAY_URL,
   'https://erp.kabuor-technologies.company'
@@ -54,7 +57,7 @@ export const whatsapp = (phone, text) => `https://wa.me/254${phone.replace(/\D/g
 export const PRODUCTS = [
   { to: '/shops', name: 'Kabuor Shops', short: 'Shops', line: 'Online shops for brands', launchUrl: SHOPS_RAILWAY_URL },
   { to: '/erp', name: 'Kabuor ERP', short: 'ERP', line: 'Run the whole business', launchUrl: ERP_RAILWAY_URL },
-  { to: '/dine', name: 'Kabuor Dine', short: 'Dine', line: 'QR ordering for restaurants', launchUrl: `${ERP_RAILWAY_URL}/signup?product=dine` },
+  { to: '/dine', name: 'Kabuor Dine', short: 'Dine', line: 'QR ordering for restaurants', launchUrl: `${DINE_URL}/signup` },
 ];
 
 /** On ink (light text) over the dark heroes. `cta` is this page's main action: { to | href, label }. */

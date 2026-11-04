@@ -5,10 +5,10 @@
 import { useEffect } from 'react';
 import { BarChart3, BellRing, Check, ChefHat, ChevronRight, Minus, Plus, QrCode, ReceiptText, ShieldCheck, Smartphone, UtensilsCrossed } from 'lucide-react';
 import DemoRequest from './DemoRequest';
-import { ERP_RAILWAY_URL } from './Site';
+import { DINE_URL } from './Site';
 import { BrowserShot, CorporatePage, PhoneShot, SectionHead } from './Corporate';
 
-const SIGNUP = `${ERP_RAILWAY_URL}/signup?product=dine`;
+const SIGNUP = `${DINE_URL}/signup`;
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const ACCENT = '#C2410C';
 
@@ -72,14 +72,14 @@ export default function Dine({ info }) {
             </div>
             <p className="mt-4 text-sm text-[var(--ms-muted)]">
               KSh 3,000 a month per branch · Already using it?{' '}
-              <a href={`${ERP_RAILWAY_URL}/dine`} {...ext} className="ms-link">
+              <a href={`${DINE_URL}/signin`} {...ext} className="ms-link">
                 Sign in <ChevronRight className="h-4 w-4" />
               </a>
             </p>
           </div>
           {/* The real thing: the floor on a laptop, the guest's menu on a phone. */}
           <div className="relative mx-auto w-full max-w-xl sm:pr-[14%] sm:pb-8">
-            <BrowserShot src="/brand/dine-floor.webp" alt="Kabuor Dine floor screen: every table, and which need a waiter now" address="erp.kabuor-technologies.company/dine" />
+            <BrowserShot src="/brand/dine-floor.webp" alt="Kabuor Dine floor screen: every table, and which need a waiter now" address="dine.kabuor-technologies.company/dine" />
             <PhoneShot src="/brand/dine-guest-phone.webp" alt="A guest's QR menu on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
           </div>
         </div>
@@ -119,7 +119,7 @@ export default function Dine({ info }) {
             ))}
           </ol>
           <div className="mt-7 grid items-end gap-6 lg:grid-cols-[1fr_auto]">
-            <BrowserShot src="/brand/dine-kitchen.webp" alt="Kabuor Dine kitchen screen: a ticket with the guest's choices and a note for the cook" address="erp.kabuor-technologies.company/dine/kitchen" />
+            <BrowserShot src="/brand/dine-kitchen.webp" alt="Kabuor Dine kitchen screen: a ticket with the guest's choices and a note for the cook" address="dine.kabuor-technologies.company/dine/kitchen" />
             <PhoneShot src="/brand/dine-guest-table.webp" alt="The guest follows their order and pays from their phone" className="mx-auto hidden w-48 lg:block" />
           </div>
         </div>

@@ -9,7 +9,7 @@ import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCi
 import { ksh } from './shared';
 import DemoRequest from './DemoRequest';
 import { SHOWCASES as COMPANY_SHOWCASES } from './showcases';
-import { ERP_RAILWAY_URL, Go, whatsapp } from './Site';
+import { DINE_URL, Go, whatsapp } from './Site';
 import { BrowserShot, CorporatePage, FOUNDER, PhoneShot, SectionHead } from './Corporate';
 
 
@@ -152,7 +152,7 @@ export default function Company({ info }) {
                 text="QR ordering for restaurants, cafés and hotels. Guests order and pay from the table; the kitchen and bar see every order at once."
                 points={['A QR menu on every table, with guests’ choices', 'Kitchen and bar screens, and a floor view for waiters', 'M-Pesa at the table, eTIMS receipts, sales in your books']}
                 primary={
-                  <a href={`${ERP_RAILWAY_URL}/signup?product=dine`} target="_blank" rel="noopener noreferrer" className="ms-btn ms-btn-primary">
+                  <a href={`${DINE_URL}/signup`} target="_blank" rel="noopener noreferrer" className="ms-btn ms-btn-primary">
                     Start Kabuor Dine
                   </a>
                 }
