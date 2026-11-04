@@ -54,10 +54,11 @@ export function Go({ to, children, reload, ...props }) {
 export const tel = (phone) => `tel:${phone.replace(/\s/g, '')}`;
 export const whatsapp = (phone, text) => `https://wa.me/254${phone.replace(/\D/g, '').replace(/^0/, '')}?text=${encodeURIComponent(text)}`;
 
+// The flagships first: Kabuor ERP and Kabuor Dine, then Kabuor Shops.
 export const PRODUCTS = [
-  { to: '/shops', name: 'Kabuor Shops', short: 'Shops', line: 'Online shops for brands', launchUrl: SHOPS_RAILWAY_URL },
   { to: '/erp', name: 'Kabuor ERP', short: 'ERP', line: 'Run the whole business', launchUrl: ERP_RAILWAY_URL },
   { to: '/dine', name: 'Kabuor Dine', short: 'Dine', line: 'QR ordering for restaurants', launchUrl: DINE_URL },
+  { to: '/shops', name: 'Kabuor Shops', short: 'Shops', line: 'Online shops for brands', launchUrl: SHOPS_RAILWAY_URL },
 ];
 
 /** On ink (light text) over the dark heroes. `cta` is this page's main action: { to | href, label }. */

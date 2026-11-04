@@ -1,8 +1,8 @@
 // Kabuor Technologies, the company (/). A visitor is deciding two things: "which of these is for me?" and "can I
 // trust these people?". The page answers in that order, in a plain corporate layout (one font, flat colour, a
 // white header with text links and one blue action, product tiles on a regular grid, a grey footer of link
-// columns): the two products with their status and price, a guide to choosing, what both are built on, real
-// work, a demo request, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
+// columns): the two flagships, Kabuor ERP and Kabuor Dine, then Kabuor Shops, a guide to choosing, what they're
+// built on, real work, a demo request, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCircle, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
@@ -23,19 +23,20 @@ const SHARED = [
 ];
 
 const CHOOSE = [
-  { need: 'I want customers to find my products and order online.', product: 'Kabuor Shops', to: '/shops', text: 'Your own online shop with M-Pesa checkout, live the same day.' },
   { need: 'I invoice other businesses, buy stock, and need my books and KRA in order.', product: 'Kabuor ERP', to: '/erp', text: 'Sales, M-Pesa, stock, payroll and books in one place.' },
   { need: 'I run a restaurant, café or hotel and want guests to order and pay from the table.', product: 'Kabuor Dine', to: '/dine', text: 'A QR menu on every table, kitchen screens and M-Pesa at the table.' },
-  { need: 'I need both.', product: 'Start with Kabuor Shops', to: '/shops', text: 'Then join the ERP early access: online orders will flow straight into your books.' },
+  { need: 'I run a restaurant and want payroll, purchasing and full accounts too.', product: 'Start with Kabuor Dine', to: '/dine', text: 'It runs on Kabuor ERP, so moving up to the full system keeps all your data.' },
+  { need: 'I want customers to find my products and order online.', product: 'Kabuor Shops', to: '/shops', text: 'Your own online shop with M-Pesa checkout, live the same day.' },
 ];
 
-/** One product: picture on top, then status and price, name, what it does, and the two ways in. */
-function ProductTile({ picture, status, name, logo, text, points, primary, more }) {
+/** One product: picture on top, then status and price, name, what it does, and the two ways in. `flagship` tags it,
+ * `row` lays it out sideways and smaller, for a product that isn't a flagship. */
+function ProductTile({ picture, status, name, text, points, primary, more, flagship = false, row = false }) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white">
-      <div className="relative aspect-[16/9] overflow-hidden bg-[#EEF2FC]">{picture}</div>
+    <article className={row ? 'grid overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]' : 'flex flex-col overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white'}>
+      <div className={row ? 'relative aspect-[16/9] overflow-hidden bg-[#EEF2FC] md:aspect-auto md:min-h-[17rem]' : 'relative aspect-[16/9] overflow-hidden bg-[#EEF2FC]'}>{picture}</div>
       <div className="flex flex-1 flex-col p-6 sm:p-8">
-        {logo && <img src={logo} alt="" className="mb-4 h-7 w-auto self-start" />}
+        {flagship && <span className="mb-3 w-fit rounded bg-[var(--ms-blue)] px-2.5 py-0.5 text-xs font-semibold text-white">Flagship</span>}
         <p className="text-sm text-[var(--ms-muted)]">{status}</p>
         <h3 className="mt-1 text-2xl font-semibold sm:text-[1.75rem]">{name}</h3>
         <p className="mt-2 text-base leading-relaxed text-[var(--ms-muted)]">{text}</p>
@@ -73,7 +74,7 @@ export default function Company({ info }) {
               <p className="text-sm font-semibold text-[var(--ms-blue)]">Kabuor Technologies</p>
               <h1 className="mt-3 text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">Software Kenyan businesses run on</h1>
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--ms-muted)]">
-                Kabuor ERP runs the whole business: sales, M-Pesa, stock, payroll and books. Kabuor Shops puts your products online with M-Pesa checkout. Both are built for KRA and for the way business works here.
+                Kabuor ERP runs the whole business: sales, M-Pesa, stock, payroll and books. Kabuor Dine runs the restaurant: guests order and pay from the table, and the kitchen sees every order at once. Both are built for KRA and for the way business works here.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href="#demo" className="ms-btn ms-btn-primary">
@@ -84,10 +85,10 @@ export default function Company({ info }) {
                 </a>
               </div>
             </div>
-            {/* Both products, as they really look: Kabuor ERP's dashboards, and a shop made on Kabuor Shops. */}
+            {/* The flagships, as they really look: Kabuor ERP's dashboards, and a guest's Kabuor Dine menu. */}
             <div className="relative mx-auto w-full max-w-xl sm:pr-[14%] sm:pb-8">
               <BrowserShot src="/brand/erp-dashboards.webp" alt="Kabuor ERP dashboards: sales, profit, cash and who owes you, live from the books" address="erp.kabuor-technologies.company" />
-              <PhoneShot src="/brand/work-anjugu-shop-phone.webp" alt="A shop made on Kabuor Shops, on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
+              <PhoneShot src="/brand/dine-guest-phone.webp" alt="A guest ordering from the table with Kabuor Dine" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
             </div>
           </div>
         </section>
@@ -95,30 +96,8 @@ export default function Company({ info }) {
         {/* Products */}
         <section id="products" aria-labelledby="products-title" className="scroll-mt-20 py-10 sm:py-12">
           <div className="container-x">
-            <SectionHead id="products-title" title="Our products" text="Three products, one way of working: M-Pesa first, KRA-ready, priced in shillings." />
-            <div className="mt-7 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-              <ProductTile
-                picture={
-                  <>
-                    <img src="/brand/work-anjugu-desk.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-top" />
-                    <img src="/brand/work-anjugu-shop-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
-                  </>
-                }
-                status={['Available now', price].filter(Boolean).join(' · ')}
-                name="Kabuor Shops"
-                text="Your brand’s own online shop. Your products, your colours, M-Pesa checkout. See it before you pay, and go live the same day."
-                points={['19 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, with no commission', 'Your own shop link, ready to share on WhatsApp']}
-                primary={
-                  <Go to="/start" className="ms-btn ms-btn-primary">
-                    Start your shop
-                  </Go>
-                }
-                more={
-                  <Go to="/shops" className="ms-link">
-                    Learn more <ChevronRight className="h-4 w-4" />
-                  </Go>
-                }
-              />
+            <SectionHead id="products-title" title="Our flagships" text="Kabuor ERP for the whole business, Kabuor Dine for restaurants. One way of working: M-Pesa first, KRA-ready, priced in shillings." />
+            <div className="mt-7 grid gap-6 lg:grid-cols-2">
               <ProductTile
                 picture={
                   <>
@@ -127,6 +106,7 @@ export default function Company({ info }) {
                   </>
                 }
                 status="Early access · Priced per business, in shillings"
+                flagship
                 name="Kabuor ERP"
                 text="Sales, M-Pesa, stock, payroll and books in one place, with Msaidizi, an assistant you can ask in Kiswahili."
                 points={['M-Pesa payments match your invoices by themselves', 'VAT, stock and profit worked out as you go', 'Built for the phone, for your whole team']}
@@ -149,8 +129,8 @@ export default function Company({ info }) {
                   </>
                 }
                 status="New · KSh 3,000 a month per branch"
+                flagship
                 name="Kabuor Dine"
-                logo="/brand/kabuor-dine-logo.svg"
                 text="QR ordering for restaurants, cafés and hotels. Guests order and pay from the table; the kitchen and bar see every order at once."
                 points={['A QR menu on every table, with guests’ choices', 'Kitchen and bar screens, and a floor view for waiters', 'M-Pesa at the table, eTIMS receipts, sales in your books']}
                 primary={
@@ -160,6 +140,32 @@ export default function Company({ info }) {
                 }
                 more={
                   <Go to="/dine" className="ms-link">
+                    Learn more <ChevronRight className="h-4 w-4" />
+                  </Go>
+                }
+              />
+            </div>
+            <h3 className="mt-10 text-sm font-semibold tracking-wide text-[var(--ms-muted)] uppercase">Also from Kabuor</h3>
+            <div className="mt-4">
+              <ProductTile
+                row
+                picture={
+                  <>
+                    <img src="/brand/work-anjugu-desk.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-top" />
+                    <img src="/brand/work-anjugu-shop-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
+                  </>
+                }
+                status={['Available now', price].filter(Boolean).join(' · ')}
+                name="Kabuor Shops"
+                text="Your brand’s own online shop. Your products, your colours, M-Pesa checkout. See it before you pay, and go live the same day."
+                points={['19 designs that take their colours from your photos', 'Customers pay your own Till or Paybill, with no commission', 'Your own shop link, ready to share on WhatsApp']}
+                primary={
+                  <Go to="/start" className="ms-btn ms-btn-primary">
+                    Start your shop
+                  </Go>
+                }
+                more={
+                  <Go to="/shops" className="ms-link">
                     Learn more <ChevronRight className="h-4 w-4" />
                   </Go>
                 }
@@ -308,9 +314,9 @@ export default function Company({ info }) {
               </div>
               <dl className="mt-6 grid max-w-2xl gap-6 border-t border-[var(--ms-line)] pt-6 sm:grid-cols-2">
                 {[
-                  ['Kabuor ERP', 'The whole business in one place'],
+                  ['Kabuor ERP', 'The whole business in one place (flagship)'],
+                  ['Kabuor Dine', 'QR ordering for restaurants (flagship)'],
                   ['Kabuor Shops', 'Online shops for Kenyan brands'],
-                  ['Kabuor Dine', 'QR ordering for restaurants'],
                   ['Kabuor Builds', 'Websites we design and build for you'],
                 ].map(([t, d]) => (
                   <div key={t}>

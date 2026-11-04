@@ -10,9 +10,9 @@ import { whatsapp } from './Site';
 
 const PRODUCTS = [
   ['erp', 'Kabuor ERP', 'Sales, M-Pesa, stock, books, payroll'],
-  ['shops', 'Kabuor Shops', 'Your own online shop'],
   ['dine', 'Kabuor Dine', 'QR ordering for restaurants'],
-  ['both', 'Both', 'Shop orders flowing into the books'],
+  ['shops', 'Kabuor Shops', 'Your own online shop'],
+  ['both', 'More than one', 'Kabuor ERP with Dine or Shops'],
 ];
 const STAFF = [
   ['1', 'Just me'],

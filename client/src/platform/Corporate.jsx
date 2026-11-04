@@ -5,7 +5,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { Menu, X } from 'lucide-react';
-import { ERP_RAILWAY_URL, Go, tel, whatsapp } from './Site';
+import { DINE_URL, ERP_RAILWAY_URL, Go, tel, whatsapp } from './Site';
 import { CONTACT_EMAIL } from './contact';
 
 export const FOUNDER = {
@@ -19,8 +19,8 @@ export const FOUNDER = {
 
 const NAV = [
   { to: '/erp', label: 'Kabuor ERP' },
-  { to: '/shops', label: 'Kabuor Shops' },
   { to: '/dine', label: 'Kabuor Dine' },
+  { to: '/shops', label: 'Kabuor Shops' },
   { href: '/#work', label: 'Customers' },
   { href: '/#about', label: 'About' },
   { to: '/careers', label: 'Careers' },
@@ -123,10 +123,11 @@ export function Footer() {
   const cols = [
     ['Products', [
       { to: '/erp', label: 'Kabuor ERP' },
-      { to: '/shops', label: 'Kabuor Shops' },
       { to: '/dine', label: 'Kabuor Dine' },
-      { to: '/start', label: 'Start a shop' },
+      { to: '/shops', label: 'Kabuor Shops' },
       { href: ERP_RAILWAY_URL, label: 'Sign in to Kabuor ERP' },
+      { href: DINE_URL, label: 'Launch Kabuor Dine' },
+      { to: '/start', label: 'Start a shop' },
     ]],
     ['For business', [
       { href: '/#demo', label: 'Request a demo' },
