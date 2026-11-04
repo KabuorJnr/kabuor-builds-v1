@@ -8,9 +8,10 @@ import DemoRequest from './DemoRequest';
 import { DINE_URL } from './Site';
 import { BrowserShot, CorporatePage, PhoneShot, SectionHead } from './Corporate';
 
-const SIGNUP = `${DINE_URL}/signup`;
+// Launching Kabuor Dine opens its own site (its landing page: start, or sign in).
+const SIGNUP = DINE_URL;
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
-const ACCENT = '#C2410C';
+const ACCENT = '#9C6B4A';
 
 const FIXES = [
   ['Guests waving for a waiter to order, then again for the bill', 'Guests order from the QR on their table, with their choices, and pay from their phone. Waiters carry food instead of notepads.'],
@@ -52,19 +53,20 @@ export default function Dine({ info }) {
   }, []);
 
   return (
-    <CorporatePage cta={{ href: SIGNUP, label: 'Start Kabuor Dine' }}>
+    <CorporatePage cta={{ href: SIGNUP, label: 'Launch Kabuor Dine' }}>
       {/* Hero */}
-      <section className="border-b border-[var(--ms-line)] bg-[#FFF7F2]">
+      <section className="border-b border-[var(--ms-line)] bg-[#FBF7F2]">
         <div className="container-x grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1fr_1.05fr] lg:py-20">
           <div>
-            <p className="text-sm font-semibold" style={{ color: ACCENT }}>Kabuor Dine · For restaurants, cafés, hotels and bars</p>
+            <img src="/brand/kabuor-dine-logo.png" alt="Kabuor Dine" className="h-14 w-auto" />
+            <p className="mt-4 text-sm font-semibold" style={{ color: ACCENT }}>For restaurants, cafés, hotels and bars</p>
             <h1 className="mt-3 text-[2.25rem] font-semibold leading-[1.12] tracking-tight sm:text-5xl">Guests order from the table. The kitchen sees it at once.</h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--ms-muted)]">
               A QR menu on every table, kitchen and bar screens, and the bill paid by M-Pesa from the guest’s own phone. Every sale lands in your books, with stock and KRA eTIMS taken care of.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href={SIGNUP} {...ext} className="ms-btn ms-btn-primary" style={{ background: ACCENT, borderColor: ACCENT }}>
-                Start Kabuor Dine
+                Launch Kabuor Dine
               </a>
               <a href="#demo" className="ms-btn ms-btn-secondary">
                 Request a demo

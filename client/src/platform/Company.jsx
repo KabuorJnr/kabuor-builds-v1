@@ -152,8 +152,8 @@ export default function Company({ info }) {
                 text="QR ordering for restaurants, cafés and hotels. Guests order and pay from the table; the kitchen and bar see every order at once."
                 points={['A QR menu on every table, with guests’ choices', 'Kitchen and bar screens, and a floor view for waiters', 'M-Pesa at the table, eTIMS receipts, sales in your books']}
                 primary={
-                  <a href={`${DINE_URL}/signup`} target="_blank" rel="noopener noreferrer" className="ms-btn ms-btn-primary">
-                    Start Kabuor Dine
+                  <a href={DINE_URL} target="_blank" rel="noopener noreferrer" className="ms-btn ms-btn-primary">
+                    Launch Kabuor Dine
                   </a>
                 }
                 more={
