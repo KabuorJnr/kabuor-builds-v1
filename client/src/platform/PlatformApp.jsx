@@ -10,6 +10,7 @@ import Wizard from './Wizard';
 import Company from './Company';
 import Shops from './Shops';
 import Erp from './Erp';
+import Dine from './Dine';
 import CareersPage from './CareersPage';
 import AboutFounder from './AboutFounder';
 
@@ -90,6 +91,7 @@ export default function PlatformApp({ site }) {
         <Route path="/demo/purelix" element={<Reload to="/demo/botanical" />} />
         <Route path="/shops" element={<Shops info={info} />} />
         <Route path="/erp" element={<Erp info={info} />} />
+        <Route path="/dine" element={<Dine info={info} />} />
         <Route path="/careers" element={<CareersPage info={info} />} />
         <Route path="/about-founder" element={<AboutFounder info={info} />} />
         <Route path="/founder" element={<AboutFounder info={info} />} />

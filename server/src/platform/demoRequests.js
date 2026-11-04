@@ -5,7 +5,7 @@ import { toMsisdn } from '../mpesa.js';
 import { now, pdb } from './store.js';
 import { STORAGE_LASTS } from '../site.js';
 
-const PRODUCTS = ['erp', 'shops', 'both'];
+const PRODUCTS = ['erp', 'shops', 'dine', 'both'];
 const STAFF = ['1', '2-10', '11-50', '50+'];
 export const DEMO_STATUSES = ['new', 'contacted', 'booked', 'closed'];
 const text = (v, max) => String(v ?? '').trim().replace(/\s+/g, ' ').slice(0, max);

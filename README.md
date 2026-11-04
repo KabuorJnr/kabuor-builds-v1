@@ -128,6 +128,13 @@ server-side only; uploads re-encoded so only real images are stored.
 the load balancer reaches the server, `server/.env` never committed (it isn't), daily off-site backups,
 Cloudflare/Vercel firewall rules against floods, and ODPC registration.
 
+**No shared logins on a live server** (`NODE_ENV=production`, or running on Vercel, Railway or Render): a shop's
+admin opens only with its owner's own password, set when the shop launches. A shop never handed to an owner (a
+demo or a preview) keeps the starting `admin/admin` record, which a live server refuses; Kabuor staff can open such
+a shop with `SHOP_ADMIN_PASSWORD` (12+ characters) if it's set, and should change it there at once. A signup the
+browser re-sends after the server lost it is only taken back for a link nobody holds, with the owner's own email
+and password.
+
 ## Before real customers
 
 - Rate-limit signups and uploads, and add email verification.

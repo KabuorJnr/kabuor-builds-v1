@@ -11,6 +11,7 @@ import { whatsapp } from './Site';
 const PRODUCTS = [
   ['erp', 'Kabuor ERP', 'Sales, M-Pesa, stock, books, payroll'],
   ['shops', 'Kabuor Shops', 'Your own online shop'],
+  ['dine', 'Kabuor Dine', 'QR ordering for restaurants'],
   ['both', 'Both', 'Shop orders flowing into the books'],
 ];
 const STAFF = [
@@ -19,7 +20,7 @@ const STAFF = [
   ['11-50', '11–50'],
   ['50+', '50+'],
 ];
-const NAMES = { erp: 'Kabuor ERP', shops: 'Kabuor Shops', both: 'Kabuor ERP and Kabuor Shops' };
+const NAMES = { erp: 'Kabuor ERP', shops: 'Kabuor Shops', dine: 'Kabuor Dine', both: 'Kabuor ERP and Kabuor Shops' };
 
 export default function DemoRequest({ info, product: initial = 'erp', id = 'demo', className }) {
   const [f, setF] = useState({ product: initial, name: '', business: '', phone: '', email: '', staff: '', note: '', website: '' });
@@ -92,7 +93,7 @@ export default function DemoRequest({ info, product: initial = 'erp', id = 'demo
           <form onSubmit={submit} className="space-y-5">
             <fieldset>
               <legend className="mb-2 text-sm font-semibold">What would you like to see?</legend>
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className="grid gap-2 sm:grid-cols-2">
                 {PRODUCTS.map(([id, name, line]) => (
                   <label key={id} className={cn('cursor-pointer rounded-[var(--r-md)] p-3 ring-1 transition', f.product === id ? 'bg-[#ECEBFF] ring-2 ring-[#2357F5]' : 'bg-white ring-espresso/15 hover:ring-espresso/30')}>
                     <input type="radio" name="product" value={id} checked={f.product === id} onChange={set('product')} className="sr-only" />

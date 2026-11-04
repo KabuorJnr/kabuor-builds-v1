@@ -22,6 +22,16 @@ const KEY = 'admin_auth';
 export const DEFAULT_USERNAME = 'admin';
 const DEFAULT_PASSWORD = 'admin';
 
+// A live server has no shared login. A shop that was never handed to its owner (a demo template, a preview) still
+// holds the starting admin/admin record: there it opens only with SHOP_ADMIN_PASSWORD, if Kabuor sets one, and never
+// with "admin". On a developer's machine admin/admin keeps working.
+export const LIVE = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL || process.env.RAILWAY_ENVIRONMENT_NAME || process.env.RENDER);
+const sameText = (a, b) => {
+  const x = Buffer.from(String(a ?? ''));
+  const y = Buffer.from(String(b ?? ''));
+  return x.length === y.length && timingSafeEqual(x, y);
+};
+
 function hashPassword(password, salt = randomBytes(16).toString('hex')) {
   return { salt, hash: scryptSync(String(password), salt, 64).toString('hex') };
 }
@@ -38,9 +48,17 @@ export function getAuth() {
   return saveAuth({ username: DEFAULT_USERNAME, ...hashPassword(DEFAULT_PASSWORD), mustChange: true, version: 1 });
 }
 
-function passwordMatches(auth, password) {
+function hashMatches(auth, password) {
   const candidate = scryptSync(String(password ?? ''), auth.salt, 64);
   return timingSafeEqual(candidate, Buffer.from(auth.hash, 'hex'));
+}
+
+/** Still the starting record nobody has claimed (admin/admin, waiting for its first change). */
+const isStarting = (auth) => auth.mustChange && hashMatches(auth, DEFAULT_PASSWORD);
+
+function passwordMatches(auth, password) {
+  if (LIVE && isStarting(auth)) return Boolean(process.env.SHOP_ADMIN_PASSWORD) && process.env.SHOP_ADMIN_PASSWORD.length >= 12 && sameText(password, process.env.SHOP_ADMIN_PASSWORD);
+  return hashMatches(auth, password);
 }
 
 // For dangerous admin actions: re-check the current password.

@@ -9,7 +9,7 @@ import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCi
 import { ksh } from './shared';
 import DemoRequest from './DemoRequest';
 import { SHOWCASES as COMPANY_SHOWCASES } from './showcases';
-import { Go, whatsapp } from './Site';
+import { ERP_RAILWAY_URL, Go, whatsapp } from './Site';
 import { BrowserShot, CorporatePage, FOUNDER, PhoneShot, SectionHead } from './Corporate';
 
 
@@ -25,6 +25,7 @@ const SHARED = [
 const CHOOSE = [
   { need: 'I want customers to find my products and order online.', product: 'Kabuor Shops', to: '/shops', text: 'Your own online shop with M-Pesa checkout, live the same day.' },
   { need: 'I invoice other businesses, buy stock, and need my books and KRA in order.', product: 'Kabuor ERP', to: '/erp', text: 'Sales, M-Pesa, stock, payroll and books in one place.' },
+  { need: 'I run a restaurant, café or hotel and want guests to order and pay from the table.', product: 'Kabuor Dine', to: '/dine', text: 'A QR menu on every table, kitchen screens and M-Pesa at the table.' },
   { need: 'I need both.', product: 'Start with Kabuor Shops', to: '/shops', text: 'Then join the ERP early access: online orders will flow straight into your books.' },
 ];
 
@@ -93,8 +94,8 @@ export default function Company({ info }) {
         {/* Products */}
         <section id="products" aria-labelledby="products-title" className="scroll-mt-20 py-10 sm:py-12">
           <div className="container-x">
-            <SectionHead id="products-title" title="Our products" text="Two products, one way of working: M-Pesa first, KRA-ready, priced in shillings." />
-            <div className="mt-7 grid gap-6 lg:grid-cols-2">
+            <SectionHead id="products-title" title="Our products" text="Three products, one way of working: M-Pesa first, KRA-ready, priced in shillings." />
+            <div className="mt-7 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
               <ProductTile
                 picture={
                   <>
@@ -139,6 +140,28 @@ export default function Company({ info }) {
                   </Go>
                 }
               />
+              <ProductTile
+                picture={
+                  <>
+                    <img src="/brand/dine-floor.webp" alt="" className="absolute top-8 right-[24%] bottom-0 left-8 h-[calc(100%-2rem)] w-[calc(76%-2rem)] rounded-t-md border border-b-0 border-[var(--ms-line)] object-cover object-left-top" />
+                    <img src="/brand/dine-guest-phone.webp" alt="" className="absolute right-8 bottom-0 aspect-[9/16] w-[24%] rounded-t-xl border-[4px] border-b-0 border-[#1b1b1b] bg-[#1b1b1b] object-cover object-top" />
+                  </>
+                }
+                status="New · KSh 3,000 a month per branch"
+                name="Kabuor Dine"
+                text="QR ordering for restaurants, cafés and hotels. Guests order and pay from the table; the kitchen and bar see every order at once."
+                points={['A QR menu on every table, with guests’ choices', 'Kitchen and bar screens, and a floor view for waiters', 'M-Pesa at the table, eTIMS receipts, sales in your books']}
+                primary={
+                  <a href={`${ERP_RAILWAY_URL}/signup?product=dine`} target="_blank" rel="noopener noreferrer" className="ms-btn ms-btn-primary">
+                    Start Kabuor Dine
+                  </a>
+                }
+                more={
+                  <Go to="/dine" className="ms-link">
+                    Learn more <ChevronRight className="h-4 w-4" />
+                  </Go>
+                }
+              />
             </div>
           </div>
         </section>
@@ -147,7 +170,7 @@ export default function Company({ info }) {
         <section id="choose" aria-labelledby="choose-title" className="scroll-mt-20 border-y border-[var(--ms-line)] bg-[var(--ms-soft)] py-10 sm:py-12">
           <div className="container-x">
             <SectionHead id="choose-title" title="Which one is right for you?" text="Start from what you want to fix." />
-            <ul className="mt-7 grid gap-6 md:grid-cols-3">
+            <ul className="mt-7 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
               {CHOOSE.map((c) => (
                 <li key={c.need} className="flex flex-col rounded-lg bg-white p-6 sm:p-8">
                   <p className="text-lg font-semibold leading-snug">“{c.need}”</p>
@@ -281,10 +304,11 @@ export default function Company({ info }) {
                 <p>We build the software Kenyan businesses run on, starting from how they really work: collecting payments by M-Pesa, staying right with KRA, and talking to customers on WhatsApp.</p>
                 <p>We’re a fully remote team based on Ngong Road, Nairobi. Kabuor Technologies Ltd is being incorporated.</p>
               </div>
-              <dl className="mt-6 grid max-w-2xl gap-6 border-t border-[var(--ms-line)] pt-6 sm:grid-cols-3">
+              <dl className="mt-6 grid max-w-2xl gap-6 border-t border-[var(--ms-line)] pt-6 sm:grid-cols-2">
                 {[
                   ['Kabuor ERP', 'The whole business in one place'],
                   ['Kabuor Shops', 'Online shops for Kenyan brands'],
+                  ['Kabuor Dine', 'QR ordering for restaurants'],
                   ['Kabuor Builds', 'Websites we design and build for you'],
                 ].map(([t, d]) => (
                   <div key={t}>

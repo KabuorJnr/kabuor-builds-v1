@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+# Sign-in screens and the API aren't pages for search results.
+Disallow: /admin
+Disallow: /api/
 
 Sitemap: https://www.kabuor-technologies.company/sitemap.xml

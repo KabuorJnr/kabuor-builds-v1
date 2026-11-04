@@ -2,6 +2,7 @@
 // the expensive or abusable endpoints (signups, uploads, M-Pesa prompts, sign-ins). Limits are counted per
 // IP in this process; behind a load balancer with several servers, move the counters to Redis (see README).
 import { PLATFORM_DOMAIN } from './site.js';
+import { LIVE } from './auth.js';
 
 /** Security headers. Pages may only be framed by the platform itself (the owner's preview step). */
 export function securityHeaders(req, res, next) {
@@ -10,7 +11,8 @@ export function securityHeaders(req, res, next) {
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
     'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-    'Content-Security-Policy': `frame-ancestors 'self'${PLATFORM_DOMAIN ? ` https://${PLATFORM_DOMAIN} https://*.${PLATFORM_DOMAIN}` : ''} http://localhost:* http://*.localhost:*`,
+    // A developer's own machine may frame pages too (the preview step running locally); a live server never allows it.
+    'Content-Security-Policy': `frame-ancestors 'self'${PLATFORM_DOMAIN ? ` https://${PLATFORM_DOMAIN} https://*.${PLATFORM_DOMAIN}` : ''}${LIVE ? '' : ' http://localhost:* http://*.localhost:*'}`,
   });
   if (req.secure) res.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   next();

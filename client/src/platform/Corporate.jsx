@@ -20,6 +20,7 @@ export const FOUNDER = {
 const NAV = [
   { to: '/erp', label: 'Kabuor ERP' },
   { to: '/shops', label: 'Kabuor Shops' },
+  { to: '/dine', label: 'Kabuor Dine' },
   { href: '/#work', label: 'Customers' },
   { href: '/#about', label: 'About' },
   { to: '/careers', label: 'Careers' },
@@ -123,6 +124,7 @@ export function Footer() {
     ['Products', [
       { to: '/erp', label: 'Kabuor ERP' },
       { to: '/shops', label: 'Kabuor Shops' },
+      { to: '/dine', label: 'Kabuor Dine' },
       { to: '/start', label: 'Start a shop' },
       { href: ERP_RAILWAY_URL, label: 'Sign in to Kabuor ERP' },
     ]],

@@ -231,19 +231,25 @@ platformRouter.post('/signup', (req, res) => {
 function signup(req) {
   const token = req.get('x-setup-token') ?? req.query.token;
   let shop = shopByToken(token);
+  // A serverless copy that lost its signups (its storage is temporary) can take the signup back from the browser's
+  // own copy, but only for a link nobody holds, with the owner's real password and email, through the same checks
+  // as a new signup. It never replaces a shop that exists: that would hand someone else's shop to whoever asked.
   if (!shop && req.body?.backupSignup) {
     const b = req.body.backupSignup;
-    if (b.link && b.name) {
-      const link = String(b.link).toLowerCase().replace(/\s+/g, '-').replace(/^-+|-+$/g, '');
-      const { salt, hash } = hashPassword(b.password || 'password123');
+    const link = text(b.link, 40).toLowerCase().replace(/\s+/g, '-').replace(/^-+|-+$/g, '');
+    const email = text(b.email, 120).toLowerCase();
+    const password = String(b.password ?? '').trim();
+    const setupToken = String(token || b.token || '');
+    if (link && text(b.name, 60).length >= 2 && KINDS[b.kind] && EMAIL.test(email) && password.length >= 8 && /^[a-f0-9]{48}$/.test(setupToken) && !linkProblem(link)) {
+      if (pdb.prepare("DELETE FROM shops WHERE slug = ? AND status = 'pending'").run(link).changes) forgetShop(link); // an expired hold, as at signup
+      const { salt, hash } = hashPassword(password);
       const at = now();
-      const setupToken = token || b.token || randomBytes(24).toString('hex');
       try {
-        pdb.prepare('INSERT OR REPLACE INTO shops (slug, name, kind, city, owner_name, phone, email, password_salt, password_hash, setup_token, brand, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-          .run(link, b.name, b.kind || 'fashion', b.city || '', b.ownerName || b.name, b.phone || '', b.email || (link + '@example.com'), salt, hash, setupToken, JSON.stringify(b.brand || {}), at, at);
+        pdb.prepare('INSERT INTO shops (slug, name, kind, city, owner_name, phone, email, password_salt, password_hash, setup_token, brand, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+          .run(link, text(b.name, 60), b.kind, text(b.city, 40), text(b.ownerName, 60) || text(b.name, 60), text(b.phone, 20), email, salt, hash, setupToken, JSON.stringify(b.brand && typeof b.brand === 'object' ? b.brand : {}), at, at);
         shop = shopByToken(setupToken);
       } catch (err) {
-        console.error('Failed to restore backup signup:', err);
+        console.error('Could not restore a signup from the browser:', err.message);
       }
     }
   }
@@ -404,7 +410,8 @@ platformRouter.post('/preview', (req, res) => {
   if (req.body?.backupSignup?.brand) {
     try { updateShop(record.slug, { brand: JSON.stringify(req.body.backupSignup.brand) }); } catch {}
   }
-  const problem = readyProblem(JSON.parse(record.brand || '{}'));
+  // Checked against the brand as saved now (the browser may just have sent its copy).
+  const problem = readyProblem(JSON.parse(getShopRecord(record.slug)?.brand || '{}'));
   if (problem) throw new HttpError(400, problem);
   stockShop(record.slug);
   res.json({ url: `${shopUrl(record.slug, req)}/?preview=${previewToken(getShopRecord(record.slug))}` });

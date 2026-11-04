@@ -177,13 +177,14 @@ if (existsSync(dist)) {
       const pages = {
         '/shops': [`Kabuor Shops · Product-first websites that sell`, `Your product, your colours, your prices. Customers pick, pay with M-Pesa, done. ${PLATFORM_TAGLINE}`],
         '/erp': ['Kabuor ERP · Run the whole business from one place', 'Sales, M-Pesa matching, KRA-ready VAT, stock and books, with an assistant you can ask in Kiswahili. Built in Kenya.'],
+        '/dine': ['Kabuor Dine · QR ordering and payments for restaurants', 'Guests order from a QR on the table, the kitchen sees it at once, and the bill is paid by M-Pesa from their phone. KSh 3,000 a month per branch.'],
         '/start': [`Start your shop · ${PLATFORM_NAME}`, 'Design your shop, see it, then pay by M-Pesa and go live.'],
         '/careers': ['Careers · Kabuor Technologies', 'Careers and open engineering roles at Kabuor Technologies in Nairobi, Kenya.'],
         '/about-founder': ['About the Founder · Kabuor Technologies', 'Rooney Odhiambo Kabuor, Founder & CEO of Kabuor Technologies Ltd.'],
         '/privacy': ['Privacy Notice · Kabuor Technologies', 'How Kabuor Technologies collects, protects and handles your business data.'],
         '/terms': ['Terms of Use · Kabuor Technologies', 'Terms and conditions for Kabuor Technologies software and services.'],
       };
-      const [title, description] = pages[req.path.replace(/\/$/, '')] ?? ['Kabuor Technologies · Software for Kenyan businesses', 'Kabuor Technologies makes software Kenyan businesses run on: Kabuor Shops for selling online and Kabuor ERP for running the whole business. M-Pesa first, KRA-ready.'];
+      const [title, description] = pages[req.path.replace(/\/$/, '')] ?? ['Kabuor Technologies · Software for Kenyan businesses', 'Kabuor Technologies makes software Kenyan businesses run on: Kabuor Shops for selling online, Kabuor ERP for running the whole business and Kabuor Dine for restaurants. M-Pesa first, KRA-ready.'];
       return res.send(page({ title, description, color: '#0A0B1E', icon: '/brand/icon-192.png' }));
     }
     if (!shop) return res.status(404).send(page({ title: `${PLATFORM_DOMAIN ? `${slug}.${PLATFORM_DOMAIN}` : slug} is available`, description: `Open your shop on ${PLATFORM_NAME}.`, color: '#F6F3EC' }));

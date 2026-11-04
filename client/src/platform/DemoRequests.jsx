@@ -11,7 +11,7 @@ const STEPS = [
   ['closed', 'Closed'],
 ];
 const TONE = { new: 'bg-amber-100 text-amber-900', contacted: 'bg-[#E4E2FF] text-[#2A1F96]', booked: 'bg-emerald-100 text-emerald-900', closed: 'bg-espresso/10 text-espresso/55' };
-const PRODUCT = { erp: 'Kabuor ERP', shops: 'Kabuor Shops', both: 'ERP + Shops' };
+const PRODUCT = { erp: 'Kabuor ERP', shops: 'Kabuor Shops', dine: 'Kabuor Dine', both: 'ERP + Shops' };
 const STAFF = { 1: 'Just them', '2-10': '2–10 staff', '11-50': '11–50 staff', '50+': '50+ staff' };
 const ago = (iso) => {
   const h = Math.floor((Date.now() - Date.parse(iso)) / 36e5);

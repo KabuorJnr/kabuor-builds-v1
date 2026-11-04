@@ -686,7 +686,11 @@ function PreviewPayStep({ token, signup, info, onEditLook, onEditProducts, onLiv
   const goLive = async () => {
     setState({ error: null, launching: true });
     try {
-      onLive(await papi('/launch', { method: 'POST', token }));
+      const live = await papi('/launch', { method: 'POST', token });
+      // The shop is the owner's now: the signup copy kept on this device (it holds their password) goes.
+      store.setDraft(null);
+      store.set(null);
+      onLive(live);
     } catch (err) {
       setState({ error: err.message, launching: false });
     }
