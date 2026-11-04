@@ -37,7 +37,7 @@ export const SHOPS_RAILWAY_URL = resolveDeployUrl(
 );
 
 // Kabuor Dine runs as its own product and deployment (repository kabuor-dine).
-export const DINE_URL = (import.meta.env.VITE_DINE_URL || 'https://dine.kabuor-technologies.company').replace(/\/+$/, '');
+export const DINE_URL = (import.meta.env.VITE_DINE_URL || 'https://kabuor-dine.vercel.app').replace(/\/+$/, '');
 
 export const ERP_RAILWAY_URL = resolveDeployUrl(
   import.meta.env.VITE_ERP_URL ?? import.meta.env.VITE_ERP_RAILWAY_URL,
