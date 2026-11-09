@@ -7,6 +7,7 @@ import { cn } from '../lib/format';
 import { papi } from './shared';
 import { Link } from 'react-router';
 import { whatsapp } from './Site';
+import { FOUNDER } from './Corporate';
 
 const PRODUCTS = [
   ['erp', 'Kabuor ERP', 'Sales, M-Pesa, stock, books, payroll'],
@@ -25,6 +26,7 @@ const NAMES = { erp: 'Kabuor ERP', shops: 'Kabuor Shops', dine: 'Kabuor Dine', b
 export default function DemoRequest({ info, product: initial = 'erp', id = 'demo', className }) {
   const [f, setF] = useState({ product: initial, name: '', business: '', phone: '', email: '', staff: '', note: '', website: '' });
   const [state, setState] = useState({ busy: false, error: '', sent: false, saved: true });
+  const phone = info?.phone || FOUNDER?.phone || '0705 607 954';
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const message = `Hi Kabuor Technologies, I'm ${f.name || '…'} from ${f.business || '…'}. I'd like a demo of ${NAMES[f.product]}.`;
   // The full request, for when the server can't keep it (STORAGE_LASTS on the server): WhatsApp carries it to us.
@@ -36,8 +38,13 @@ export default function DemoRequest({ info, product: initial = 'erp', id = 'demo
     try {
       const r = await papi('/demo', { method: 'POST', body: f });
       setState({ busy: false, error: '', sent: true, saved: r?.saved !== false });
-    } catch (err) {
-      setState({ busy: false, error: err.message, sent: false, saved: true });
+    } catch {
+      // If the static CDN has no platform backend, fallback smoothly to WhatsApp so the lead is never lost
+      setState({ busy: false, error: '', sent: true, saved: false });
+      try {
+        const waUrl = whatsapp(phone, full);
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+      } catch { }
     }
   };
 
@@ -56,11 +63,11 @@ export default function DemoRequest({ info, product: initial = 'erp', id = 'demo
               </li>
             ))}
           </ol>
-          {info?.phone && (
+          {phone && (
             <p className="mt-6 text-sm text-espresso/60">
               In a hurry?{' '}
-              <a href={whatsapp(info.phone, message)} target="_blank" rel="noreferrer" className="font-semibold text-[#1E8E3E] hover:underline">
-                WhatsApp {info.phone}
+              <a href={whatsapp(phone, message)} target="_blank" rel="noreferrer" className="font-semibold text-[#1E8E3E] hover:underline">
+                WhatsApp {phone}
               </a>
             </p>
           )}
@@ -76,14 +83,14 @@ export default function DemoRequest({ info, product: initial = 'erp', id = 'demo
               <p className="mx-auto mt-2 max-w-sm text-espresso/65">
                 {state.saved
                   ? `We’ll WhatsApp you on ${f.phone} within one working day to pick a time for your ${NAMES[f.product]} demo.`
-                  : 'Send your request to us on WhatsApp so it reaches the team straight away. It’s already written for you.'}
+                  : 'Send your request to us on WhatsApp so it reaches our team straight away. It’s already written for you.'}
               </p>
-              {!state.saved && info?.phone ? (
-                <a href={whatsapp(info.phone, full)} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
+              {!state.saved && phone ? (
+                <a href={whatsapp(phone, full)} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
                   <MessageCircle className="h-4 w-4" /> Send it on WhatsApp
                 </a>
-              ) : info?.phone && (
-                <a href={whatsapp(info.phone, message)} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
+              ) : phone && (
+                <a href={whatsapp(phone, message)} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
                   <MessageCircle className="h-4 w-4" /> Want it sooner? WhatsApp us now
                 </a>
               )}
