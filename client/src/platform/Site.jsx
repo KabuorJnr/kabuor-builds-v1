@@ -26,7 +26,8 @@ export const PRODUCT_ORIGIN = (import.meta.env.VITE_PRODUCT_ORIGIN ?? '').replac
 
 const resolveDeployUrl = (val, fallback) => {
   const s = (val ?? '').trim();
-  if (!s || s.includes('railway')) return fallback;
+  // Railway hosts only the APIs, and the Vercel account is blocked: both fall back to the company sub-domain.
+  if (!s || s.includes('railway') || s.includes('vercel.app')) return fallback;
   return s.replace(/\/+$/, '');
 };
 
@@ -37,7 +38,10 @@ export const SHOPS_RAILWAY_URL = resolveDeployUrl(
 );
 
 // Kabuor Dine runs as its own product and deployment (repository kabuor-dine).
-export const DINE_URL = (import.meta.env.VITE_DINE_URL || 'https://kabuor-dine.vercel.app').replace(/\/+$/, '');
+export const DINE_URL = resolveDeployUrl(
+  import.meta.env.VITE_DINE_URL,
+  'https://dine.kabuor-technologies.company'
+);
 
 export const ERP_RAILWAY_URL = resolveDeployUrl(
   import.meta.env.VITE_ERP_URL ?? import.meta.env.VITE_ERP_RAILWAY_URL,

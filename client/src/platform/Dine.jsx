@@ -107,7 +107,7 @@ export default function Dine({ info }) {
           </div>
           {/* The real thing: the floor on a laptop, the guest's menu on a phone. */}
           <div className="relative mx-auto w-full max-w-xl sm:pr-[14%] sm:pb-8">
-            <BrowserShot src="/brand/dine-floor.webp" alt="Kabuor Dine floor screen: every table, and which need a waiter now" address="kabuor-dine.vercel.app/dine" />
+            <BrowserShot src="/brand/dine-floor.webp" alt="Kabuor Dine floor screen: every table, and which need a waiter now" address="dine.kabuor-technologies.company/dine" />
             <PhoneShot src="/brand/dine-guest-phone.webp" alt="A guest's QR menu on a phone" className="absolute right-0 bottom-0 hidden w-[28%] sm:block" />
           </div>
         </div>
@@ -160,7 +160,7 @@ export default function Dine({ info }) {
             ))}
           </ol>
           <div className="mt-8 grid items-end gap-6 lg:grid-cols-[1fr_auto]">
-            <BrowserShot src="/brand/dine-kitchen.webp" alt="Kabuor Dine kitchen screen: a ticket with the guest's choices and a note for the cook" address="kabuor-dine.vercel.app/dine/kitchen" />
+            <BrowserShot src="/brand/dine-kitchen.webp" alt="Kabuor Dine kitchen screen: a ticket with the guest's choices and a note for the cook" address="dine.kabuor-technologies.company/dine/kitchen" />
             <PhoneShot src="/brand/dine-guest-table.webp" alt="The guest follows their order and pays from their phone" className="mx-auto hidden w-48 lg:block" />
           </div>
         </div>
