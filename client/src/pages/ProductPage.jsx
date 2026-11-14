@@ -10,6 +10,7 @@ import { Stars } from '../components/ui';
 import { telHref } from '../lib/branches';
 import { cn, isBundle, money, perHundredGrams } from '../lib/format';
 import { useCart } from '../store/cart';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 const waNumber = (phone = '') => phone.replace(/\D/g, '').replace(/^0/, '254');
 
@@ -76,7 +77,7 @@ function Share({ product }) {
     <div className="flex items-center gap-2 text-sm">
       <span className="text-espresso/50">Share</span>
       <a href={`https://wa.me/?text=${encodeURIComponent(`${product.name} – ${money(product.price)}\n${url}`)}`} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full bg-[#1E8E3E] text-white" aria-label="Share on WhatsApp">
-        <MessageCircle className="h-4 w-4" />
+        <WhatsAppIcon className="h-4 w-4" />
       </a>
       <button type="button" onClick={copy} className="grid h-9 w-9 place-items-center rounded-full bg-white ring-1 ring-espresso/15" aria-label="Copy link">
         {copied ? <Check className="h-4 w-4 text-emerald-700" /> : <Link2 className="h-4 w-4" />}
@@ -408,7 +409,7 @@ export default function ProductPage() {
                   <p>Not sure it’s right for you? Ask us before you order.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <a href={`https://wa.me/${waNumber(contact.phone)}?text=${encodeURIComponent(`Hi, I'm asking about ${product.name} (${window.location.href})`)}`} target="_blank" rel="noreferrer" className="btn h-10 bg-[#1E8E3E] px-4 text-sm text-white">
-                      <MessageCircle className="h-4 w-4" /> WhatsApp us
+                      <WhatsAppIcon className="h-4 w-4" /> WhatsApp us
                     </a>
                     <a href={telHref(contact.phone)} className="btn btn-ghost h-10 px-4 text-sm">
                       <Phone className="h-4 w-4" /> {contact.phone}

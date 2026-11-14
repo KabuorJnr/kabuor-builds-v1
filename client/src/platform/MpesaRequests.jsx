@@ -2,9 +2,10 @@
 // credentials file (or pastes it, or types the keys), Safaricom checks the consumer key and secret, and the
 // shop's checkout sends PIN prompts from the next order on.
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Check, ExternalLink, FileUp, Loader2, MessageCircle, Phone, Zap } from 'lucide-react';
+import { Check, ExternalLink, FileUp, Loader2, Phone, Zap } from 'lucide-react';
 import { cn } from '../lib/format';
 import { shopAddress } from '../lib/base';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 const TABS = [
   ['open', 'Waiting'],
@@ -253,7 +254,7 @@ function RequestCard({ r, oapi, onChanged }) {
             <Phone className="h-4 w-4" />
           </a>
           <a href={wa(r.phone, `Hi ${r.owner}, it's Kabuor Builds about connecting the M-Pesa prompt on ${r.name}.`)} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full bg-[#1E8E3E] text-[#fff]" aria-label={`WhatsApp ${r.owner}`}>
-            <MessageCircle className="h-4 w-4" />
+            <WhatsAppIcon className="h-4 w-4" />
           </a>
         </div>
       </div>

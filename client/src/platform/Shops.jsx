@@ -4,7 +4,7 @@
 // one price, questions, and a person who'll build it for you.
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Check, ChevronRight, Eye, Mail, MessageCircle, Palette, Phone, Plus, Store, Wallet } from 'lucide-react';
+import { Check, ChevronRight, Eye, Mail, Palette, Phone, Plus, Store, Wallet } from 'lucide-react';
 import { cn } from '../lib/format';
 import { family, loadFonts } from '../lib/fonts';
 import { linkLabel, linkParts } from '../lib/base';
@@ -12,6 +12,7 @@ import { ksh, papi } from './shared';
 import { Go, tel, whatsapp } from './Site';
 import { BrowserShot, CorporatePage, PhoneShot, SectionHead } from './Corporate';
 import { SHOWCASES as SHOWCASE_SHOPS } from './showcases';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 const STEPS = [
   { icon: Store, title: 'Tell us about your brand', text: 'Your name, what you sell, and the link you want.' },
@@ -344,7 +345,7 @@ export default function Shops({ info }) {
             </div>
             <div className="flex shrink-0 flex-wrap gap-3">
               <a href={whatsapp(phone, 'Hi Kabuor Technologies, I want an online shop for my brand.')} target="_blank" rel="noreferrer" className="ms-btn bg-white text-[var(--ms-ink)] hover:bg-[#e6e6e6]">
-                <MessageCircle className="h-4 w-4" /> WhatsApp {phone}
+                <WhatsAppIcon className="h-4 w-4" /> WhatsApp {phone}
               </a>
               <a href={tel(phone)} className="ms-btn border border-white/60 text-white hover:bg-white/10">
                 <Phone className="h-4 w-4" /> Call

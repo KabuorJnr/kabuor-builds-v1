@@ -1,9 +1,10 @@
 // The talent desk on the platform dashboard: who applied and what to do with them, and which roles are open on
 // /careers. Applications come first because they're what needs a decision.
 import { useCallback, useEffect, useState } from 'react';
-import { ExternalLink, Loader2, Mail, MessageCircle, Search } from 'lucide-react';
+import { ExternalLink, Loader2, Mail, Search } from 'lucide-react';
 import { cn } from '../lib/format';
 import { EXPERIENCE_LEVELS, REVIEW_STATUSES, START_DATES, WEEKLY_COMMITMENTS, optionLabel, withStatus } from './careersStore';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 const STATUS_TONE = {
   new: 'border-[#2357F5]/30 bg-[#E8EEFF] text-[#1D46C9]',
@@ -142,7 +143,7 @@ function ApplicationCard({ app, technical, expanded, onToggle, onStatus }) {
               title="WhatsApp"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#1E8E3E] text-white hover:bg-[#176F30]"
             >
-              <MessageCircle className="h-4 w-4" />
+              <WhatsAppIcon className="h-4 w-4" />
             </a>
           )}
           {app.email && (

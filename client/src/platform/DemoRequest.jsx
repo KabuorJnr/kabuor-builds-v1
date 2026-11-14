@@ -2,12 +2,13 @@
 // need to prepare a useful demo (which product, who, how to reach them, how big), says exactly what happens
 // next, and offers WhatsApp as the instant alternative, before and after sending.
 import { useState } from 'react';
-import { ArrowRight, Check, Loader2, MessageCircle } from 'lucide-react';
+import { ArrowRight, Check, Loader2 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { papi } from './shared';
 import { Link } from 'react-router';
 import { whatsapp } from './Site';
 import { FOUNDER } from './Corporate';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 const PRODUCTS = [
   ['erp', 'Kabuor ERP', 'Sales, M-Pesa, stock, books, payroll'],
@@ -87,11 +88,11 @@ export default function DemoRequest({ info, product: initial = 'erp', id = 'demo
               </p>
               {!state.saved && phone ? (
                 <a href={whatsapp(phone, full)} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
-                  <MessageCircle className="h-4 w-4" /> Send it on WhatsApp
+                  <WhatsAppIcon className="h-4 w-4" /> Send it on WhatsApp
                 </a>
               ) : phone && (
                 <a href={whatsapp(phone, message)} target="_blank" rel="noreferrer" className="btn mt-6 bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
-                  <MessageCircle className="h-4 w-4" /> Want it sooner? WhatsApp us now
+                  <WhatsAppIcon className="h-4 w-4" /> Want it sooner? WhatsApp us now
                 </a>
               )}
             </div>

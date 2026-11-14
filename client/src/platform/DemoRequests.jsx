@@ -1,8 +1,9 @@
 // Demo requests from the company site, newest waiting first. The next step is always a WhatsApp message, so
 // each card opens one with the person's name and product filled in, then marks where the conversation is.
 import { useCallback, useEffect, useState } from 'react';
-import { MessageCircle, Phone } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { cn } from '../lib/format';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 const STEPS = [
   ['new', 'New'],
@@ -63,7 +64,7 @@ export default function DemoRequests({ oapi, onError }) {
               {r.note && <p className="mt-1.5 rounded-lg bg-beige px-3 py-2 text-sm">“{r.note}”</p>}
               <div className="mt-2 flex flex-wrap gap-2">
                 <a href={wa(r.phone, `Hi ${r.name.split(' ')[0]}, this is Kabuor Builds. Thanks for asking for a ${PRODUCT[r.product]} demo for ${r.business}. When suits you this week?`)} target="_blank" rel="noreferrer" onClick={() => r.status === 'new' && move(r.id, 'contacted')} className="btn bg-[#1E8E3E] px-4 py-2 text-sm text-[#fff] hover:bg-[#176F30]">
-                  <MessageCircle className="h-4 w-4" /> WhatsApp {r.phone}
+                  <WhatsAppIcon className="h-4 w-4" /> WhatsApp {r.phone}
                 </a>
                 <a href={`tel:${r.phone}`} className="btn btn-ghost px-4 py-2 text-sm">
                   <Phone className="h-4 w-4" /> Call

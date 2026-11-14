@@ -5,12 +5,13 @@
 // built on, real work, a demo request, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCircle, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
+import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
 import { ksh } from './shared';
 import DemoRequest from './DemoRequest';
 import { SHOWCASES as COMPANY_SHOWCASES } from './showcases';
 import { DINE_URL, Go, whatsapp } from './Site';
 import { BrowserShot, CorporatePage, FOUNDER, PhoneShot, SectionHead } from './Corporate';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 
 const SHARED = [
@@ -368,7 +369,7 @@ export default function Company({ info }) {
             </div>
             <div className="flex shrink-0 flex-wrap gap-3">
               <a href={whatsapp(FOUNDER.phone, `Hi ${FOUNDER.first}, I'd like to talk about my business.`)} target="_blank" rel="noreferrer" className="ms-btn bg-white text-[var(--ms-ink)] hover:bg-[#e6e6e6]">
-                <MessageCircle className="h-4 w-4" /> WhatsApp {FOUNDER.phone}
+                <WhatsAppIcon className="h-4 w-4" /> WhatsApp {FOUNDER.phone}
               </a>
               <a href={`mailto:${FOUNDER.email}`} className="ms-btn border border-white/60 text-white hover:bg-white/10">
                 Email us <ArrowRight className="h-4 w-4" />
