@@ -2,7 +2,7 @@
 // trust these people?". The page answers in that order, in a plain corporate layout (one font, flat colour, a
 // white header with text links and one blue action, product tiles on a regular grid, a grey footer of link
 // columns): the two flagships, Kabuor ERP and Kabuor Dine, then Kabuor Shops, a guide to choosing, what they're
-// built on, real work, a demo request, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
+// built on, real work, a demo request, the founder and why each product exists, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCircle, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
@@ -303,9 +303,42 @@ export default function Company({ info }) {
           <DemoRequest info={info} product="erp" className="[&>div]:rounded-lg [&>div]:ring-[var(--ms-line)]" />
         </div>
 
+        {/* The founder: who is behind this, and why each product exists. */}
+        <section id="founder" aria-labelledby="founder-title" className="scroll-mt-20 border-t border-[var(--ms-line)] bg-[#F5F7FC] py-12 sm:py-16">
+          <div className="container-x grid items-center gap-10 lg:grid-cols-[20rem_1fr] lg:gap-14">
+            <img src="/brand/founder-rooney-portrait.webp" alt={`${FOUNDER.name}, founder of Kabuor Technologies`} width="720" height="900" loading="lazy" className="aspect-[4/5] w-full max-w-xs rounded-lg border border-[var(--ms-line)] object-cover object-top lg:max-w-none" />
+            <div className="max-w-2xl">
+              <p className="text-sm font-semibold text-[var(--ms-blue)]">From our founder</p>
+              <h2 id="founder-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Our own products, for our own problems, for our own people</h2>
+              <div className="mt-5 space-y-4 text-lg leading-relaxed text-[var(--ms-muted)]">
+                <p>
+                  Kabuor Dine began at an African MICE summit in Mombasa, where hoteliers who have spent their lives in the trade asked what creates waste, how a hotel can run on data, and how to give guests a smoother visit.
+                </p>
+                <p>
+                  Kabuor ERP began with a question: after years of Silicon Valley software running Kenyan industry, what if we built our own, from the ground up? It took months of planning before a single line was written.
+                </p>
+              </div>
+              <figure className="mt-6 border-l-4 border-[var(--ms-blue)] pl-5">
+                <blockquote className="text-xl font-semibold leading-snug">“If a cause is as good as its inspiration, we should chase it.”</blockquote>
+                <figcaption className="mt-2 text-sm text-[var(--ms-muted)]">
+                  {FOUNDER.name}, {FOUNDER.title}
+                </figcaption>
+              </figure>
+              <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Link to="/about-founder" className="ms-btn ms-btn-secondary">
+                  Read {FOUNDER.first}’s story
+                </Link>
+                <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="ms-link">
+                  LinkedIn <ExternalLink className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Who we are */}
         <section id="about" aria-labelledby="about-title" className="scroll-mt-20 border-t border-[var(--ms-line)] py-10 sm:py-12">
-          <div className="container-x grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+          <div className="container-x">
             <div>
               <SectionHead id="about-title" title="About Kabuor Technologies" />
               <div className="mt-5 max-w-2xl space-y-4 text-lg leading-relaxed text-[var(--ms-muted)]">
@@ -335,23 +368,6 @@ export default function Company({ info }) {
                 </Link>
               </div>
             </div>
-            {/* The founder's photo lives on /about-founder only, so this page (and its search listing) is about the company. */}
-            <figure className="h-fit overflow-hidden rounded-lg border border-[var(--ms-line)] bg-white lg:max-w-sm lg:justify-self-end">
-              <figcaption className="p-6">
-                <p className="text-sm font-semibold text-[var(--ms-blue)]">Leadership</p>
-                <p className="text-lg font-semibold">{FOUNDER.name}</p>
-                <p className="text-sm text-[var(--ms-muted)]">{FOUNDER.title}</p>
-                <p className="mt-3 text-[0.9375rem] leading-relaxed text-[var(--ms-muted)]">Built Kabuor ERP end to end: the .NET API, the React app, the KRA eTIMS and M-Pesa integrations, and Kenyan payroll.</p>
-                <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[var(--ms-line)] pt-5">
-                  <Link to="/about-founder" className="ms-btn ms-btn-secondary">
-                    About the founder
-                  </Link>
-                  <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="ms-link">
-                    LinkedIn <ExternalLink className="h-4 w-4" />
-                  </a>
-                </div>
-              </figcaption>
-            </figure>
           </div>
         </section>
 

@@ -9,7 +9,7 @@ import { DINE_URL, ERP_RAILWAY_URL, Go, tel, whatsapp } from './Site';
 import { CONTACT_EMAIL } from './contact';
 
 export const FOUNDER = {
-  name: 'Rooney Odhiambo Kabuor',
+  name: 'Rooney Odhiambo',
   first: 'Rooney',
   title: 'Founder & CEO',
   phone: '0705 607 954',
