@@ -1,9 +1,10 @@
 // About the founder (/about-founder, /founder): the one page with Rooney's photo, so the company page and its
 // search listing stay about the company. In the corporate layout every Kabuor page shares (Corporate.jsx).
 import { useEffect } from 'react';
-import { Award, Building, Code, Cpu, ExternalLink, Mail, MessageCircle, Phone } from 'lucide-react';
+import { Award, Building, Code, Cpu, ExternalLink, Mail, Phone } from 'lucide-react';
 import { tel, whatsapp } from './Site';
 import { CorporatePage, FOUNDER } from './Corporate';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 const LOCATION = 'Ngong Road, Nairobi, Kenya';
 
@@ -73,7 +74,7 @@ export default function AboutFounder() {
                 </li>
               </ul>
               <a href={whatsapp(FOUNDER.phone, "Hi Rooney, I'd like to connect regarding Kabuor Technologies.")} target="_blank" rel="noopener noreferrer" className="ms-btn ms-btn-primary mt-6 w-full">
-                <MessageCircle className="h-4 w-4" /> WhatsApp Rooney
+                <WhatsAppIcon className="h-4 w-4" /> WhatsApp Rooney
               </a>
             </figcaption>
           </figure>

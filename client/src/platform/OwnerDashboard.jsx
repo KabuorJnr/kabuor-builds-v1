@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { ArrowDownRight, ArrowUpRight, ExternalLink, Loader2, LogOut, MessageCircle, Phone, Search } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, ExternalLink, Loader2, LogOut, Phone, Search } from 'lucide-react';
 import { cn } from '../lib/format';
 import { ksh } from './shared';
 import { Wordmark } from './PlatformApp';
@@ -11,6 +11,7 @@ import MpesaRequests from './MpesaRequests';
 import DemoRequests from './DemoRequests';
 import CareersAdmin from './CareersAdmin';
 import { shopAddress } from '../lib/base';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 const KEY = 'kb-owner-token';
 const getToken = () => {
@@ -183,7 +184,7 @@ function CallList({ expiring, stuck }) {
                 <Phone className="h-4 w-4" />
               </a>
               <a href={wa(r.phone, r.msg)} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full bg-[#1E8E3E] text-[#fff]" aria-label={`WhatsApp ${r.name}`}>
-                <MessageCircle className="h-4 w-4" />
+                <WhatsAppIcon className="h-4 w-4" />
               </a>
             </li>
           ))}
