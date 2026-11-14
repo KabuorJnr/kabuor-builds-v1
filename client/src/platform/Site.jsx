@@ -2,8 +2,9 @@
 // (/shops, /erp). Same header and footer everywhere, so people always know which product they're looking at
 // and can switch between them.
 import { Link, NavLink } from 'react-router';
-import { Mail, MessageCircle, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import { cn } from '../lib/format';
+import WhatsAppIcon from './WhatsAppIcon';
 
 /** The Kabuor logo (brand v2): KABUOR with its cut O, drawn as one file per brand, white on dark, blue on light.
  * Which brand comes from the name, so "Kabuor Builds" (PLATFORM_NAME) and "Kabuor ERP" get their own O. */
@@ -122,7 +123,7 @@ export function ContactButtons({ info, message, className }) {
   return (
     <div className={cn('flex flex-col gap-2.5 sm:flex-row', className)}>
       <a href={whatsapp(info.phone, message)} target="_blank" rel="noreferrer" className="btn bg-[#1E8E3E] px-6 py-3.5 text-[#fff] hover:bg-[#176F30]">
-        <MessageCircle className="h-4 w-4" /> WhatsApp {info.phone}
+        <WhatsAppIcon className="h-4 w-4" /> WhatsApp {info.phone}
       </a>
       <a href={tel(info.phone)} className="btn btn-ghost px-6 py-3.5">
         <Phone className="h-4 w-4" /> Call
@@ -203,7 +204,7 @@ export function SiteFooter({ info, children }) {
               )}
               {info?.phone && (
                 <a href={whatsapp(info.phone, `Hi ${name}, `)} target="_blank" rel="noreferrer" className="btn mt-3 bg-[#1E8E3E] px-4 py-2.5 text-sm text-[#fff] hover:bg-[#176F30]">
-                  <MessageCircle className="h-4 w-4" /> WhatsApp us
+                  <WhatsAppIcon className="h-4 w-4" /> WhatsApp us
                 </a>
               )}
             </>

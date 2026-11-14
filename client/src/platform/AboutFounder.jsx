@@ -3,9 +3,10 @@
 // account (Kabuor Dine from a summit in Mombasa, Kabuor ERP from wanting Kenyan software built here), what the
 // company is for, and one way to reach him. In the corporate layout every Kabuor page shares (Corporate.jsx).
 import { useEffect } from 'react';
-import { ChevronRight, ExternalLink, Mail, MessageCircle, Phone } from 'lucide-react';
+import { ChevronRight, ExternalLink, Mail, Phone } from 'lucide-react';
 import { Go, tel, whatsapp } from './Site';
 import { CorporatePage, FOUNDER } from './Corporate';
+import WhatsAppIcon from './WhatsAppIcon';
 
 const LOCATION = 'Nairobi, Kenya';
 
@@ -46,7 +47,7 @@ export default function AboutFounder() {
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <a href={hello} target="_blank" rel="noopener noreferrer" className="ms-btn ms-btn-primary">
-                <MessageCircle className="h-4 w-4" /> WhatsApp Rooney
+                <WhatsAppIcon className="h-4 w-4" /> WhatsApp Rooney
               </a>
               <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="ms-link">
                 LinkedIn <ExternalLink className="h-4 w-4" />
