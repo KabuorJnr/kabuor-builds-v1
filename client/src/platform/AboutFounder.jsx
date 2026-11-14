@@ -158,8 +158,8 @@ export default function AboutFounder() {
               </a>
             </li>
           </ul>
-          <a href="/brand/rooney-odhiambo-profile.pdf" className="ms-btn ms-btn-secondary mt-6 w-full" download>
-            Download profile (PDF)
+          <a href="/brand/kabuor-technologies-company-profile.pdf" className="ms-btn ms-btn-secondary mt-6 w-full" download>
+            Company profile (PDF)
           </a>
         </aside>
       </div>

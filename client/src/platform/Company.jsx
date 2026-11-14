@@ -5,7 +5,7 @@
 // built on, real work, a demo request, the founder and why each product exists, who we are, and a person to talk to. Styles are scoped under .ms (platform.css).
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, BarChart3, ChevronRight, ExternalLink, Languages, MessageCircle, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
+import { ArrowRight, BarChart3, ChevronRight, Languages, MessageCircle, ReceiptText, Smartphone, Users, Wallet } from 'lucide-react';
 import { ksh } from './shared';
 import DemoRequest from './DemoRequest';
 import { SHOWCASES as COMPANY_SHOWCASES } from './showcases';
@@ -303,19 +303,19 @@ export default function Company({ info }) {
           <DemoRequest info={info} product="erp" className="[&>div]:rounded-lg [&>div]:ring-[var(--ms-line)]" />
         </div>
 
-        {/* The founder: who is behind this, and why each product exists. */}
+        {/* Our story: why the company exists and where each product came from, with the founder who started it. */}
         <section id="founder" aria-labelledby="founder-title" className="scroll-mt-20 border-t border-[var(--ms-line)] bg-[#F5F7FC] py-12 sm:py-16">
           <div className="container-x grid items-center gap-10 lg:grid-cols-[20rem_1fr] lg:gap-14">
-            <img src="/brand/founder-rooney-portrait.webp" alt={`${FOUNDER.name}, founder of Kabuor Technologies`} width="720" height="900" loading="lazy" className="aspect-[4/5] w-full max-w-xs rounded-lg border border-[var(--ms-line)] object-cover object-top lg:max-w-none" />
+            <img src="/brand/founder-rooney-portrait.webp" alt={`${FOUNDER.name}, founder and CEO of Kabuor Technologies`} width="720" height="900" loading="lazy" className="aspect-[4/5] w-full max-w-xs rounded-lg border border-[var(--ms-line)] object-cover object-top lg:max-w-none" />
             <div className="max-w-2xl">
-              <p className="text-sm font-semibold text-[var(--ms-blue)]">From our founder</p>
+              <p className="text-sm font-semibold text-[var(--ms-blue)]">Our story</p>
               <h2 id="founder-title" className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Our own products, for our own problems, for our own people</h2>
               <div className="mt-5 space-y-4 text-lg leading-relaxed text-[var(--ms-muted)]">
                 <p>
-                  Kabuor Dine began at an African MICE summit in Mombasa, where hoteliers who have spent their lives in the trade asked what creates waste, how a hotel can run on data, and how to give guests a smoother visit.
+                  Kabuor Technologies builds Kenyan software from the ground up, and we believe a system has to change something for the community around it: skills for young Kenyans, jobs, and change families can feel.
                 </p>
                 <p>
-                  Kabuor ERP began with a question: after years of Silicon Valley software running Kenyan industry, what if we built our own, from the ground up? It took months of planning before a single line was written.
+                  Kabuor ERP began with a question: after years of Silicon Valley software running Kenyan industry, what if we built our own? Kabuor Dine began at an African MICE summit in Mombasa, with hoteliers asking what creates waste and how a hotel can run on data.
                 </p>
               </div>
               <figure className="mt-6 border-l-4 border-[var(--ms-blue)] pl-5">
@@ -326,10 +326,10 @@ export default function Company({ info }) {
               </figure>
               <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
                 <Link to="/about-founder" className="ms-btn ms-btn-secondary">
-                  Read {FOUNDER.first}’s story
+                  Read the full story
                 </Link>
-                <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" className="ms-link">
-                  LinkedIn <ExternalLink className="h-4 w-4" />
+                <a href="/brand/kabuor-technologies-company-profile.pdf" download className="ms-link">
+                  Company profile (PDF)
                 </a>
               </div>
             </div>
